@@ -1,4 +1,4 @@
-
+#!/bin/bash
 webFile="/var/www/html/nodestatus.html" #Where to put the web document.
 PageAutoRefreshTime="15" #How often the web document should auto-refresh.
 WaitTime="15"  #The amount of time in seconds that a node has to respond. You can use decimals, such as "0.3" or "2.5"
