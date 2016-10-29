@@ -1,13 +1,29 @@
 #!/bin/bash
+
+
+#Note:
+# Trying to run this on the fog repo with more than a few systems at a time across a small
+# internet pipe will likely result in a few of the nodes failing to clone.
+# You may install and use trickle, but it's not available by default on many OSs.
+# you can always download it and install it though, by copying the install script and then modifying the copy.
+# The command to clone fog using trickle would be:
+
+# trickle -sd 100 git clone https://github.com/FOGProject/fogproject.git /root/git/fogproject > /dev/null 2>&1
+
+# Just replace the existing git clone command with that and all nodes would download at 1,000Kbps, or 1Mbps.
+
+# If you're reading this after you've had a clone failure, just add a command at the begining to delete the clone, and to kill any git processes as well. Such as:
+
+# pkill -f git > /dev/null 2>&1;rm -rf /root/git/fogproject;
+
+
+
+
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-#Packages are space seperated if there are multiple ones.
-#You must change the below line to what you need.
-packages="mod_evasive"
-
-#example list of packages:
-#packages="lsof iftop git svn firewalld"
 
 clear
 
@@ -21,7 +37,7 @@ done
 for i in "${storageNodes[@]}"
 do
 
-    printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum remove $packages -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    printf $(ssh -o ConnectTimeout=$sshTimeout $i "mkdir /root/git > /dev/null 2>&1;git clone https://github.com/FOGProject/fogproject.git /root/git/fogproject > /dev/null 2>&1;echo \$?") > $cwd/.$i &
 
 done
 
@@ -34,7 +50,7 @@ while [[ "$complete" == "false" ]]; do
     clear
     echo
     echo
-    echo "Removing packages: $packages"
+    echo "Updating node operating systems."
     echo
     complete="true"
     #Loop through each node to check status, this is the inner loop.
@@ -67,5 +83,3 @@ done
 echo
 echo "Complete"
 echo
-
-
