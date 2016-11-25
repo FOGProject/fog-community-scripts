@@ -39,9 +39,9 @@ chmod +x $targetDir/MakeFogMobile.sh
 #Check if dnsmasq is installed. If not, try to install it.
 
 dnsmasq=$(command -v dnsmasq)
+dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
 
-
-if [[ -z "$dnsmasq" ]]; then
+if [[ -z "$dnsmasq" || "$dnsmasqStatus" != "0" ]]; then
 
     yum=$(command -v yum)
     dnf=$(command -v dnf)
