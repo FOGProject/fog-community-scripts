@@ -1,5 +1,7 @@
 #---- Set variables ----#
 
+echo "Installing, please wait..."
+
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 utilsDir=/opt/fog/utils
 targetDir=/opt/fog/utils/MakeFogMobile
@@ -39,7 +41,18 @@ chmod +x $targetDir/MakeFogMobile.sh
 #Check if dnsmasq is installed. If not, try to install it.
 
 dnsmasq=$(command -v dnsmasq)
-dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
+
+systemctl=$(command -v systemctl)
+service=$(command -v service)
+
+if [[ -z "$systemctl" ]]; then
+    dnsmasqStatus=$(systemctl status dnsmasq >/dev/null 2>&1)
+elif [[ -z "$service" ]]; then
+    dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
+fi
+
+
+
 
 if [[ -z "$dnsmasq" || "$dnsmasqStatus" != "0" ]]; then
 
@@ -66,3 +79,5 @@ crontab -l -u root | grep -v MakeFogMobile.sh | crontab -u root -
 newline="*/3 * * * * $targetDir/MakeFogMobile.sh"
 (crontab -l -u root; echo "$newline") | crontab - >/dev/null 2>&1
 
+
+echo "Finished."
