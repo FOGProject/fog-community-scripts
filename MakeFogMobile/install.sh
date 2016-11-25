@@ -1,8 +1,10 @@
 #---- Set variables ----#
 
+echo "Installing, please wait..."
+
 currentDir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 utilsDir=/opt/fog/utils
-targetDir=/opt/fog/utils/FOGUpdateIP
+targetDir=/opt/fog/utils/MakeFogMobile
 fogsettings=/opt/fog/.fogsettings
 packages="$(grep 'packages=' $fogsettings | cut -d \' -f2 )"
 
@@ -29,20 +31,34 @@ if [[ -d $targetDir ]]; then
 fi
 mkdir $targetDir
 
-cp $currentDir/README $targetDir/README
-cp $currentDir/license.txt $targetDir/license.txt
-cp $currentDir/MainScript.sh $targetDir/FOGUpdateIP.sh
+cp $currentDir/README.md $targetDir/README.md
+cp $currentDir/MainScript.sh $targetDir/MakeFogMobile.sh
 
 
 #make the main script executable.
-chmod +x $targetDir/FOGUpdateIP.sh
+chmod +x $targetDir/MakeFogMobile.sh
 
 #Check if dnsmasq is installed. If not, try to install it.
 
 dnsmasq=$(command -v dnsmasq)
 
+systemctl=$(command -v systemctl)
+service=$(command -v service)
 
-if [[ -z "$dnsmasq" ]]; then
+if [[ ! -z "$systemctl" ]]; then
+    dnsmasqStatus=$(systemctl status dnsmasq >/dev/null 2>&1)
+elif [[ ! -z "$service" ]]; then
+    dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
+else
+    echo "Don't know how to check dnsmasq service status."
+    echo "Going to try to install dnsmasq."
+    dnsmasqStatus="1"
+fi
+
+
+
+
+if [[ -z "$dnsmasq" || "$dnsmasqStatus" != "0" ]]; then
 
     yum=$(command -v yum)
     dnf=$(command -v dnf)
@@ -62,8 +78,10 @@ fi
 
 #---- Create the cron event ----#
 
-crontab -l -u root | grep -v FOGUpdateIP.sh | crontab -u root -
+crontab -l -u root | grep -v MakeFogMobile.sh | crontab -u root -
 # */3 for every three minutes.
-newline="*/3 * * * * $targetDir/FOGUpdateIP.sh"
+newline="*/3 * * * * $targetDir/MakeFogMobile.sh"
 (crontab -l -u root; echo "$newline") | crontab - >/dev/null 2>&1
 
+
+echo "Finished."
