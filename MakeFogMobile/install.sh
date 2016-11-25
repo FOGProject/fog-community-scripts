@@ -49,6 +49,10 @@ if [[ -z "$systemctl" ]]; then
     dnsmasqStatus=$(systemctl status dnsmasq >/dev/null 2>&1)
 elif [[ -z "$service" ]]; then
     dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
+else
+    echo "Don't know how to check dnsmasq service status."
+    echo "Going to try to install dnsmasq."
+    dnsmasqStatus="1"
 fi
 
 
