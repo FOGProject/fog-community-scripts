@@ -45,9 +45,9 @@ dnsmasq=$(command -v dnsmasq)
 systemctl=$(command -v systemctl)
 service=$(command -v service)
 
-if [[ -z "$systemctl" ]]; then
+if [[ ! -z "$systemctl" ]]; then
     dnsmasqStatus=$(systemctl status dnsmasq >/dev/null 2>&1)
-elif [[ -z "$service" ]]; then
+elif [[ ! -z "$service" ]]; then
     dnsmasqStatus=$(service dnsmasq status >/dev/null 2>&1)
 else
     echo "Don't know how to check dnsmasq service status."
