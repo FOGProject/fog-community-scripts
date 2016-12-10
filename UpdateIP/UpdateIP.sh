@@ -13,6 +13,13 @@
 [[ -z $DIR ]] && DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 
+
+##Clear screen.
+clear
+
+
+
+
 # Parameter 1 is the file to check for
 checkFilePresence() {
     local file="$1"
@@ -42,10 +49,10 @@ checkFogSettingVars() {
 ## Source fogsettings file.
 . $fogsettings
 
+
 # Check our required checks first
 checkFogSettingVars "$interface" "interface" "$fogsettings"
 checkFogSettingVars "$ipaddress" "ipaddress" "$fogsettings"
-
 
 
 ## Function to find all interfaces, suggest each one, let user choose which. Supports up to 4 choices.
@@ -75,51 +82,58 @@ identifyInterfaces() {
     rm -f $DIR/interface3name.txt
     rm -f $DIR/interface4name.txt
     ##Parse IP addresses for each interface name.
+    if [[ "$interface1name" != "" ]]; then
     interface1ip="$(/sbin/ip addr show | grep $interface1name | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")"
+    fi
+    if [[ "$interface2name" != "" ]]; then
     interface2ip="$(/sbin/ip addr show | grep $interface2name | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")"
+    fi
+    if [[ "$interface3name" != "" ]]; then
     interface3ip="$(/sbin/ip addr show | grep $interface3name | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")"
+    fi
+    if [[ "$interface4name" != "" ]]; then
     interface4ip="$(/sbin/ip addr show | grep $interface4name | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")"
+    fi
     ##If there is no IP Address for the interfaces, assign local loopback. This means the interface doesn't exist.
     ##If only one interface has a legitimate address, don't even ask what interface to use.
-    goodInterfaces="0"
+    goodInterfaces="4"
     if [[ -z $interface1ip ]]; then
         interface1ip=127.0.0.1
-        goodInterfaces=$(($goodInterfaces + 1))
+        goodInterfaces=$(($goodInterfaces - 1))
     fi
     if [[ -z $interface2ip ]]; then 
         interface2ip=127.0.0.1
-        goodInterfaces=$(($goodInterfaces + 1))
+        goodInterfaces=$(($goodInterfaces - 1))
     fi
     if [[ -z $interface3ip ]]; then
         interface3ip=127.0.0.1
-        goodInterfaces=$(($goodInterfaces + 1))
+        goodInterfaces=$(($goodInterfaces - 1))
     fi
     if [[ -z $interface4ip ]]; then
         interface4ip=127.0.0.1
-        goodInterfaces=$(($goodInterfaces + 1))
+        goodInterfaces=$(($goodInterfaces - 1))
     fi
-
     ##Only do the menu stuff if there is more than one interface to pick from.
     if [[ "$goodInterfaces" -gt "1" ]]; then
 
         ##Build Menu
-        MENU="Please choose which interface to use.\n\n"
+        MENU="Please choose which interface to use.\n"
         if [[ "$interface1ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    1. $interface1name currently configured with $interface1ip\n\n"
+            MENU="$MENU\n    1. $interface1name currently configured with $interface1ip\n"
         fi
         if [[ "$interface2ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    2. $interface2name currently configured with $interface2ip\n\n"
+            MENU="$MENU\n    2. $interface2name currently configured with $interface2ip\n"
         fi
         if [[ "$interface3ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    3. $interface3name currently configured with $interface3ip\n\n"
+            MENU="$MENU\n    3. $interface3name currently configured with $interface3ip\n"
         fi
         if [[ "$interface4ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    4. $interface4name currently configured with $interface4ip\n\n"
+            MENU="$MENU\n    4. $interface4name currently configured with $interface4ip\n"
         fi
 
         ##Print menu.
-        printf "$MENU"
-        printf "Selection: "
+        printf "$MENU\n"
+        printf "    Selection:"
         read interfaceChoice # Assign user input to variable
         if [[ -z $interfaceChoice || ( $interfaceChoice != 1 && $interfaceChoice != 2 && $interfaceChoice != 3 && $interfaceChoice != 4 ) ]]; then
             echo Selection for interface was not valid, exiting.
@@ -209,6 +223,6 @@ sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
 
 
 echo
-echo "All done. Don't forget to update your DHCP/ProxyDHCP to use option 066 / filename of: $newIP"
+echo "All done. Don't forget to update your DHCP/ProxyDHCP to use: $newIP"
 echo
 
