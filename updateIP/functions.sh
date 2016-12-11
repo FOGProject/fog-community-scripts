@@ -1,25 +1,5 @@
 #!/bin/bash
 
-# Variable definitions
-## FOG Settings
-[[ -z $fogsettings ]] && fogsettings="/opt/fog/.fogsettings"
-## Storage Node Name
-[[ -z $storageNode ]] && storageNode="DefaultMember"
-## Database Name
-[[ -z $database ]] && database="fog"
-## default.ipxe location
-[[ -z $tftpfile ]] && tftpfile="/tftpboot/default.ipxe"
-## Get current directory
-[[ -z $DIR ]] && DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-
-
-
-##Clear screen.
-clear
-
-
-
-
 # Parameter 1 is the file to check for
 checkFilePresence() {
     local file="$1"
@@ -28,11 +8,6 @@ checkFilePresence() {
         exit 2
     fi
 }
-
-# Check fogsettings existence
-checkFilePresence "$fogsettings"
-checkFilePresence "$tftpfile"
-
 # Function checks if the variables needed are set
 # Parameter 1 is the variable to test
 # Parameter 2 is what the variable is testing for (msg string)
@@ -46,16 +21,7 @@ checkFogSettingVars() {
         exit 3
     fi
 }
-## Source fogsettings file.
-. $fogsettings
-
-
-# Check our required checks first
-checkFogSettingVars "$interface" "interface" "$fogsettings"
-checkFogSettingVars "$ipaddress" "ipaddress" "$fogsettings"
-
-
-## Function to find all interfaces, suggest each one, let user choose which. Supports up to 4 choices.
+## Function to find all interfaces, suggest each one, let user choose which. Supports up to 4 interfaces.
 identifyInterfaces() {
     ##Send all ip information to temporary file.
     ip link show > $DIR/interfaces.txt
@@ -117,18 +83,18 @@ identifyInterfaces() {
     if [[ "$goodInterfaces" -gt "1" ]]; then
 
         ##Build Menu
-        MENU="Please choose which interface to use.\n"
+        MENU="\n\n    Please choose which interface to use.\n"
         if [[ "$interface1ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    1. $interface1name currently configured with $interface1ip\n"
+            MENU="$MENU\n    1. $interface1name ($interface1ip)\n"
         fi
         if [[ "$interface2ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    2. $interface2name currently configured with $interface2ip\n"
+            MENU="$MENU\n    2. $interface2name ($interface2ip)\n"
         fi
         if [[ "$interface3ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    3. $interface3name currently configured with $interface3ip\n"
+            MENU="$MENU\n    3. $interface3name ($interface3ip)\n"
         fi
         if [[ "$interface4ip" != "127.0.0.1" ]]; then
-            MENU="$MENU\n    4. $interface4name currently configured with $interface4ip\n"
+            MENU="$MENU\n    4. $interface4name ($interface4ip)\n"
         fi
 
         ##Print menu.
@@ -158,71 +124,57 @@ identifyInterfaces() {
     fi
     return $continue
 }
+## Update the IP in the database
+updateIPinDB() {
+    echo
+    echo "Updating the IP Settings server-wide."
+    statement1="UPDATE \`globalSettings\` SET \`settingValue\`='$newIP' WHERE \`settingKey\` IN ('FOG_TFTP_HOST','FOG_WOL_HOST','FOG_WEB_HOST');"
+    statement2="UPDATE \`nfsGroupMembers\` SET \`ngmHostname\`='$newIP', \`ngmInterface\`='$newInterface' WHERE \`ngmMemberName\`='$storageNode' OR \`ngmHostname\`='$ipaddress';"
+    sqlStatements="$statement1$statement2"
 
-
-identifyInterfaces #Will exit on failure.
-
-
-## Do changes:
-
-
-#---- Update the IP Setting ----#
-echo
-echo "Updating the IP Settings server-wide."
-statement1="UPDATE \`globalSettings\` SET \`settingValue\`='$newIP' WHERE \`settingKey\` IN ('FOG_TFTP_HOST','FOG_WOL_HOST','FOG_WEB_HOST');"
-statement2="UPDATE \`nfsGroupMembers\` SET \`ngmHostname\`='$newIP' WHERE \`ngmMemberName\`='$storageNode' OR \`ngmHostname\`='$ipaddress';"
-sqlStatements="$statement1$statement2"
-
-# Builds proper SQL Statement and runs.
-# If no user defined, assume root
-[[ -z $snmysqluser ]] && $snmysqluser='root'
-# If no host defined, assume localhost/127.0.0.1
-[[ -z $snmysqlhost ]] && $snmysqlhost='127.0.0.1'
-# No password set, run statement without pass authentication
-if [[ -z $snmysqlpass ]]; then
-    echo "A password was not set in $fogsettings for mysql use."
-    mysql -u"$snmysqluser" -e "$sqlStatements" "$database"
+    # Builds proper SQL Statement and runs.
+    # If no user defined, assume root
+    [[ -z $snmysqluser ]] && $snmysqluser='root'
+    # If no host defined, assume localhost/127.0.0.1
+    [[ -z $snmysqlhost ]] && $snmysqlhost='127.0.0.1'
+    # No password set, run statement without pass authentication
+    if [[ -z $snmysqlpass ]]; then
+        echo "A password was not set in $fogsettings for mysql use."
+        mysql -u"$snmysqluser" -e "$sqlStatements" "$database"
     # Else run with password authentication
-else
-    echo "A password was set in $fogsettings for mysql use."
-    mysql -u"$snmysqluser" -p"${snmysqlpass}" -e "$sqlStatements" "$database"
-fi
+    else
+        echo "A password was set in $fogsettings for mysql use."
+        mysql -u"$snmysqluser" -p"${snmysqlpass}" -e "$sqlStatements" "$database"
+    fi
+}
+## Update IP address in file default.ipxe
+updateTFTP() {
+    echo "Updating the IP in $tftpfile"
+    sed -i "s|http://\([^/]\+\)/|http://$newIP/|" $tftpfile
+    sed -i "s|http:///|http://$newIP/|" $tftpfile
+}
+## Update config.class.php
+updateConfigClassPHP() {
+    ##Set config file location and check
+    configfile="${docroot}${webroot}lib/fog/config.class.php"
+    checkFilePresence "$configfile"
 
-#---- Update IP address in file default.ipxe ----#
-echo "Updating the IP in $tftpfile"
-sed -i "s|http://\([^/]\+\)/|http://$newIP/|" $tftpfile
-sed -i "s|http:///|http://$newIP/|" $tftpfile
+    ## Backup config.class.php
+    echo "Backing up $configfile"
+    cp -f "$configfile" "${configfile}.old"
 
-#---- Check docroot and webroot is set ----#
-checkFogSettingVars "$docroot" "docroot" "$fogsettings"
-checkFogSettingVars "$webroot" "docroot" "$fogsettings"
+    ## Update IP in config.class.php
+    echo "Updating the IP inside $configfile"
+    sed -i "s|\".*\..*\..*\..*\"|\$_SERVER['SERVER_ADDR']|" $configfile
 
-#---- Set config file location and check----#
-configfile="${docroot}${webroot}lib/fog/config.class.php"
-checkFilePresence "$configfile"
-
-#---- Backup config.class.php ----#
-echo "Backing up $configfile"
-cp -f "$configfile" "${configfile}.old"
-
-#---- Update IP in config.class.php ----#
-echo "Updating the IP inside $configfile"
-sed -i "s|\".*\..*\..*\..*\"|\$_SERVER['SERVER_ADDR']|" $configfile
-
-#---- Update .fogsettings IP ----#
-echo "Updating the ipaddress field inside of $fogsettings"
-sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
-
-
-##Have to update/restart ISC-DHCP here if it's supposed to be built/enabled in .fogsettings.
-#---- Update ISC-DHCP ----#
+    ## Update .fogsettings IP ----#
+    echo "Updating the ipaddress field inside of $fogsettings"
+    sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
+}
 
 
 
 
 
 
-echo
-echo "All done. Don't forget to update your DHCP/ProxyDHCP to use: $newIP"
-echo
 
