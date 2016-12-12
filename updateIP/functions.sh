@@ -1,5 +1,217 @@
 #!/bin/bash
 
+getCidr() {
+    local cidr
+    cidr=$(ip -f inet -o addr | grep $1 | awk -F'[ /]+' '/global/ {print $5}' | head -n2 | tail -n1)
+    echo $cidr
+}
+mask2cidr() {
+    local submask=$1
+    nbits=0
+    OIFS=$IFS
+    IFS='.'
+    for dec in $submask; do
+        case $dec in
+            255)
+                let nbits+=8
+                ;;
+            254)
+                let nbits+=7
+                break
+                ;;
+            252)
+                let nbits+=6
+                break
+                ;;
+            248)
+                let nbits+=5
+                break
+                ;;
+            240)
+                let nbits+=4
+                break
+                ;;
+            224)
+                let
+                nbits+=3
+                break
+                ;;
+            192)
+                let nbits+=2
+                break
+                ;;
+            128)
+                let nbits+=1
+                break
+                ;;
+            0)
+                ;;
+            *)
+                echo "Error: $dec is not recognized"
+                exit 1
+                ;;
+        esac
+    done
+    IFS=$OIFS
+    echo "$nbits"
+}
+cidr2mask() {
+    local i=""
+    local mask=""
+    local full_octets=$(($1/8))
+    local partial_octet=$(($1%8))
+    for ((i=0;i<4;i+=1)); do
+        if [[ $i -lt $full_octets ]]; then
+            mask+=255
+        elif [[ $i -eq $full_octets ]]; then
+            mask+=$((256 - 2**(8-$partial_octet)))
+        else
+            mask+=0
+        fi
+        test $i -lt 3 && mask+=.
+    done
+    echo $mask
+}
+mask2network() {
+    OIFS=$IFS
+    IFS='.'
+    read -r i1 i2 i3 i4 <<< "$1"
+    read -r m1 m2 m3 m4 <<< "$2"
+    IFS=$OIFS
+    printf "%d.%d.%d.%d\n"  "$((i1 & m1))" "$((i2 & m2))" "$((i3 & m3))" "$((i4 & m4))"
+}
+interface2broadcast() {
+    local interface=$1
+    if [[ -z $interface ]]; then
+        echo "No interface passed"
+        return 1
+    fi
+    echo $(ip -4 addr show | grep -w inet | grep $interface | awk '{print $4}')
+}
+subtract1fromAddress() {
+    local ip=$1
+    if [[ -z $ip ]]; then
+        echo "No IP Passed"
+        return 1
+    fi
+    if [[ ! $(validip $ip) -eq 0 ]]; then
+        echo "Invalid IP Passed"
+        return 1
+    fi
+    oIFS=$IFS
+    IFS='.'
+    read ip1 ip2 ip3 ip4 <<< "$ip"
+    IFS=$oIFS
+    if [[ $ip4 -gt 0 ]]; then
+        let ip4-=1
+    elif [[ $ip3 -gt 0 ]]; then
+        let ip3-=1
+        ip4=255
+    elif [[ $ip2 -gt 0 ]]; then
+        let ip2-=1
+        ip3=255
+        ip4=255
+    elif [[ $ip1 -gt 0 ]]; then
+        let ip1-=1
+        ip2=255
+        ip3=255
+        ip4=255
+    else
+        echo "Invalid IP ranges were passed"
+        echo ${ip1}.${ip2}.${ip3}.${ip4}
+        return 2
+    fi
+    echo ${ip1}.${ip2}.${ip3}.${ip4}
+}
+subtractFromAddress() {
+    local ipaddress="$1"
+    local decreaseby=$2
+    local maxOctetValue=256
+    local octet1=""
+    local octet2=""
+    local octet3=""
+    local octet4=""
+    oIFS=$IFS
+    IFS='.' read octet1 octet2 octet3 octet4 <<< "$ipaddress"
+    IFS=$oIFS
+    let octet4-=$decreaseby
+    if [[ $octet4 -lt $maxOctetValue && $octet4 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
+        return 0
+    fi
+    echo $octet4
+    echo $maxOctetValue
+    octet4=$(echo $octet4 | sed 's/-//g')
+    numRollOver=$((octet4 / maxOctetValue))
+    echo $numRollOver
+    let octet4-=$((numRollOver * maxOctetValue))
+    echo $((numRollOver - octet3))
+    let octet3-=$numRollOver
+    echo $octet3
+    if [[ $octet3 -lt $maxOctetValue && $octet3 -ge 0 ]]; then
+        echo 'here'
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
+        return 0
+    fi
+    numRollOver=$((octet3 / maxOctetValue))
+    let octet3-=$((numRollOver * maxOctetValue))
+    let octet2-=$numRollOver
+    if [[ $octet2 -lt $maxOctetValue && $octet2 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
+        return 0
+    fi
+    numRollOver=$((octet2 / maxOctetValue))
+    let octet2-=$((numRollOver * maxOctetValue))
+    let octet1-=$numRollOver
+    if [[ $octet1 -lt $maxOctetValue && $octet1 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
+        return 0
+    fi
+    return 1
+}
+addToAddress() {
+    local ipaddress="$1"
+    local increaseby=$2
+    local maxOctetValue=256
+    local octet1=""
+    local octet2=""
+    local octet3=""
+    local octet4=""
+    oIFS=$IFS
+    IFS='.' read octet1 octet2 octet3 octet4 <<< "$ipaddress"
+    IFS=$oIFS
+    let octet4+=$increaseby
+    if [[ $octet4 -lt $maxOctetValue && $octet4 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4
+        return 0
+    fi
+    numRollOver=$((octet4 / maxOctetValue))
+    let octet4-=$((numRollOver * maxOctetValue))
+    let octet3+=$numRollOver
+    if [[ $octet3 -lt $maxOctetValue && $octet3 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4
+        return 0
+    fi
+    numRollOver=$((octet3 / maxOctetValue))
+    let octet3-=$((numRollOver * maxOctetValue))
+    let octet2+=$numRollOver
+    if [[ $octet2 -lt $maxOctetValue && $octet2 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4
+        return 0
+    fi
+    numRollOver=$((octet2 / maxOctetValue))
+    let octet2-=$((numRollOver * maxOctetValue))
+    let octet1+=$numRollOver
+    if [[ $octet1 -lt $maxOctetValue && $octet1 -ge 0 ]]; then
+        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4
+        return 0
+    fi
+    return 1
+}
+
+
+
+
 # Parameter 1 is the file to check for
 checkFilePresence() {
     local file="$1"
@@ -8,6 +220,8 @@ checkFilePresence() {
         exit 2
     fi
 }
+
+
 # Function checks if the variables needed are set
 # Parameter 1 is the variable to test
 # Parameter 2 is what the variable is testing for (msg string)
@@ -21,6 +235,8 @@ checkFogSettingVars() {
         exit 3
     fi
 }
+
+
 ## Function to find all interfaces, suggest each one, let user choose which. Supports up to 4 interfaces.
 identifyInterfaces() {
     ##Send all ip information to temporary file.
@@ -124,6 +340,9 @@ identifyInterfaces() {
     fi
     return $continue
 }
+
+
+
 ## Update the IP in the database
 updateIPinDB() {
     echo
@@ -147,12 +366,19 @@ updateIPinDB() {
         mysql -u"$snmysqluser" -p"${snmysqlpass}" -e "$sqlStatements" "$database"
     fi
 }
+
+
+
 ## Update IP address in file default.ipxe
 updateTFTP() {
     echo "Updating the IP in $tftpfile"
     sed -i "s|http://\([^/]\+\)/|http://$newIP/|" $tftpfile
     sed -i "s|http:///|http://$newIP/|" $tftpfile
 }
+
+
+
+
 ## Update config.class.php
 updateConfigClassPHP() {
     ##Set config file location and check
@@ -172,6 +398,165 @@ updateConfigClassPHP() {
     sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
 }
 
+
+
+suggestRoute() {
+    local thisInterface=$1
+    strSuggestedRoute=$(ip route | head -n1 | cut -d' ' -f3 | tr -d [:blank:])
+    if [[ -z $strSuggestedRoute ]]; then
+        strSuggestedRoute=$(route -n | grep "^.*U.*${thisInterface}$"  | head -n 1)
+        strSuggestedRoute=$(echo ${strSuggestedRoute:16:16} | tr -d [:blank:])
+    fi
+    printf "$strSuggestedRoute"
+}
+
+
+
+suggestDNS() {
+    strSuggestedDNS=""
+    [[ -f /etc/resolv.conf ]] && strSuggestedDNS=$(cat /etc/resolv.conf | grep "nameserver" | head -n 1 | tr -d "nameserver" | tr -d [:blank:] | grep "^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$")
+    [[ -z $strSuggestedDNS && -d /etc/NetworkManager/system-connections ]] && strSuggestedDNS=$(cat /etc/NetworkManager/system-connections/* | grep "dns" | head -n 1 | tr -d "dns=" | tr -d ";" | tr -d [:blank:] | grep "^[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*$")
+    printf "$strSuggestedDNS"
+}
+
+
+configureDHCP() {
+
+    if [[ "$bldhcp" == "Y" || "$bldhcp" == "1" ]]; then
+
+        echo "Setting up and starting DHCP Server"
+
+        submask=$(cidr2mask $(getCidr $newInterface))
+        network=$(mask2network $newIP $submask)
+        startrange=$(addToAddress $network 10)
+        endrange=$(subtract1fromAddress $(echo $(interface2broadcast $newInterface)))
+
+        dhcpconfig1="/etc/dhcp/dhcpd.conf" #standard
+        dhcpconfig2="/etc/dhcp3/dhcpd.conf" #old ubuntu
+        dhcpconfig3="/etc/dhcpd.conf" #old redhat & arch
+
+        ## Copy, not move. This is important for later when writing the configuration. 
+        [[ -f $dhcpconfig1 ]] && cp -f $dhcpconfig1 ${dhcpconfig1}.fogbackup
+        [[ -f $dhcpconfig2 ]] && cp -f $dhcpconfig2 ${dhcpconfig2}.fogbackup
+        [[ -f $dhcpconfig3 ]] && cp -f $dhcpconfig3 ${dhcpconfig3}.fogbackup
+        [[ -z $bootfilename ]] && bootfilename="undionly.kkpxe"
+
+	configFile=""
+
+        configFile="${configFile}# DHCP Server Configuration file\n"
+        configFile="${configFile}#see /usr/share/doc/dhcp*/dhcpd.conf.sample\n"
+        configFile="${configFile}# This file was created by FOG\n"
+        configFile="${configFile}#Definition of PXE-specific options\n"
+        configFile="${configFile}# Code 1: Multicast IP Address of bootfile\n"
+        configFile="${configFile}# Code 2: UDP Port that client should monitor for MTFTP Responses\n"
+        configFile="${configFile}# Code 3: UDP Port that MTFTP servers are using to listen for MTFTP requests\n"
+        configFile="${configFile}# Code 4: Number of seconds a client must listen for activity before trying\n"
+        configFile="${configFile}#         to start a new MTFTP transfer\n"
+        configFile="${configFile}# Code 5: Number of seconds a client must listen before trying to restart\n"
+        configFile="${configFile}#         a MTFTP transfer\n"
+        configFile="${configFile}option space PXE;\n"
+        configFile="${configFile}option PXE.mtftp-ip code 1 = ip-address;\n"
+        configFile="${configFile}option PXE.mtftp-cport code 2 = unsigned integer 16;\n"
+        configFile="${configFile}option PXE.mtftp-sport code 3 = unsigned integer 16;\n"
+        configFile="${configFile}option PXE.mtftp-tmout code 4 = unsigned integer 8;\n"
+        configFile="${configFile}option PXE.mtftp-delay code 5 = unsigned integer 8;\n"
+        configFile="${configFile}option arch code 93 = unsigned integer 16;\n"
+        configFile="${configFile}use-host-decl-names on;\n"
+        configFile="${configFile}ddns-update-style interim;\n"
+        configFile="${configFile}ignore client-updates;\n"
+        configFile="${configFile}# Specify subnet of ether device you do NOT want service.\n"
+        configFile="${configFile}# For systems with two or more ethernet devices.\n"
+        configFile="${configFile}# subnet 136.165.0.0 netmask 255.255.0.0 {}\n"
+        configFile="${configFile}subnet $network netmask $submask{\n"
+        configFile="${configFile}    option subnet-mask $submask;\n"
+        configFile="${configFile}    range dynamic-bootp $startrange $endrange;\n"
+        configFile="${configFile}    default-lease-time 21600;\n"
+        configFile="${configFile}    max-lease-time 43200;\n"
+
+        ## Use whatever router is currently configured.
+        routeraddress=$(suggestRoute $newInterface)
+        [[ ! $(validip $routeraddress) -eq 0 ]] && routeraddress=$(echo $routeraddress | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
+        [[ $(validip $routeraddress) -eq 0 ]] && configFile="${configFile}    option routers $routeraddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No router address found !!!" )
+
+        ## Use whatever DNS is currently configured.
+        dnsaddress=$(suggestDNS)
+        [[ ! $(validip $dnsaddress) -eq 0 ]] && dnsaddress=$(echo $dnsaddress | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
+        [[ $(validip $dnsaddress) -eq 0 ]] && configFile="${configFile}    option domain-name-servers $dnsaddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No dns address found !!!" )
+
+        configFile="${configFile}    next-server $ipaddress;\n"
+        configFile="${configFile}    class \"Legacy\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00000\";\n"
+        configFile="${configFile}        filename \"undionly.kkpxe\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"UEFI-32-2\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00002\";\n"
+        configFile="${configFile}        filename \"i386-efi/ipxe.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"UEFI-32-1\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00006\";\n"
+        configFile="${configFile}        filename \"i386-efi/ipxe.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"UEFI-64-1\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00007\";\n"
+        configFile="${configFile}        filename \"ipxe.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"UEFI-64-2\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00008\";\n"
+        configFile="${configFile}        filename \"ipxe.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"UEFI-64-3\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00009\";\n"
+        configFile="${configFile}        filename \"ipxe.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"SURFACE-PRO-4\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 32) = \"PXEClient:Arch:00007:UNDI:003016\";\n"
+        configFile="${configFile}        filename \"ipxe7156.efi\";\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}    class \"Apple-Intel-Netboot\" {\n"
+        configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 14) = \"AAPLBSDPC/i386\";\n"
+        configFile="${configFile}        option dhcp-parameter-request-list 1,3,17,43,60;\n"
+        configFile="${configFile}        if (option dhcp-message-type = 8) {\n"
+        configFile="${configFile}            option vendor-class-identifier \"AAPLBSDPC\";\n"
+        configFile="${configFile}            if (substring(option vendor-encapsulated-options, 0, 3) = 01:01:01) {\n"
+        configFile="${configFile}                # BSDP List\n"
+        configFile="${configFile}                option vendor-encapsulated-options 01:01:01:04:02:80:00:07:04:81:00:05:2a:09:0D:81:00:05:2a:08:69:50:58:45:2d:46:4f:47;\n"
+        configFile="${configFile}                filename \"ipxe.efi\";\n"
+        configFile="${configFile}            }\n"
+        configFile="${configFile}        }\n"
+        configFile="${configFile}    }\n"
+        configFile="${configFile}}\n"
+
+
+	##Must handle other interfaces IF they are not on the same network as the chosen interface.
+
+
+
+        [[ -f $dhcpconfig1 ]] && printf "$configFile" > $dhcpconfig1
+        [[ -f $dhcpconfig2 ]] && printf "$configFile" > $dhcpconfig2
+        [[ -f $dhcpconfig3 ]] && printf "$configFile" > $dhcpconfig3
+
+
+    fi
+    if [[ "$dodhcp" == "Y" || "$dodhcp" == "1" ]]; then
+
+
+        ## Don't worry about what's the proper way to restart DHCP, just try all of them.
+        systemctl enable $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        systemctl stop $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        sleep 2
+        systemctl start $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        sleep 2
+        systemctl status $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        service $dhcpd stop >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        sleep 2
+        service $dhcpd start >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        sleep 2
+        sysv-rc-conf $dhcpd on >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        /etc/init.d/$dhcpd stop >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        sleep 2
+        /etc/init.d/$dhcpd start >>$workingdir/error_logs/fog_error_${version}.log 2>&1 && sleep 2
+    fi
+}
 
 
 
