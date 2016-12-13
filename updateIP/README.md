@@ -1,13 +1,12 @@
 ### Author: Wayne Workman
 ---
 
-This script updates FOG's IP address.
+This script updates FOG's IP address. It is designed for manual one-and-done use. If you're looking to automate changing a FOG Server's IP address, look at the MakeFogMobile project.
 
 How to use:
 
 1. Update your operating system's IP Address according to your distribution's instructions.
 2. Run `UpdateIP.sh`
-
 
 
 The project should work fine on:
@@ -18,14 +17,12 @@ The project should work fine on:
 * Debian 8
 * Raspbian Jessie+
 
+Supports updating all the normal places:
 
-Thanks to forums.fogproject.org @sudburr for doing the initial work.
-Expanded & Made better by forums.fogproject.org @Wayne-Workman
-Thanks to Tom Elliott for helping with cross-platform compatibility.
+* `/tftpboot/default.ipxe`
+* Database entries
+* `config.class.php`
+* `/opt/fog/.fogsettings`
 
-Please direct inqueries about this to the fog forums.
-
-This small project and it's files and documentation are subject to the limitations of the fog community scripts license.
-
-There are some settings that can be modified in the main script - these are towards the top of the file. An important note is that the storage node name in the script **must** match what the real node name is in the FOG Server, this is already set to the default value.
+Also - something new. Rebuilds DHCP Configuration from the ground-up for the new IP/network. Supports multi-nic and **multi-homed** configurations for DHCP. Supports detection/configuration for up to 4 network interfaces.
 
