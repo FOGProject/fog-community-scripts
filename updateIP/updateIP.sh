@@ -51,14 +51,21 @@ updateConfigClassPHP
 
 
 ##Have to update/restart ISC-DHCP here if it's supposed to be built/enabled in .fogsettings.
-#---- Update ISC-DHCP ----#
-
+## Update ISC-DHCP
+configureDHCP
 
 
 
 
 ##Only give message about DHCP/ProxyDHCP if "use dhcp" in fogsettings was disabled.
-echo
-echo "All done. Don't forget to update your DHCP/ProxyDHCP to use: $newIP"
-echo
+printf "\n"
+printf "All done."
+if [[ "$dodhcp" == "N" || "$dodhcp" == "0" ]]; then
+    printf " Don't forget to update your DHCP/ProxyDHCP to use: $newIP\n"
+else
+    printf "\n"
+fi
+printf "\n"
+
+
 

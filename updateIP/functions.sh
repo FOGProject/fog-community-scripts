@@ -426,11 +426,6 @@ configureDHCP() {
 
         echo "Setting up and starting DHCP Server"
 
-        submask=$(cidr2mask $(getCidr $newInterface))
-        network=$(mask2network $newIP $submask)
-        startrange=$(addToAddress $network 10)
-        endrange=$(subtract1fromAddress $(echo $(interface2broadcast $newInterface)))
-
         dhcpconfig1="/etc/dhcp/dhcpd.conf" #standard
         dhcpconfig2="/etc/dhcp3/dhcpd.conf" #old ubuntu
         dhcpconfig3="/etc/dhcpd.conf" #old redhat & arch
@@ -467,11 +462,44 @@ configureDHCP() {
         configFile="${configFile}# Specify subnet of ether device you do NOT want service.\n"
         configFile="${configFile}# For systems with two or more ethernet devices.\n"
         configFile="${configFile}# subnet 136.165.0.0 netmask 255.255.0.0 {}\n"
+
+
+        ## Include empty configurations for non-chosen networks on multi-homed FOG Server.
+        if [[ "$interface1ip" != "127.0.0.1" && "$interface1ip" != "$newIP" ]]; then
+            local altSubmask=$(cidr2mask $(getCidr $interface1name))
+            local altNetwork=$(mask2network $interface1ip $submask)
+            configFile="${configFile}subnet $altNetwork netmask $altSubmask{}\n"
+        fi
+        if [[ "$interface2ip" != "127.0.0.1" && "$interface2ip" != "$newIP" ]]; then
+            local altSubmask=$(cidr2mask $(getCidr $interface2name))
+            local altNetwork=$(mask2network $interface2ip $submask)
+            configFile="${configFile}subnet $altNetwork netmask $altSubmask{}\n"
+        fi
+        if [[ "$interface3ip" != "127.0.0.1" && "$interface3ip" != "$newIP" ]]; then
+            local altSubmask=$(cidr2mask $(getCidr $interface3name))
+            local altNetwork=$(mask2network $interface3ip $submask)
+            configFile="${configFile}subnet $altNetwork netmask $altSubmask{}\n"
+        fi
+        if [[ "$interface4ip" != "127.0.0.1" && "$interface4ip" != "$newIP" ]]; then
+            local altSubmask=$(cidr2mask $(getCidr $interface4name))
+            local altNetwork=$(mask2network $interface4ip $submask)
+            configFile="${configFile}subnet $altNetwork netmask $altSubmask{}\n"
+        fi
+
+
+        submask=$(cidr2mask $(getCidr $newInterface))
+        network=$(mask2network $newIP $submask)
+        startrange=$(addToAddress $network 10)
+        endrange=$(subtract1fromAddress $(echo $(interface2broadcast $newInterface)))
+
+
+        ## Begin configuring the chosen subnet for DHCP.
         configFile="${configFile}subnet $network netmask $submask{\n"
         configFile="${configFile}    option subnet-mask $submask;\n"
         configFile="${configFile}    range dynamic-bootp $startrange $endrange;\n"
         configFile="${configFile}    default-lease-time 21600;\n"
         configFile="${configFile}    max-lease-time 43200;\n"
+        configFile="${configFile}    next-server $ipaddress;\n"
 
         ## Use whatever router is currently configured.
         routeraddress=$(suggestRoute $newInterface)
@@ -483,7 +511,10 @@ configureDHCP() {
         [[ ! $(validip $dnsaddress) -eq 0 ]] && dnsaddress=$(echo $dnsaddress | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
         [[ $(validip $dnsaddress) -eq 0 ]] && configFile="${configFile}    option domain-name-servers $dnsaddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No dns address found !!!" )
 
-        configFile="${configFile}    next-server $ipaddress;\n"
+
+        ## Use /opt/fog/.fogsettings for the default legacy boot file.
+        [[ -z "$bootfilename" ]] && bootfilename="undionly.kkpxe"
+
         configFile="${configFile}    class \"Legacy\" {\n"
         configFile="${configFile}        match if substring(option vendor-class-identifier, 0, 20) = \"PXEClient:Arch:00000\";\n"
         configFile="${configFile}        filename \"undionly.kkpxe\";\n"
@@ -541,20 +572,39 @@ configureDHCP() {
 
 
         ## Don't worry about what's the proper way to restart DHCP, just try all of them.
-        systemctl enable $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        systemctl stop $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        systemctl enable $dhcpd > /dev/null 2>&1
+        systemctl restart $dhcpd > /dev/null 2>&1
+        systemctl status $dhcpd > /dev/null 2>&1
+        if [[ "$?" == "0" ]]; then
+            echo "DHCP is running."
+            local dhcpRunning="yes"
+        fi
+        
+        service $dhcpd enable > /dev/null 2>&1
+        service $dhcpd restart > /dev/null 2>&1
+        service $dhcpd status > /dev/null 2>&1
+        if [[ "$?" == "0" ]]; then
+            echo "DHCP is running."
+            local dhcpRunning="yes"
+        fi
+
+
+        sysv-rc-conf $dhcpd on > /dev/null 2>&1
+        /etc/init.d/$dhcpd stop > /dev/null 2>&1
         sleep 2
-        systemctl start $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
+        /etc/init.d/$dhcpd start > /dev/null 2>&1
         sleep 2
-        systemctl status $dhcpd >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        service $dhcpd stop >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        sleep 2
-        service $dhcpd start >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        sleep 2
-        sysv-rc-conf $dhcpd on >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        /etc/init.d/$dhcpd stop >>$workingdir/error_logs/fog_error_${version}.log 2>&1
-        sleep 2
-        /etc/init.d/$dhcpd start >>$workingdir/error_logs/fog_error_${version}.log 2>&1 && sleep 2
+        /etc/init.d/$dhcpd status > /dev/null 2>&1
+        if [[ "$?" == "0" ]]; then
+            echo "DHCP is running."
+            local dhcpRunning="yes"
+        fi
+
+        if [[ "$dhcpRunning" != "yes" ]]; then
+            echo "!--- DHCP status is unknown, please check ---!"
+        fi
+
+
     fi
 }
 
