@@ -214,7 +214,6 @@ identifyInterfaces() {
         goodInterfaces=$(($goodInterfaces - 1))
     fi
     ##Only do the menu stuff if there is more than one interface to pick from.
-echo "goodInterfaces=$goodInterfaces"
     if [[ "$goodInterfaces" -gt "1" ]]; then
 
         ##Build Menu
