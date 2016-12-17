@@ -55,6 +55,10 @@ updateConfigClassPHP
 configureDHCP
 
 
+## Update fogsettings file.
+## This must be done after the DHCP stuff so those related values are updated properly.
+updateFogsettings
+
 
 
 ##Only give message about DHCP/ProxyDHCP if "use dhcp" in fogsettings was disabled.

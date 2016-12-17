@@ -19,56 +19,6 @@ getCidr() {
     cidr=$(ip -f inet -o addr | grep $1 | awk -F'[ /]+' '/global/ {print $5}' | head -n2 | tail -n1)
     echo $cidr
 }
-mask2cidr() {
-    local submask=$1
-    nbits=0
-    OIFS=$IFS
-    IFS='.'
-    for dec in $submask; do
-        case $dec in
-            255)
-                let nbits+=8
-                ;;
-            254)
-                let nbits+=7
-                break
-                ;;
-            252)
-                let nbits+=6
-                break
-                ;;
-            248)
-                let nbits+=5
-                break
-                ;;
-            240)
-                let nbits+=4
-                break
-                ;;
-            224)
-                let
-                nbits+=3
-                break
-                ;;
-            192)
-                let nbits+=2
-                break
-                ;;
-            128)
-                let nbits+=1
-                break
-                ;;
-            0)
-                ;;
-            *)
-                echo "Error: $dec is not recognized"
-                exit 1
-                ;;
-        esac
-    done
-    IFS=$OIFS
-    echo "$nbits"
-}
 cidr2mask() {
     local i=""
     local mask=""
@@ -136,52 +86,6 @@ subtract1fromAddress() {
         return 2
     fi
     echo ${ip1}.${ip2}.${ip3}.${ip4}
-}
-subtractFromAddress() {
-    local ipaddress="$1"
-    local decreaseby=$2
-    local maxOctetValue=256
-    local octet1=""
-    local octet2=""
-    local octet3=""
-    local octet4=""
-    oIFS=$IFS
-    IFS='.' read octet1 octet2 octet3 octet4 <<< "$ipaddress"
-    IFS=$oIFS
-    let octet4-=$decreaseby
-    if [[ $octet4 -lt $maxOctetValue && $octet4 -ge 0 ]]; then
-        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
-        return 0
-    fi
-    echo $octet4
-    echo $maxOctetValue
-    octet4=$(echo $octet4 | sed 's/-//g')
-    numRollOver=$((octet4 / maxOctetValue))
-    echo $numRollOver
-    let octet4-=$((numRollOver * maxOctetValue))
-    echo $((numRollOver - octet3))
-    let octet3-=$numRollOver
-    echo $octet3
-    if [[ $octet3 -lt $maxOctetValue && $octet3 -ge 0 ]]; then
-        echo 'here'
-        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
-        return 0
-    fi
-    numRollOver=$((octet3 / maxOctetValue))
-    let octet3-=$((numRollOver * maxOctetValue))
-    let octet2-=$numRollOver
-    if [[ $octet2 -lt $maxOctetValue && $octet2 -ge 0 ]]; then
-        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
-        return 0
-    fi
-    numRollOver=$((octet2 / maxOctetValue))
-    let octet2-=$((numRollOver * maxOctetValue))
-    let octet1-=$numRollOver
-    if [[ $octet1 -lt $maxOctetValue && $octet1 -ge 0 ]]; then
-        printf "%d.%d.%d.%d\n" $octet1 $octet2 $octet3 $octet4 | sed 's/-//g'
-        return 0
-    fi
-    return 1
 }
 addToAddress() {
     local ipaddress="$1"
@@ -310,6 +214,7 @@ identifyInterfaces() {
         goodInterfaces=$(($goodInterfaces - 1))
     fi
     ##Only do the menu stuff if there is more than one interface to pick from.
+echo "goodInterfaces=$goodInterfaces"
     if [[ "$goodInterfaces" -gt "1" ]]; then
 
         ##Build Menu
@@ -348,11 +253,33 @@ identifyInterfaces() {
             newInterface="$interface4name"
             newIP="$interface4ip"
         fi
+    #If there is only one valid interface, just use it and don't ask questions.
+    elif [[ "$goodInterfaces" == "1" ]]; then
+        if [[ "$interface1ip" != "127.0.0.1" ]]; then
+            newIP="$interface1ip"
+            newInterface="$interface1name"
+            return
+        fi
+        if [[ "$interface2ip" != "127.0.0.1" ]]; then
+            newIP="$interface2ip"
+            newInterface="$interface2name"
+            return
+        fi
+        if [[ "$interface3ip" != "127.0.0.1" ]]; then
+            newIP="$interface3ip"
+            newInterface="$interface3name"
+            return
+        fi
+        if [[ "$interface4ip" != "127.0.0.1" ]]; then
+            newIP="$interface4ip"
+            newInterface="$interface4name"
+            return
+        fi
     else
         echo "No good interfaces found, exiting."
         exit
     fi
-    return $continue
+    return
 }
 
 
@@ -406,12 +333,20 @@ updateConfigClassPHP() {
     ## Update IP in config.class.php
     echo "Updating the IP inside $configfile"
     sed -i "s|\".*\..*\..*\..*\"|\$_SERVER['SERVER_ADDR']|" $configfile
-
-    ## Update .fogsettings IP ----#
-    echo "Updating the ipaddress field inside of $fogsettings"
-    sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
 }
 
+updateFogsettings() {
+    ## Update .fogsettings IP ----#
+    echo "Updating the fields inside of $fogsettings"
+    sed -i "s|ipaddress='.*'|ipaddress='$newIP'|g" $fogsettings
+    sed -i "s|interface='.*'|interface='$newInterface'|g" $fogsettings
+    sed -i "s|submask='.*'|submask='$submask'|g" $fogsettings
+    sed -i "s|routeraddress='.*'|routeraddress='$routeraddress'|g" $fogsettings
+    sed -i "s|plainrouter='.*'|plainrouter='$routeraddress'|g" $fogsettings
+    sed -i "s|dnsaddress='.*'|dnsaddress='$dnsaddress'|g" $fogsettings
+    sed -i "s|startrange='.*'|startrange='$startrange'|g" $fogsettings
+    sed -i "s|endrange='.*'|endrange='$endrange'|g" $fogsettings
+}
 
 
 suggestRoute() {
@@ -529,12 +464,12 @@ configureDHCP() {
         ## Use whatever router is currently configured.
         routeraddress=$(suggestRoute $newInterface)
         [[ ! $(validip $routeraddress) -eq 0 ]] && routeraddress=$(echo $routeraddress | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
-        [[ $(validip $routeraddress) -eq 0 ]] && configFile="${configFile}    option routers $routeraddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No router address found !!!" )
+        [[ $(validip $routeraddress) -eq 0 ]] && configFile="${configFile}    option routers $routeraddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No router address found !!!" && routeraddress=" !!! No router address found !!!")
 
         ## Use whatever DNS is currently configured.
         dnsaddress=$(suggestDNS)
         [[ ! $(validip $dnsaddress) -eq 0 ]] && dnsaddress=$(echo $dnsaddress | grep -oE "\b([0-9]{1,3}\.){3}[0-9]{1,3}\b")
-        [[ $(validip $dnsaddress) -eq 0 ]] && configFile="${configFile}    option domain-name-servers $dnsaddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No dns address found !!!" )
+        [[ $(validip $dnsaddress) -eq 0 ]] && configFile="${configFile}    option domain-name-servers $dnsaddress;\n" || ( configFile="${configFile}    #option routers 0.0.0.0\n" && echo " !!! No dns address found !!!" && dnsaddress=" !!! No dns address found !!!")
 
 
         ## Use /opt/fog/.fogsettings for the default legacy boot file.
@@ -635,9 +570,3 @@ configureDHCP() {
 
     fi
 }
-
-
-
-
-
-
