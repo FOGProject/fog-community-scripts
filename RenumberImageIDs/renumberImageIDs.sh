@@ -1,11 +1,15 @@
 #!/bin/bash
 
 #----- MySQL Credentials -----#
-snmysqluser=""
-snmysqlpass=""
-snmysqlhost=""
-# If user and pass is blank, leave just a set of double quotes like ""
-# if the db is local, set the host to just double quotes "" or "127.0.0.1" or "localhost"
+#Fog settings file.
+fogsettings="/opt/fog/.fogsettings"
+#If fogsettings exists, source it.
+if [[ -e "$fogsettings" ]]; then
+    source $fogsettings
+else
+    echo "The file $fogsettings was not found, this script needs that file. Is FOG installed?"
+    exit
+fi
 
 
 #----- Begin Program -----#
