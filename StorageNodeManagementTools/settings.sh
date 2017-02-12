@@ -8,7 +8,6 @@ storageNodes=( box1 box2 box3 box4 )
 
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
 hostsystem="hostname"
-snapshotName="clean"
 
 gitBranch="master"
 
