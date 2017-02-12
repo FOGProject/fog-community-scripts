@@ -7,8 +7,6 @@ clear
 echo
 echo "Rebooting all nodes."
 echo
-echo "A successfull reboot will show \"Connection closed\" or a similar message."
-echo
 sleep 1
 
 #Start the commands going in unison.
@@ -16,12 +14,14 @@ for i in "${storageNodes[@]}"
 do
 
     printf "Issuing reboot command to $i..."
-    ssh -o ConnectTimeout=$sshTimeout $i "reboot"
+    ssh -o ConnectTimeout=$sshTimeout $i "shutdown +1 -r > /dev/null 2>&1"
+    printf "Done\n"
 
 done
+howLongToWait=120
 echo
-echo "Sleeping for 5 seconds."
-sleep 5
+echo "Sleeping for $howLongToWait seconds."
+sleep $howLongToWait
 
 
 

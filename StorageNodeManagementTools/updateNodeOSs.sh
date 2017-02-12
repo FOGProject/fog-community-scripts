@@ -14,9 +14,15 @@ done
 #Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
-
-    printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
-
+    if [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v apt-get > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    else
+        echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, or APT-GET."
+    fi
 done
 
 #Initially set completion status to false in order to enter into the loop.
