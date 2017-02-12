@@ -16,12 +16,12 @@ for i in "${storageNodes[@]}"
 do
 
     printf "Issuing reboot command to $i..."
-    ssh -o ConnectTimeout=$sshTimeout $i "reboot"
+    ssh -o ConnectTimeout=$sshTimeout $i "shutdown +1 -r > /dev/null 2>&1"
 
 done
 echo
-echo "Sleeping for 5 seconds."
-sleep 5
+echo "Sleeping for 70 seconds."
+sleep 70
 
 
 
