@@ -18,9 +18,10 @@ do
     printf "Done\n"
 
 done
+howLongToWait=120
 echo
-echo "Sleeping for 70 seconds."
-sleep 70
+echo "Sleeping for $howLongToWait seconds."
+sleep $howLongToWait
 
 
 
