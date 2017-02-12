@@ -10,6 +10,8 @@ storageNodes=( box1 box2 box3 box4 )
 hostsystem="hostname"
 snapshotName="clean"
 
+gitBranch="master"
+
 sshTimeout=5 #seconds to wait for ssh connection to be established when running remote commands.
 
 
