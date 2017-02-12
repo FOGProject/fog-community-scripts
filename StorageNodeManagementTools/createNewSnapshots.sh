@@ -10,7 +10,7 @@ clear
 for i in "${storageNodes[@]}"
 do
 
-    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-delete $i clean > /dev/null 2>&1;virsh snapshot-create-as $i clean > /dev/null 2>&1;echo $i complete"
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-delete $i $snapshotName > /dev/null 2>&1;virsh snapshot-create-as $i $snapshotName > /dev/null 2>&1;echo $i complete"
 
 
 done
