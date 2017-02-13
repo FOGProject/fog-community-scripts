@@ -3,15 +3,16 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
 
-echo $gitDir/fogproject
+
 
 #If repository exists, git pull. Else clone it.
 if [[ -d $gitDir/fogproject ]]; then
     echo "Directory exists, updating fogproject"
-    git -C $gitDir/fogproject pull
+    mkdir -p $gitDir/fogproject
+    cd $gitDir/fogproject;git pull;cd $cwd
 else
     echo "Directory does not exist, cloning"
-    git -C $gitDir clone https://github.com/FOGProject/fogproject.git
+    git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject
 fi
 
 didMaster="no"
@@ -26,7 +27,7 @@ $cwd/./updateNodeOSs.sh updated
 
 
 #Get last x branches.
-for branch in $(git -C $gitDir/fogproject for-each-ref --count=2 --sort=-committerdate --format='%(refname:short)'); do 
+for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd); do 
 
     if [[ "$branch" == "master" ]]; then
         didMaster="yes"
