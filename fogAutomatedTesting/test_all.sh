@@ -3,10 +3,10 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
 #If repository exists, git pull. Else clone it.
-if [[ -d ${HOME}/git/fogproject ]]; then
-    git -C ${HOME}/git/fogproject pull
+if [[ -d $gitDir/fogproject ]]; then
+    git -C $gitDir/fogproject pull
 else
-    git -C ${HOME}/git/fogproject clone https://github.com/FOGProject/fogproject.git
+    git -C $gitDir/git/fogproject clone https://github.com/FOGProject/fogproject.git
 fi
 
 didMaster="no"
@@ -21,7 +21,7 @@ $cwd/./updateNodeOSs.sh updated
 
 
 #Get last x branches.
-for branch in $(git -C ${HOME}/git/fogproject for-each-ref --count=2 --sort=-committerdate --format='%(refname:short)'); do 
+for branch in $(git -C $gitDir/fogproject for-each-ref --count=2 --sort=-committerdate --format='%(refname:short)'); do 
 
     if [[ "$branch" == "master" ]]; then
         didMaster="yes"
@@ -33,7 +33,6 @@ for branch in $(git -C ${HOME}/git/fogproject for-each-ref --count=2 --sort=-com
     #Remove everything before first "/" in branch name.
     branch="${branch##*/}"
 
-
     if [[ "$branch" == "master" ]]; then
         didMaster="yes"
     fi
@@ -44,10 +43,7 @@ for branch in $(git -C ${HOME}/git/fogproject for-each-ref --count=2 --sort=-com
     $cwd/./restoreSnapshots.sh updated
     $cwd/./updateNodeFOGs.sh
 
-
-
 done
-
 
 if [[ "$didMaster" == "no" ]]; then
     branch="master"

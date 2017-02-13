@@ -10,7 +10,7 @@ storageNodes=( CentOS7 Debian8 Fedora25 Ubuntu16 Ubuntu14 )
 
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
 hostsystem="r410"
-
+gitDir="/root/git
 
 sshTimeout=5 #seconds to wait for ssh connection to be established when running remote commands.
 
