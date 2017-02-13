@@ -12,6 +12,6 @@ storageNodes=( Fedora25 )
 hostsystem="r410"
 gitDir="/root/git"
 
-sshTimeout=10 #seconds to wait for ssh connection to be established when running remote commands.
+sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
 
 
