@@ -44,7 +44,7 @@ while [[ "$complete" == "false" ]]; do
 done #Outter loop done.
 
 for i in "${storageNodes[@]}"
-    do
+do
 
     status=$(cat $cwd/.$i)
     if [[ "$status" == "-1" ]]; then
@@ -53,10 +53,11 @@ for i in "${storageNodes[@]}"
         echo "$i successfully updated OS to latest." | slacktee.sh -n
     else
         echo "$i failed to update OS to latest, log on the way!" | slacktee.sh -n
+        sleep 5
         ssh -o ConnectTimeout=$sshTimeout $i "echo /root/update_output.txt" | slacktee.sh -f
     fi
-
-    done
+    sleep 5
+done
 
 
 
