@@ -50,9 +50,9 @@ for i in "${storageNodes[@]}"
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i successfully updated OS." | slacktee.sh -n
+        echo "$i successfully updated OS using distribution-standard $i updates." | slacktee.sh -n
     else
-        echo "$i failed to update OS, log on the way!" | slacktee.sh -n
+        echo "$i failed to update OS using distribution-standard $i updates, log on the way!" | slacktee.sh -n
         ssh -o ConnectTimeout=$sshTimeout $i "echo /root/update_output.txt" | slacktee.sh -f
     fi
 
