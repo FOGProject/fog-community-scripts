@@ -30,6 +30,9 @@ echo "Creating temporary snapshots."
 $cwd/./createSnapshots.sh updated
 sleep 10
 
+
+first="yes"
+
 #Get last x branches.
 for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd); do 
 
@@ -43,8 +46,11 @@ for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committ
     if [[ "$branch" == "dev-branch" ]]; then
         didDev="yes"
     fi
-
-    $cwd/./restoreSnapshots.sh updated
+    if [[ "$first" == "no" ]]; then
+        $cwd/./restoreSnapshots.sh updated
+    else
+        first="no"
+    fi
     sleep 10
     $cwd/./updateNodeFOGs.sh
 done
