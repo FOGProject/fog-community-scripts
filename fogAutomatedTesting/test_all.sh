@@ -18,11 +18,15 @@ fi
 didMaster="no"
 didDev="no"
 
-
+echo "Restoring base snapshots"
 $cwd/./restoreSnapshots.sh clean
+echo "Rebooting VMs."
 $cwd/./rebootVMs.sh
+echo "Updating Node OSs"
 $cwd/./updateNodeOSs.sh
+echo "Rebooting VMs."
 $cwd/./rebootVMs.sh
+echo "Creating temporary snapshots."
 $cwd/./updateNodeOSs.sh updated
 
 
@@ -35,10 +39,11 @@ for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committ
     if [[ "$branch" == "dev-branch" ]]; then
         didDev="yes"
     fi
+    
 
     #Remove everything before first "/" in branch name.
     branch="${branch##*/}"
-
+    echo "Working on branch $branch"
     if [[ "$branch" == "master" ]]; then
         didMaster="yes"
     fi
@@ -53,15 +58,19 @@ done
 
 if [[ "$didMaster" == "no" ]]; then
     branch="master"
+    echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
     $cwd/./updateNodeFOGs.sh
 fi
 
 if [[ "$didDev" == "no" ]]; then
     branch="dev-branch"
+    echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
     $cwd/./updateNodeFOGs.sh
 fi
 
+echo "Deleting temprary snapshots."
 $cwd/./deleteSnapshots.sh updated
+echo "Shutting down VMs."
 $cwd/./shutdownVMs.sh
