@@ -12,6 +12,6 @@ storageNodes=( CentOS7 Debian8 Fedora25 Ubuntu16 Ubuntu14 )
 hostsystem="r410"
 gitDir="/root/git"
 
-sshTimeout=5 #seconds to wait for ssh connection to be established when running remote commands.
+sshTimeout=10 #seconds to wait for ssh connection to be established when running remote commands.
 
 
