@@ -28,18 +28,11 @@ echo "Rebooting VMs."
 $cwd/./rebootVMs.sh
 echo "Creating temporary snapshots."
 $cwd/./createSnapshots.sh updated
-
+sleep 10
 
 #Get last x branches.
 for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd); do 
 
-    if [[ "$branch" == "master" ]]; then
-        didMaster="yes"
-    fi
-    if [[ "$branch" == "dev-branch" ]]; then
-        didDev="yes"
-    fi
-    
 
     #Remove everything before first "/" in branch name.
     branch="${branch##*/}"
@@ -52,14 +45,15 @@ for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committ
     fi
 
     $cwd/./restoreSnapshots.sh updated
+    sleep 10
     $cwd/./updateNodeFOGs.sh
-
 done
 
 if [[ "$didMaster" == "no" ]]; then
     branch="master"
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
+    sleep 10
     $cwd/./updateNodeFOGs.sh
 fi
 
@@ -67,6 +61,7 @@ if [[ "$didDev" == "no" ]]; then
     branch="dev-branch"
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
+    sleep 10
     $cwd/./updateNodeFOGs.sh
 fi
 
