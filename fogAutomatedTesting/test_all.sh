@@ -27,7 +27,7 @@ $cwd/./updateNodeOSs.sh
 echo "Rebooting VMs."
 $cwd/./rebootVMs.sh
 echo "Creating temporary snapshots."
-$cwd/./updateNodeOSs.sh updated
+$cwd/./createSnapshots.sh updated
 
 
 #Get last x branches.
