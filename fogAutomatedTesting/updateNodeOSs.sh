@@ -21,7 +21,7 @@ do
     elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v apt-get > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
         printf $(ssh -o ConnectTimeout=$sshTimeout $i "apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /dev/null 2>&1;echo \$?") > $cwd/.$i &
     else
-        echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, or APT-GET."
+        echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, or APT-GET." >> $report
     fi
 done
 
@@ -30,30 +30,34 @@ complete="false"
 
 #Run this loop until completion isn't false. This is the outter loop.
 while [[ "$complete" == "false" ]]; do
-
-    clear
-    echo
-    echo
-    echo "Updating node operating systems."
-    echo
     complete="true"
     #Loop through each node to check status, this is the inner loop.
     for i in "${storageNodes[@]}"
     do
 
-    status=$(cat $cwd/.$i)
-    if [[ "$status" == "-1" ]]; then
-        echo "$i...waiting for return"
-        complete="false"
-    elif [[ "$status" == "0" ]]; then
-        echo "$i...Success!"
-    else
-        echo "$i...Failure!"
-    fi
+        status=$(cat $cwd/.$i)
+        if [[ "$status" == "-1" ]]; then
+            complete="false"
+        fi
 
     done #Inner loop done.
     sleep 1 #Update frequency.
 done #Outter loop done.
+
+for i in "${storageNodes[@]}"
+    do
+
+    status=$(cat $cwd/.$i)
+    if [[ "$status" == "-1" ]]; then
+        complete="false"
+    elif [[ "$status" == "0" ]]; then
+        echo "$i successfully updated OS." >> $report
+    else
+        echo "$i failed to update OS." >> $report
+    fi
+
+    done
+
 
 
 #Cleanup after all is done.
@@ -62,8 +66,3 @@ do
     rm -f $cwd/.$i
 done
 
-
-#Say it's done.
-echo
-echo "Complete"
-echo

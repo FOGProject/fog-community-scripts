@@ -37,7 +37,7 @@ done
 for i in "${storageNodes[@]}"
 do
 
-    printf $(ssh -o ConnectTimeout=$sshTimeout $i "mkdir /root/git > /dev/null 2>&1;git clone https://github.com/FOGProject/fogproject.git /root/git/fogproject > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    printf $(ssh -o ConnectTimeout=$sshTimeout $i "mkdir -p /root/git > /dev/null 2>&1;git clone https://github.com/FOGProject/fogproject.git /root/git/fogproject > /dev/null 2>&1;echo \$?") > $cwd/.$i &
 
 done
 
@@ -50,7 +50,7 @@ while [[ "$complete" == "false" ]]; do
     clear
     echo
     echo
-    echo "Updating node operating systems."
+    echo "Getting initial fogproject repository setup."
     echo
     complete="true"
     #Loop through each node to check status, this is the inner loop.

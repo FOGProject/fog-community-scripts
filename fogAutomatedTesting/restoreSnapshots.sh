@@ -9,10 +9,7 @@ clear
 #Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
-
-    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $i $snapshotName > /dev/null 2>&1;echo $i complete"
-
-
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $i $snapshotName > /dev/null 2>&1"
 done
 
 
