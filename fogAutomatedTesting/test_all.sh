@@ -28,7 +28,7 @@ echo "Rebooting VMs."
 $cwd/./rebootVMs.sh
 echo "Creating temporary snapshots."
 $cwd/./createSnapshots.sh updated
-sleep 10
+sleep 60
 
 
 first="yes"
@@ -51,7 +51,7 @@ for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committ
     else
         first="no"
     fi
-    sleep 10
+    sleep 60
     $cwd/./updateNodeFOGs.sh $branch
 done
 
@@ -59,7 +59,7 @@ if [[ "$didMaster" == "no" ]]; then
     branch="master"
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
-    sleep 10
+    sleep 60
     $cwd/./updateNodeFOGs.sh $branch
 fi
 
@@ -67,7 +67,7 @@ if [[ "$didDev" == "no" ]]; then
     branch="dev-branch"
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
-    sleep 10
+    sleep 60
     $cwd/./updateNodeFOGs.sh $branch
 fi
 

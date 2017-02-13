@@ -53,10 +53,10 @@ do
         echo "$i successfully updated OS to latest." | slacktee.sh -n
     else
         echo "$i failed to update OS to latest, log on the way!" | slacktee.sh -n
-        sleep 5
+        sleep 15
         ssh -o ConnectTimeout=$sshTimeout $i "echo /root/update_output.txt" | slacktee.sh -f
     fi
-    sleep 5
+    sleep 15
 done
 
 
