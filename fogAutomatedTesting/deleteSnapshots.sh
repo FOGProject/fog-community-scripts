@@ -4,13 +4,14 @@ source "$cwd/settings.sh"
 
 snapshotName=$1
 
-clear
-
 
 #Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
-    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $i $snapshotName > /dev/null 2>&1"
+
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-delete $i $snapshotName > /dev/null 2>&1"
+
+
 done
 
 
