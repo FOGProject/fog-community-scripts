@@ -52,7 +52,7 @@ for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committ
         first="no"
     fi
     sleep 10
-    $cwd/./updateNodeFOGs.sh
+    $cwd/./updateNodeFOGs.sh $branch
 done
 
 if [[ "$didMaster" == "no" ]]; then
@@ -60,7 +60,7 @@ if [[ "$didMaster" == "no" ]]; then
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
     sleep 10
-    $cwd/./updateNodeFOGs.sh
+    $cwd/./updateNodeFOGs.sh $branch
 fi
 
 if [[ "$didDev" == "no" ]]; then
@@ -68,7 +68,7 @@ if [[ "$didDev" == "no" ]]; then
     echo "Working on branch $branch"
     $cwd/./restoreSnapshots.sh updated
     sleep 10
-    $cwd/./updateNodeFOGs.sh
+    $cwd/./updateNodeFOGs.sh $branch
 fi
 
 echo "Deleting temprary snapshots."

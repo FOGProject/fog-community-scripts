@@ -1,7 +1,7 @@
 #!/bin/bash
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
-
+branch=$1
 
 
 #Create hidden file for each node - for status reporting.
@@ -51,8 +51,8 @@ for i in "${storageNodes[@]}"
     else
         echo "$i failed to install commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch using latest standard $i updates. Log on the way!" | slacktee.sh -n
 
-       logname=$(ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_log/* | tail -1")
-       ssh -o ConnectTimeout=$sshTimeout $i "echo /root/git/fogproject/bin/error_log/$logname" | slacktee.sh -f 
+       logname=$(ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
+       ssh -o ConnectTimeout=$sshTimeout $i "echo $logname" | slacktee.sh -f 
     fi
 done
 
