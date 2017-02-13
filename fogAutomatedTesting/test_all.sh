@@ -2,11 +2,16 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
+
+echo $gitDir/fogproject
+
 #If repository exists, git pull. Else clone it.
 if [[ -d $gitDir/fogproject ]]; then
+    echo "Directory exists, updating fogproject"
     git -C $gitDir/fogproject pull
 else
-    git -C $gitDir/git/fogproject clone https://github.com/FOGProject/fogproject.git
+    echo "Directory does not exist, cloning"
+    git -C $gitDir clone https://github.com/FOGProject/fogproject.git
 fi
 
 didMaster="no"

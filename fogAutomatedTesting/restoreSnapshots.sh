@@ -4,7 +4,6 @@ source "$cwd/settings.sh"
 
 snapshotName=$1
 
-clear
 
 
 #Start the commands going in unison.

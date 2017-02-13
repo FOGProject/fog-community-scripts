@@ -24,7 +24,6 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
 
-clear
 
 #Create hidden file for each node - for status reporting.
 for i in "${storageNodes[@]}"
