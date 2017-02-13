@@ -8,7 +8,7 @@ for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh reboot $i > /dev/null 2>&1"
 done
-howLongToWait=30
+howLongToWait=60
 sleep $howLongToWait
 
 
@@ -27,7 +27,7 @@ while [[ "$complete" == "false" ]]; do
         status="offline"
         status=$(ssh -o ConnectTimeout=$sshTimeout $i "echo up" 2> /dev/null)
 
-        if [[ ! "$status" == "up" ]]; then
+        if [[ "$status" != "up" ]]; then
             complete="false"
         fi
     done #Inner loop done.
