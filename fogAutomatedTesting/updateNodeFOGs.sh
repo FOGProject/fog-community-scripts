@@ -48,9 +48,9 @@ for i in "${storageNodes[@]}"
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i successfully installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch." | slacktee.sh -n
+        echo "$i successfully installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch using latest standard $i updates." | slacktee.sh -n
     else
-        echo "$i failed to install commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch. Log on the way!" | slacktee.sh -n
+        echo "$i failed to install commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch using latest standard $i updates. Log on the way!" | slacktee.sh -n
 
        logname=$(ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_log/* | tail -1")
        ssh -o ConnectTimeout=$sshTimeout $i "echo /root/git/fogproject/bin/error_log/$logname" | slacktee.sh -f 
