@@ -6,7 +6,7 @@ source "$cwd/settings.sh"
 #Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
-    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $i > /dev/null 2>&1"
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh reboot $i > /dev/null 2>&1"
 done
 howLongToWait=20
 sleep $howLongToWait

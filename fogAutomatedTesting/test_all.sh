@@ -64,7 +64,4 @@ if [[ "$didDev" == "no" ]]; then
 fi
 
 $cwd/./deleteSnapshots.sh updated
-
-
-
-
+$cwd/./shutdownVMs.sh
