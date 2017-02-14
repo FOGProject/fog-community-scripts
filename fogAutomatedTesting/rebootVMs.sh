@@ -8,7 +8,7 @@ for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh reboot $i > /dev/null 2>&1"
 done
-howLongToWait=60
+howLongToWait=90
 sleep $howLongToWait
 
 
