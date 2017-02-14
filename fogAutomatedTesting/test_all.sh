@@ -1,8 +1,7 @@
 #!/bin/bash
-echo "" > $report
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
-
+echo "" > $report
 
 
 
