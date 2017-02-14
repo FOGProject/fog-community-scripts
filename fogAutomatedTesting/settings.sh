@@ -17,7 +17,6 @@ sshTimeout=15 #seconds to wait for ssh connection to be established when running
 osTimeout="20m"
 fogTimeout="45m"
 sshTime="${sshTimeout}s"
-echo $sshTime
 
 
 report="/root/report.txt"
