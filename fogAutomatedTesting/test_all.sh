@@ -57,6 +57,14 @@ for branch in $branches; do
     $cwd/./updateNodeFOGs.sh $branch
 done
 
+if [[ "$didDev" == "no" ]]; then
+    branch="dev-branch"
+    echo "Working on branch $branch"
+    $cwd/./restoreSnapshots.sh updated
+    sleep 60
+    $cwd/./updateNodeFOGs.sh $branch
+fi
+
 if [[ "$didMaster" == "no" ]]; then
     branch="master"
     echo "Working on branch $branch"
@@ -65,13 +73,6 @@ if [[ "$didMaster" == "no" ]]; then
     $cwd/./updateNodeFOGs.sh $branch
 fi
 
-if [[ "$didDev" == "no" ]]; then
-    branch="dev-branch"
-    echo "Working on branch $branch"
-    $cwd/./restoreSnapshots.sh updated
-    sleep 60
-    $cwd/./updateNodeFOGs.sh $branch
-fi
 
 
 mkdir -p /var/www/html/fog_distro_check/reports
