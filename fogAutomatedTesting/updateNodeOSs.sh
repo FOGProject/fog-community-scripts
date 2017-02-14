@@ -10,7 +10,7 @@ do
     echo "-1" > $cwd/.$i
 done
 
-#Start the commands going in unison.
+#Loop through each box.
 for i in "${storageNodes[@]}"
 do
     echo "Updating OS for $i"
@@ -25,29 +25,8 @@ do
     else
         echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." >> $report
     fi
-done
 
-#Initially set completion status to false in order to enter into the loop.
-complete="false"
-
-#Run this loop until completion isn't false. This is the outter loop.
-while [[ "$complete" == "false" ]]; do
-    complete="true"
-    #Loop through each node to check status, this is the inner loop.
-    for i in "${storageNodes[@]}"
-    do
-
-        status=$(cat $cwd/.$i)
-        if [[ "$status" == "-1" ]]; then
-            complete="false"
-        fi
-
-    done #Inner loop done.
-    sleep 1 #Update frequency.
-done #Outter loop done.
-
-for i in "${storageNodes[@]}"
-do
+    sleep 10
 
     status=$(cat $cwd/.$i)
     if [[ "$status" == "-1" ]]; then
@@ -58,14 +37,13 @@ do
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "/var/www/html/fog_distro_check/$i/os"
         chown apache:apache /var/www/html/fog_distro_check/$i/os
-        sleep 15
         timeout ${ConnectTimeout}s scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt /var/www/html/fog_distro_check/$i/os/${rightNow}.log
         chown apache:apache /var/www/html/fog_distro_check/$i/os/${rightNow}.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
         echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
     fi
-    sleep 15
 done
+
 
 
 
