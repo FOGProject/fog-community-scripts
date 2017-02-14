@@ -14,14 +14,14 @@ done
 for i in "${storageNodes[@]}"
 do
     echo "Updating OS for $i"
-    if [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
-    elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
-    elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "DEBIAN_FRONTEND=noninteractive;command -v apt-get > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "DEBIAN_FRONTEND=noninteractive;apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /root/update_output.txt;echo \$?") > $cwd/.$i
-    elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v pacman > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "pacman -Syu > /root/update_output.txt;echo \$?") > $cwd/.$i
+    if [[ $(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
+    elif [[ $(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
+    elif [[ $(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "DEBIAN_FRONTEND=noninteractive;command -v apt-get > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "DEBIAN_FRONTEND=noninteractive;apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /root/update_output.txt;echo \$?") > $cwd/.$i
+    elif [[ $(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "command -v pacman > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
+        printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "pacman -Syu > /root/update_output.txt;echo \$?") > $cwd/.$i
     else
         echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." >> $report
     fi
@@ -59,7 +59,7 @@ do
         mkdir -p "/var/www/html/$i/os"
         chown apache:apache /var/www/html/$i/os
         sleep 15
-        scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt /var/www/html/$i/os/${rightNow}.log
+        timeout ${ConnectTimeout}s scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt /var/www/html/$i/os/${rightNow}.log
         chown apache:apache /var/www/html/$i/os/${rightNow}.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
         echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/$i/os/$rightNow.log" >> $report
