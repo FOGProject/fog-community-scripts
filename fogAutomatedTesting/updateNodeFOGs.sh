@@ -63,7 +63,8 @@ for i in "${storageNodes[@]}"
             rm -f /root/$logname
         fi
 
-        scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$logname
+        scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$(basename $logname)
+        logname=$(basename $logname)
         commit=$(ssh -t -t -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
 
         echo "Date=$rightNow" > /var/www/html/$i/fog/${rightNow}.log
