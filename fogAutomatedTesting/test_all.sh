@@ -74,12 +74,14 @@ if [[ "$didDev" == "no" ]]; then
 fi
 
 
-mkdir -p /var/www/html/reports
-chown apache:apache /var/www/html/reports
+mkdir -p /var/www/html/fog_distro_check/reports
+chown apache:apache /var/www/html/fog_distro_check/reports
 rightNow=$(date +%Y-%m-%d_%H-%M)
-mv $report /var/www/html/reports/${rightNow}.log
-chown apache:apache /var/www/html/reports/${rightNow}.log
-cat /var/www/html/reports/${rightNow}.log | slacktee.sh -p
+mv $report /var/www/html/fog_distro_check/reports/${rightNow}.log
+chown apache:apache /var/www/html/fog_distro_check/reports/${rightNow}.log
+publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+echo "New report available: http://$publicIP:20080/fog_distro_check/reports/${rightNow}.log" | slacktee.sh -p
+cat /var/www/html/fog_distro_check/reports/${rightNow}.log | slacktee.sh -p
 
 
 echo "Deleting temprary snapshots."
