@@ -14,4 +14,4 @@ gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
 
-
+report="/root/report.txt"

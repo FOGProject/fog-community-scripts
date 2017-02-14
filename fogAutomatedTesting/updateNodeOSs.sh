@@ -14,13 +14,13 @@ done
 for i in "${storageNodes[@]}"
 do
     if [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i &
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
     elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /root/update_output.txt;echo \$?") > $cwd/.$i &
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
     elif [[ $(ssh -o ConnectTimeout=$sshTimeout $i "command -v apt-get > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
-        printf $(ssh -o ConnectTimeout=$sshTimeout $i "apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /root/update_output.txt;echo \$?") > $cwd/.$i &
+        printf $(ssh -o ConnectTimeout=$sshTimeout $i "apt-get -y update > /dev/null 2>&1;apt-get -y dist-upgrade > /root/update_output.txt;echo \$?") > $cwd/.$i
     else
-        echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, or APT-GET." | slacktee.sh -n
+        echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, or APT-GET." >> $report
     fi
 done
 
@@ -50,11 +50,16 @@ do
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i successfully updated OS to latest." | slacktee.sh -n
+        echo "$i successfully updated OS to latest." >> $report
     else
-        echo "$i failed to update OS to latest, log on the way!" | slacktee.sh -n
+        rightNow=$(date +%Y-%m-%d_%H-%M)
+        mkdir -p "/var/www/html/$i/os"
+        chown apache:apache /var/www/html/$i/os
         sleep 15
-        ssh -o ConnectTimeout=$sshTimeout $i "echo /root/update_output.txt" | slacktee.sh -f
+        scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt /var/www/html/$i/os/${rightNow}.log
+        chown apache:apache /var/www/html/$i/os/${rightNow}.log
+        publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+        echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/$i/os/$rightNow.log" >> $report
     fi
     sleep 15
 done

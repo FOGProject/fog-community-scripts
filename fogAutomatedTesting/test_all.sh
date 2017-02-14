@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "" > $report
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
@@ -33,8 +34,10 @@ sleep 60
 
 first="yes"
 
+branches=$(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd)
+
 #Get last x branches.
-for branch in $(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd); do 
+for branch in $branches; do 
 
 
     #Remove everything before first "/" in branch name.
@@ -70,6 +73,15 @@ if [[ "$didDev" == "no" ]]; then
     sleep 60
     $cwd/./updateNodeFOGs.sh $branch
 fi
+
+
+mkdir -p /var/www/html/reports
+chown apache:apache /var/www/html/reports
+rightNow=$(date +%Y-%m-%d_%H-%M)
+mv $report /var/www/html/reports/${rightNow}.log
+chown apache:apache /var/www/html/reports/${rightNow}.log
+cat /var/www/html/reports/${rightNow}.log | slacktee.sh -p
+
 
 echo "Deleting temprary snapshots."
 $cwd/./deleteSnapshots.sh updated

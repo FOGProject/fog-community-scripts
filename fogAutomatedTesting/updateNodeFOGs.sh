@@ -14,7 +14,7 @@ done
 for i in "${storageNodes[@]}"
 do
 
-    printf $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $branch > /dev/null 2>&1;git pull > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    printf $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $branch > /dev/null 2>&1;git pull > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i
 
 done
 
@@ -39,6 +39,8 @@ while [[ "$complete" == "false" ]]; do
 done #Outter loop done.
 
 
+sleep 15
+
 
 for i in "${storageNodes[@]}"
     do
@@ -47,13 +49,35 @@ for i in "${storageNodes[@]}"
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i SUCCESSFULLY installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch" | slacktee.sh -n
+        echo "$i SUCCESSFULLY installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch" >> $report
     else
-        echo "$i \`FAILED\` to install commit $(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD") from branch $branch Log on the way!" | slacktee.sh -n
-        sleep 15
 
-       logname=$(ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
-       ssh -o ConnectTimeout=$sshTimeout $i "cat $logname" | slacktee.sh -f 
+        
+        logname=$(ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
+       
+        rightNow=$(date +%Y-%m-%d_%H-%M)
+        mkdir -p "/var/www/html/$i/fog"
+        chown apache:apache /var/www/html/$i/fog
+
+        if [[ -f /root/$logname ]]; then
+            rm -f /root/$logname
+        fi
+
+        scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$logname
+        commit=$(ssh -o ConnectTimeout=$sshTimeout $i "git -C /root/git/fogproject rev-parse HEAD")
+
+        echo "Date=$rightNow" > /var/www/html/$i/fog/${rightNow}.log
+        echo "Branch=$branch" >> /var/www/html/$i/fog/${rightNow}.log
+        echo "Commit=$commit" >> /var/www/html/$i/fog/${rightNow}.log
+        echo "OS=$i"
+        echo "Log_Name=$logname" >> /var/www/html/$i/fog/${rightNow}.log
+        echo "#####Begin Log#####" >> /var/www/html/$i/fog/${rightNow}.log
+        echo "" >> /var/www/html/$i/fog/${rightNow}.log
+        cat /root/$logname >> /var/www/html/$i/fog/${rightNow}.log
+        rm -f /root/$logname
+        chown apache:apache /var/www/html/$i/fog/${rightNow}.log
+        publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+        echo "$i failed to install commit $commit from branch $branch, logs here: http://$publicIP:20080/$i/fog/$rightNow.log" >> $report
     fi
     sleep 15
 done
