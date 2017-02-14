@@ -8,7 +8,7 @@ snapshotName=$1
 #Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
-
+    echo "Deleting snapshot $snapshotName from $i"
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-delete $i $snapshotName > /dev/null 2>&1"
 
 
