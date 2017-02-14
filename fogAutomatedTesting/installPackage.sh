@@ -2,6 +2,12 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
+#Packages are space seperated if there are multiple ones.
+#You must change the below line to what you need.
+packages="git svn"
+
+#example list of packages:
+#packages="lsof iftop git svn firewalld"
 
 clear
 
@@ -15,7 +21,7 @@ done
 for i in "${storageNodes[@]}"
 do
 
-    printf $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $fogBranch > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
+    printf $(ssh -o ConnectTimeout=$sshTimeout $i "yum install $packages -y > /dev/null 2>&1;echo \$?") > $cwd/.$i &
 
 done
 
@@ -28,7 +34,7 @@ while [[ "$complete" == "false" ]]; do
     clear
     echo
     echo
-    echo "Updating FOG on nodes."
+    echo "Installing packages: $packages"
     echo
     complete="true"
     #Loop through each node to check status, this is the inner loop.
@@ -48,6 +54,7 @@ while [[ "$complete" == "false" ]]; do
     done #Inner loop done.
     sleep 1 #Update frequency.
 done #Outter loop done.
+
 
 
 #Cleanup after all is done.
