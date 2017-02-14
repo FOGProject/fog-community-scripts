@@ -49,7 +49,7 @@ for i in "${storageNodes[@]}"
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i SUCCESSFULLY installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") from branch $branch" >> $report
+        echo "$i successfully installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") from branch $branch" >> $report
     else
 
         
