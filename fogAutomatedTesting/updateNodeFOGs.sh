@@ -24,16 +24,16 @@ do
     elif [[ "$status" == "0" ]]; then
         echo "$i successfully installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") from branch $branch" >> $report
     else
-        logname=$(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
+        logname=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "/var/www/html/fog_distro_check/$i/fog"
         chown apache:apache /var/www/html/fog_distro_check/$i/fog
-        if [[ -f /root/$logname ]]; then
-            rm -f /root/$logname
+        if [[ -f /root/$(basename $logname) ]]; then
+            rm -f /root/$(basename $logname)
         fi
-        timeout ${ConnectTimeout}s scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$(basename $logname)
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$(basename $logname)
         logname=$(basename $logname)
-        commit=$(timeout ${ConnectTimeout}s ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
+        commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
         echo "Date=$rightNow" > /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
         echo "Branch=$branch" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
         echo "Commit=$commit" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
