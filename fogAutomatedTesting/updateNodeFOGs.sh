@@ -70,7 +70,7 @@ for i in "${storageNodes[@]}"
         echo "Date=$rightNow" > /var/www/html/$i/fog/${rightNow}.log
         echo "Branch=$branch" >> /var/www/html/$i/fog/${rightNow}.log
         echo "Commit=$commit" >> /var/www/html/$i/fog/${rightNow}.log
-        echo "OS=$i"
+        echo "OS=$i" >> /var/www/html/$i/fog/${rightNow}.log
         echo "Log_Name=$logname" >> /var/www/html/$i/fog/${rightNow}.log
         echo "#####Begin Log#####" >> /var/www/html/$i/fog/${rightNow}.log
         echo "" >> /var/www/html/$i/fog/${rightNow}.log
