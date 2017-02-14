@@ -34,7 +34,7 @@ sleep 60
 
 first="yes"
 
-branches=$(cd $gitDir/fogproject;git for-each-ref --count=3 --sort=-committerdate --format='%(refname:short)';cd $cwd)
+branches=$(cd $gitDir/fogproject;git for-each-ref --count=1 --sort=-committerdate --format='%(refname:short)';cd $cwd)
 
 #Get last x branches.
 for branch in $branches; do 
