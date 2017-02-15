@@ -15,8 +15,6 @@ else
     git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject
 fi
 
-didMaster="no"
-didDev="no"
 
 echo "Restoring base snapshots"
 $cwd/./restoreSnapshots.sh clean
