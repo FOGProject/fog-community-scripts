@@ -22,7 +22,7 @@ do
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i success commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") branch $branch" >> $report
+        echo "$i success on branch $branch" >> $report
     else
         logname=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
@@ -52,9 +52,9 @@ do
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
-        echo "$i failed commit $commit branch $branch" >> $report
-        echo "fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
-        echo "apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
+        echo "$i failed on branch $branch" >> $report
+        echo "Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
+        echo "Apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
     fi
 done
 
