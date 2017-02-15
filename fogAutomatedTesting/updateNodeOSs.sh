@@ -13,7 +13,7 @@ done
 #Loop through each box.
 for i in "${storageNodes[@]}"
 do
-    echo "Updating OS for $i"
+    echo "Updating OS for $i" >> $output
     if [[ $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
         printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
     elif [[ $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then

@@ -20,3 +20,4 @@ sshTime="${sshTimeout}s"
 
 
 report="/root/report.txt"
+output="/root/output.log"

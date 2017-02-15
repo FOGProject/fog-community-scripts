@@ -1,30 +1,39 @@
 #!/bin/bash
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
-echo " " > $report
+
+#If an old report exists here, delete it.
+if [[ -f $report ]]; then
+    rm -f $report
+fi
+
+#If old output file exists, delete it.
+if [[ -f $output ]]; then
+    rm -f $output
+fi
 
 
 
 #If repository exists, git pull. Else clone it.
 if [[ -d $gitDir/fogproject ]]; then
-    echo "Directory exists, updating fogproject"
+    echo "Directory exists, updating fogproject" >> $output
     mkdir -p $gitDir/fogproject
-    cd $gitDir/fogproject;git pull;cd $cwd
+    cd $gitDir/fogproject;git pull >> $output;cd $cwd
 else
-    echo "Directory does not exist, cloning"
-    git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject
+    echo "Directory does not exist, cloning" >> $output
+    git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject >> $output
 fi
 
 
-echo "Restoring base snapshots"
+echo "Restoring base snapshots" >> $output
 $cwd/./restoreSnapshots.sh clean
-echo "Rebooting VMs."
+echo "Rebooting VMs." >> $output
 $cwd/./rebootVMs.sh
-echo "Updating Node OSs"
+echo "Updating Node OSs" >> $output
 $cwd/./updateNodeOSs.sh
-echo "Rebooting VMs."
+echo "Rebooting VMs." >> $output
 $cwd/./rebootVMs.sh
-echo "Creating temporary snapshots."
+echo "Creating temporary snapshots." >> $output
 $cwd/./createSnapshots.sh updated
 sleep 60
 
@@ -56,7 +65,7 @@ for branch in $branches; do
             first="no"
         fi
 
-        echo "Working on branch $branch"
+        echo "Working on branch $branch" >> $output
         $cwd/./updateNodeFOGs.sh $branch
 
     #If other branches were updated yesterday, today, or tomorrow, check them too.
@@ -69,7 +78,7 @@ for branch in $branches; do
             first="no"
         fi
 
-        echo "Working on branch $branch"
+        echo "Working on branch $branch" >> $output
         $cwd/./updateNodeFOGs.sh $branch
   
     #If nothing matches, just continue through the loop.
@@ -92,7 +101,7 @@ echo "New report available: http://$publicIP:20080/fog_distro_check/reports/${ri
 cat /var/www/html/fog_distro_check/reports/${rightNow}.log | slacktee.sh -p
 
 
-echo "Deleting temprary snapshots."
+echo "Deleting temprary snapshots." >> $output
 $cwd/./deleteSnapshots.sh updated
-echo "Shutting down VMs."
+echo "Shutting down VMs." >> $output
 $cwd/./shutdownVMs.sh
