@@ -22,7 +22,7 @@ do
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i successfully installed commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") from branch $branch" >> $report
+        echo "$i success commit $(ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD") branch $branch" >> $report
     else
         logname=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
@@ -31,7 +31,13 @@ do
         if [[ -f /root/$(basename $logname) ]]; then
             rm -f /root/$(basename $logname)
         fi
+        if [[ -f /root/apache.log ]]; then
+            rm -f /root/apache.log
+        fi
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$(basename $logname)
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log /root/apache.log
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log /root/apache.log
+
         logname=$(basename $logname)
         commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
         echo "Date=$rightNow" > /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
@@ -41,11 +47,14 @@ do
         echo "Log_Name=$logname" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
         echo "#####Begin Log#####" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
         echo "" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        cat /root/$logname >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        rm -f /root/$logname
-        chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
+        mv /root/$logname /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        mv /root/apache.log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
+        chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
-        echo "$i failed to install commit $commit from branch $branch, logs here: http://$publicIP:20080/fog_distro_check/$i/fog/$rightNow.log" >> $report
+        echo "$i failed commit $commit branch $branch" >> $report
+        echo "fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
+        echo "apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
     fi
 done
 
