@@ -31,52 +31,61 @@ $cwd/./createSnapshots.sh updated
 sleep 60
 
 
+
+Yesterday=$(date -d '-1 day' +%Y-%m-%d)
+Today=$(date +%Y-%m-%d)
+Tomorrow=$(date -d '+1 day' +%Y-%m-%d)
+branches=$(cd $gitDir/fogproject;git branch -r | grep -v HEAD;cd $cwd)
 first="yes"
 
-branches=$(cd $gitDir/fogproject;git for-each-ref --count=1 --sort=-committerdate --format='%(refname:short)';cd $cwd)
+
 
 #Get last x branches.
-for branch in $branches; do 
+for branch in $branches; do    
 
-
-    #Remove everything before first "/" in branch name.
+    #This line is for later checking if the branch was last updated yesterday, today, or tomorrow.
+    thisBranch=$(echo -e $(git show --format="%ci" $branch | head -n 1) \\t$branch)
+    #Remove everything before first "/" and including the "/" in branch name.
     branch="${branch##*/}"
-    echo "Working on branch $branch"
-    if [[ "$branch" == "master" ]]; then
-        didMaster="yes"
-    fi
-    if [[ "$branch" == "dev-branch" ]]; then
-        didDev="yes"
-    fi
-    if [[ "$first" == "no" ]]; then
-        $cwd/./restoreSnapshots.sh updated
+
+    #We want to do the latest working branch every single day.
+    if [[ "$branch" == *"working"* ]]; then
+        #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
+        if [[ "$first" == "no" ]]; then
+            $cwd/./restoreSnapshots.sh updated
+            sleep 60
+        else
+            first="no"
+        fi
+
+        echo "Working on branch $branch"
+        $cwd/./updateNodeFOGs.sh $branch
+
+    #If other branches were updated yesterday, today, or tomorrow, check them too.
+    elif [[ ( *"$thisBranch"* =~ "$Yesterday" || *"$thisBranch"* =~ "$Today" || *"$thisBranch"* =~ "$Tomorrow" ) && ( "$branch" == "dev-branch" || "branch" == "master" ) ]]; then
+        #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
+        if [[ "$first" == "no" ]]; then
+            $cwd/./restoreSnapshots.sh updated
+            sleep 60
+        else
+            first="no"
+        fi
+
+        echo "Working on branch $branch"
+        $cwd/./updateNodeFOGs.sh $branch
+  
+    #If nothing matches, just continue through the loop.
     else
-        first="no"
+        continue
     fi
-    sleep 60
-    $cwd/./updateNodeFOGs.sh $branch
+
 done
 
-if [[ "$didDev" == "no" ]]; then
-    branch="dev-branch"
-    echo "Working on branch $branch"
-    $cwd/./restoreSnapshots.sh updated
-    sleep 60
-    $cwd/./updateNodeFOGs.sh $branch
-fi
-
-if [[ "$didMaster" == "no" ]]; then
-    branch="master"
-    echo "Working on branch $branch"
-    $cwd/./restoreSnapshots.sh updated
-    sleep 60
-    $cwd/./updateNodeFOGs.sh $branch
-fi
 
 
 
 mkdir -p /var/www/html/fog_distro_check/reports
-chown apache:apache /var/www/html/fog_distro_check/reports
+chown -R apache:apache /var/www/html/fog_distro_check
 rightNow=$(date +%Y-%m-%d_%H-%M)
 mv $report /var/www/html/fog_distro_check/reports/${rightNow}.log
 chown apache:apache /var/www/html/fog_distro_check/reports/${rightNow}.log
