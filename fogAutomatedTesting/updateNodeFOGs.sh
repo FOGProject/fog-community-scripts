@@ -14,7 +14,7 @@ done
 for i in "${storageNodes[@]}"
 do
     echo "Installing branch $branch onto $i" >> $output
-    printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $branch > /dev/null 2>&1;git pull > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i
+    printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "PATH="${PATH}:/usr/bin/core_perl";cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $branch > /dev/null 2>&1;git pull > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i
 
     sleep 10
 
@@ -40,14 +40,15 @@ do
 
         logname=$(basename $logname)
         commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
-        echo "Date=$rightNow" > /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "Branch=$branch" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "Commit=$commit" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "OS=$i" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "Log_Name=$logname" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "#####Begin Log#####" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        echo "" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}.log
-        mv /root/$logname /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "Date=$rightNow" > /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "Branch=$branch" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "Commit=$commit" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "OS=$i" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "Log_Name=$logname" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "#####Begin Log#####" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        cat /root/$logname >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        rm -f /root/$logname
         mv /root/apache.log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
