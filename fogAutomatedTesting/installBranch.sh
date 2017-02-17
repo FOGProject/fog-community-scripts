@@ -37,7 +37,7 @@ stat=$?
 cd bin >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && exit 5
-./installfog -y >/dev/null 2>&1
+./installfog.sh -y >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && exit 6
 error 0
