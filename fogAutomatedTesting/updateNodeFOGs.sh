@@ -14,15 +14,15 @@ done
 for i in "${storageNodes[@]}"
 do
     echo "Installing branch $branch onto $i" >> $output
-    printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "PATH=\"\${PATH}:/usr/bin/core_perl\";cd /root/git/fogproject > /dev/null 2>&1;git reset --hard > /dev/null 2>&1;git pull > /dev/null 2>&1;git checkout $branch > /dev/null 2>&1;git pull > /dev/null 2>&1;cd bin > /dev/null 2>&1;./installfog.sh -y > /dev/null 2>&1;echo \$?") > $cwd/.$i
-
-    sleep 10
-
+    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
+    printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "/root/./installBranch.sh $branch;echo \$?") > $cwd/.$i
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
     status=$(cat $cwd/.$i)
-    if [[ "$status" == "-1" ]]; then
-        complete="false"
-    elif [[ "$status" == "0" ]]; then
+
+    if [[ "$status" == "0" ]]; then
         echo "$i success on branch $branch" >> $report
+    elif [[ "$status" -eq "-1" ]]; then
+        echo "$i failure on branch $branch did not return within $fogTimeout" >> $report
     else
         logname=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
@@ -53,7 +53,15 @@ do
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
-        echo "$i failed on branch $branch" >> $report
+
+        case $status in
+            2) echo "$i on branch $branch failed to reset git" >> $report ;;
+            3) echo "$i on branch $branch failed to pull git" >> $report ;;
+            4) echo "$i on branch $branch failed to checkout git" >> $report ;;
+            5) echo "$i on branch $branch failed to change directory" >> $report ;;
+            6) echo "$i on branch $branch failed installation" >> $report ;;
+        esac
+
         echo "Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
         echo "Apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
     fi
