@@ -14,6 +14,12 @@ done
 for i in "${storageNodes[@]}"
 do
     echo "Installing branch $branch onto $i" >> $output
+
+    #Kick the tires. It helps, makes ssh load into ram, makes the switch learn where the traffic needs to go.
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "wakeup")
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "get ready")
+
+    #Start the installation process.
     timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
     printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "/root/./installBranch.sh $branch;echo \$?") > $cwd/.$i
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
