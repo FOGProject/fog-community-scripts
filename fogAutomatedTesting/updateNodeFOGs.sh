@@ -29,8 +29,6 @@ do
 
     if [[ "$status" == "0" ]]; then
         echo "$i success on branch $branch" >> $report
-    elif [[ "$status" -eq "-1" ]]; then
-        echo "$i failure on branch $branch did not return within $fogTimeout" >> $report
     else
         foglog=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
@@ -42,9 +40,14 @@ do
         if [[ -f /root/apache.log ]]; then
             rm -f /root/apache.log
         fi
+
+        #Get fog log.
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:$foglog /root/$(basename $foglog) > /dev/null 2>&1
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log /root/apache.log > /dev/null 2>&1
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log /root/apache.log > /dev/null 2>&1
+        #Get apache log. It can only be in one of two spots.
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
+        #Set owernship.
+        chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
 
         foglog=$(basename $foglog)
         commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
@@ -57,21 +60,38 @@ do
         echo "" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         cat /root/$foglog >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         rm -f /root/$foglog
-        mv /root/apache.log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
-        chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
+
+
+
+        if [[ -z $status ]]; then
+            echo "$i on branch $branch returned no exit code" >> $report
+        else
+            case $status in
+                -1) echo "$i failure on branch $branch did not return within time limit $fogTimeout" >> $report
+                2) echo "$i on branch $branch failed to reset git" >> $report ;;
+                3) echo "$i on branch $branch failed to pull git" >> $report ;;
+                4) echo "$i on branch $branch failed to checkout git" >> $report ;;
+                5) echo "$i on branch $branch failed to change directory" >> $report ;;
+                6) echo "$i on branch $branch failed installation" >> $report ;;
+                *) echo "$i on branch $branch failed with exit code \"$status\"" >> $report ;;
+            esac
+        fi
+
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 
-        case $status in
-            2) echo "$i on branch $branch failed to reset git" >> $report ;;
-            3) echo "$i on branch $branch failed to pull git" >> $report ;;
-            4) echo "$i on branch $branch failed to checkout git" >> $report ;;
-            5) echo "$i on branch $branch failed to change directory" >> $report ;;
-            6) echo "$i on branch $branch failed installation" >> $report ;;
-        esac
+        if [[ -f /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log ]]; then
+            echo "Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
+        else
+            echo "No fog log could be retrieved from $i" >> $report
+        fi
+ 
+        if [[ -f /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log ]]; then
+            echo "Apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
+        else
+            echo "No apache log could be retrieved from $i" >> $report
+        fi
 
-        echo "Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
-        echo "Apache log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
     fi
 done
 
