@@ -16,14 +16,20 @@ do
     echo "Installing branch $branch onto $i" >> $output
 
     #Kick the tires. It helps, makes ssh load into ram, makes the switch learn where the traffic needs to go.
-    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "wakeup")
-    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "get ready")
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo wakeup")
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo get ready")
 
     #Start the installation process.
     timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
+    echo "branch=$branch"
+    echo "sshTime=$sshTime"
+    echo "fogTimeout=$fogTimeout"
+    echo "sshTimeout=$sshTimeout"
+    echo "cwd=$cwd"
     printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "/root/./installBranch.sh $branch;echo \$?") > $cwd/.$i
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
     status=$(cat $cwd/.$i)
+    echo "status=$status"
 
     echo "Return code was $status" >> $output
 
@@ -68,7 +74,8 @@ do
             echo "$i on branch $branch returned no exit code" >> $report
         else
             case $status in
-                -1) echo "$i failure on branch $branch did not return within time limit $fogTimeout" >> $report
+                -1) echo "$i failure on branch $branch did not return within time limit $fogTimeout" >> $report ;;
+                1) echo "$i on branch $branch failed, no branch passed" >> $report ;;
                 2) echo "$i on branch $branch failed to reset git" >> $report ;;
                 3) echo "$i on branch $branch failed to pull git" >> $report ;;
                 4) echo "$i on branch $branch failed to checkout git" >> $report ;;

@@ -17,7 +17,7 @@ usage() {
     echo "Usage $0 <branch>"
 	exit $errCode
 }
-[[ -z $branch ]] && usage 1
+[[ -z $branch ]] && exit 1
 export PATH="$PATH:/usr/bin/core_perl"
 cd /root/git/fogproject >/dev/null 2>&1
 stat=$?
