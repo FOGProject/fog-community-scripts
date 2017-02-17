@@ -21,15 +21,9 @@ do
 
     #Start the installation process.
     timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
-    echo "branch=$branch"
-    echo "sshTime=$sshTime"
-    echo "fogTimeout=$fogTimeout"
-    echo "sshTimeout=$sshTimeout"
-    echo "cwd=$cwd"
     printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $i "/root/./installBranch.sh $branch;echo \$?") > $cwd/.$i
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
     status=$(cat $cwd/.$i)
-    echo "status=$status"
 
     echo "Return code was $status" >> $output
 
