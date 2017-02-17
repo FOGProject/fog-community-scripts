@@ -40,4 +40,4 @@ stat=$?
 ./installfog.sh -y >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && exit 6
-error 0
+exit 0

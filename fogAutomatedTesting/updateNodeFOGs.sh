@@ -19,6 +19,8 @@ do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
     status=$(cat $cwd/.$i)
 
+    echo "Return code was $status" >> $output
+
     if [[ "$status" == "0" ]]; then
         echo "$i success on branch $branch" >> $report
     elif [[ "$status" -eq "-1" ]]; then
