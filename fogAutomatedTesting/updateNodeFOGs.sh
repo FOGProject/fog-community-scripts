@@ -32,31 +32,31 @@ do
     elif [[ "$status" -eq "-1" ]]; then
         echo "$i failure on branch $branch did not return within $fogTimeout" >> $report
     else
-        logname=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
+        foglog=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "/var/www/html/fog_distro_check/$i/fog"
         chown apache:apache /var/www/html/fog_distro_check/$i/fog
-        if [[ -f /root/$(basename $logname) ]]; then
-            rm -f /root/$(basename $logname)
+        if [[ -f /root/$(basename $foglog) ]]; then
+            rm -f /root/$(basename $foglog)
         fi
         if [[ -f /root/apache.log ]]; then
             rm -f /root/apache.log
         fi
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:$logname /root/$(basename $logname)
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log /root/apache.log
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log /root/apache.log
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:$foglog /root/$(basename $foglog) > /dev/null 2>&1
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log /root/apache.log > /dev/null 2>&1
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log /root/apache.log > /dev/null 2>&1
 
-        logname=$(basename $logname)
+        foglog=$(basename $foglog)
         commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
         echo "Date=$rightNow" > /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         echo "Branch=$branch" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         echo "Commit=$commit" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         echo "OS=$i" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
-        echo "Log_Name=$logname" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        echo "Log_Name=$foglog" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         echo "#####Begin Log#####" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         echo "" >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
-        cat /root/$logname >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
-        rm -f /root/$logname
+        cat /root/$foglog >> /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
+        rm -f /root/$foglog
         mv /root/apache.log /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log
         chown apache:apache /var/www/html/fog_distro_check/$i/fog/${rightNow}_apache.log
