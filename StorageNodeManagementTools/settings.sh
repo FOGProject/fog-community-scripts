@@ -8,7 +8,8 @@ storageNodes=( box1 box2 box3 box4 )
 
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
 hostsystem="hostname"
-snapshotName="clean"
+
+gitBranch="master"
 
 sshTimeout=5 #seconds to wait for ssh connection to be established when running remote commands.
 
