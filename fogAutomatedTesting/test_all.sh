@@ -16,11 +16,11 @@ fi
 
 #If repository exists, git pull. Else clone it.
 if [[ -d $gitDir/fogproject ]]; then
-    echo "$(date +%x_%r) Directory exists, updating fogproject" >> $output
+    echo "$(date +%x_%r) Updating local fogproject repository" >> $output
     mkdir -p $gitDir/fogproject
     cd $gitDir/fogproject;git pull > /dev/null 2>&1;cd $cwd
 else
-    echo "$(date +%x_%r) Directory does not exist, cloning" >> $output
+    echo "$(date +%x_%r) Local fogproject repository does not exist, cloning" >> $output
     git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject > /dev/null 2>&1
 fi
 
