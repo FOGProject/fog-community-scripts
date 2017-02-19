@@ -13,7 +13,7 @@ done
 #Loop through each box.
 for i in "${storageNodes[@]}"
 do
-    echo "Updating OS for $i" >> $output
+    echo "$(date +%x_%r) Updating OS for $i" >> $output
     if [[ $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
         printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
     elif [[ $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "command -v yum > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
@@ -24,6 +24,7 @@ do
         printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "pacman -Syu --noconfirm > /root/update_output.txt;echo \$?") > $cwd/.$i
     else
         echo "Don't know how to update $i. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." >> $report
+        echo "$(date +%x_%r) Don't know how to update $i. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." >> $output
     fi
 
     sleep 10
@@ -33,6 +34,7 @@ do
         complete="false"
     elif [[ "$status" == "0" ]]; then
         echo "$i successfully updated OS to latest." >> $report
+        echo "$(date +%x_%r) $i successfully updated OS to latest." >> $output
     else
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "/var/www/html/fog_distro_check/$i/os"
@@ -41,6 +43,7 @@ do
         chown apache:apache /var/www/html/fog_distro_check/$i/os/${rightNow}.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
         echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
+        echo "$(date +%x_%r) $i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $output
     fi
 done
 
