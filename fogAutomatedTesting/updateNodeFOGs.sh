@@ -80,27 +80,27 @@ do
                     ;;
                 2)
                     echo "$i on branch $branch failed to reset git" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed to reset git" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed to reset git" >> $output
                     ;;
                 3)
                     echo "$i on branch $branch failed to pull git" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed to pull git" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed to pull git" >> $output
                     ;;
                 4)
                     echo "$i on branch $branch failed to checkout git" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed to checkout git" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed to checkout git" >> $output
                     ;;
                 5) 
                     echo "$i on branch $branch failed to change directory" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed to change directory" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed to change directory" >> $output
                     ;;
                 6)
                     echo "$i on branch $branch failed installation" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed installation" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed installation" >> $output
                     ;;
                 *)
                     echo "$i on branch $branch failed with exit code \"$status\"" >> $report
-                    echo "$(date +%x_%r) $i on branch $branch failed with exit code \"$status\"" >> $report
+                    echo "$(date +%x_%r) $i on branch $branch failed with exit code \"$status\"" >> $output
                     ;;
             esac
         fi
