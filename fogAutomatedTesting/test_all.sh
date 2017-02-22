@@ -61,6 +61,8 @@ for branch in $branches; do
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
             sleep 60
+            echo "$(date +%x_%r) Rebooting VMs." >> $output
+            $cwd/./rebootVMs.sh
         else
             first="no"
         fi
@@ -74,6 +76,8 @@ for branch in $branches; do
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
             sleep 60
+            echo "$(date +%x_%r) Rebooting VMs." >> $output
+            $cwd/./rebootVMs.sh
         else
             first="no"
         fi
