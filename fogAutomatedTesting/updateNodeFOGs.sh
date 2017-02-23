@@ -107,10 +107,11 @@ do
 
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 
-        if [[ -f /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log ]]; then
+        if [[ ! -z $foglog || ! -z $commit  ]]; then
             echo "Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
             echo "$(date +%x_%r) Fog log: http://$publicIP:20080/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $output
         else
+            rm -f /var/www/html/fog_distro_check/$i/fog/${rightNow}_fog.log > /dev/null 2>&1
             echo "No fog log could be retrieved from $i" >> $report
             echo "$(date +%x_%r) No fog log could be retrieved from $i" >> $output
         fi
