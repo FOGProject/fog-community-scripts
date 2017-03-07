@@ -22,4 +22,4 @@ sshTime="${sshTimeout}s"
 report="/root/report.txt"
 output="/root/output.log"
 
-webdir="/fog_distro_check"
+webdir="/var/www/html/fog_distro_check"
