@@ -37,10 +37,10 @@ do
         echo "$(date +%x_%r) $i successfully updated OS to latest." >> $output
     else
         rightNow=$(date +%Y-%m-%d_%H-%M)
-        mkdir -p "/var/www/html/fog_distro_check/$i/os"
-        chown apache:apache /var/www/html/fog_distro_check/$i/os
-        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt /var/www/html/fog_distro_check/$i/os/${rightNow}.log
-        chown apache:apache /var/www/html/fog_distro_check/$i/os/${rightNow}.log
+        mkdir -p "$webdir/$i/os"
+        chown apache:apache $webdir/$i/os
+        timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt $webdir/$i/os/${rightNow}.log
+        chown apache:apache $webdir/$i/os/${rightNow}.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
         echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
         echo "$(date +%x_%r) $i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $output

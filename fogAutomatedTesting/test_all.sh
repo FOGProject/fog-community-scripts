@@ -101,11 +101,11 @@ $cwd/./shutdownVMs.sh
 
 
 
-mkdir -p /var/www/html/fog_distro_check/reports
-chown -R apache:apache /var/www/html/fog_distro_check
+mkdir -p $webdir/reports
+chown -R apache:apache $webdir
 rightNow=$(date +%Y-%m-%d_%H-%M)
-mv $output /var/www/html/fog_distro_check/reports/${rightNow}.log
-chown apache:apache /var/www/html/fog_distro_check/reports/${rightNow}.log
+mv $output $webdir/reports/${rightNow}.log
+chown apache:apache $webdir/reports/${rightNow}.log
 publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 
 
