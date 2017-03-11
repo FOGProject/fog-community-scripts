@@ -9,7 +9,7 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 storageNodes=( Arch CentOS7 CentOS6 Debian8 Fedora25 Ubuntu16 Ubuntu14 )
 #storageNodes=( Arch )
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
-hostsystem="r410"
+hostsystem="optiplex"
 gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.

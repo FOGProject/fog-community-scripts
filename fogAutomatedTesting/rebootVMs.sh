@@ -3,10 +3,27 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
 
-#Start the commands going in unison.
+#Gracefully shutdown all VMs.
 for i in "${storageNodes[@]}"
 do
-    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh reboot $i > /dev/null 2>&1"
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $i > /dev/null 2>&1"
+done
+sleep 120
+
+
+#force-off any stragglers.
+for i in "${storageNodes[@]}"
+do
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $i > /dev/null 2>&1"
+done
+sleep 20
+
+
+
+#Start the VMs back up.
+for i in "${storageNodes[@]}"
+do
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $i > /dev/null 2>&1"
 done
 howLongToWait=120
 sleep $howLongToWait
@@ -34,4 +51,3 @@ while [[ "$complete" == "false" ]]; do
 
     sleep 1 #Update frequency.
 done #Outter loop done.
-
