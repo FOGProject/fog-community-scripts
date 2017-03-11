@@ -23,3 +23,4 @@ report="/root/report.txt"
 output="/root/output.log"
 
 webdir="/var/www/html/fog_distro_check"
+permissions="www-data:www-data"

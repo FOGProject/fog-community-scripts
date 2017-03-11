@@ -34,7 +34,7 @@ do
         foglog=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "$webdir/$i/fog"
-        chown apache:apache $webdir/$i/fog
+        chown $permissions $webdir/$i/fog
         if [[ -f /root/$(basename $foglog) ]]; then
             rm -f /root/$(basename $foglog)
         fi
@@ -48,7 +48,7 @@ do
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/httpd/error_log $webdir/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/var/log/apache2/error.log $webdir/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
         #Set owernship.
-        chown apache:apache $webdir/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
+        chown $permissions $webdir/$i/fog/${rightNow}_apache.log > /dev/null 2>&1
 
         foglog=$(basename $foglog)
         commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "cd /root/git/fogproject;git rev-parse HEAD")
@@ -61,7 +61,7 @@ do
         echo "" >> $webdir/$i/fog/${rightNow}_fog.log
         cat /root/$foglog >> $webdir/$i/fog/${rightNow}_fog.log
         rm -f /root/$foglog
-        chown apache:apache $webdir/$i/fog/${rightNow}_fog.log
+        chown $permissions $webdir/$i/fog/${rightNow}_fog.log
 
 
 

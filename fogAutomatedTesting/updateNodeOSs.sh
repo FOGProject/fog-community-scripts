@@ -38,9 +38,9 @@ do
     else
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "$webdir/$i/os"
-        chown apache:apache $webdir/$i/os
+        chown $permissions $webdir/$i/os
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt $webdir/$i/os/${rightNow}.log
-        chown apache:apache $webdir/$i/os/${rightNow}.log
+        chown $permissions $webdir/$i/os/${rightNow}.log
         publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
         echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
         echo "$(date +%x_%r) $i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $output
