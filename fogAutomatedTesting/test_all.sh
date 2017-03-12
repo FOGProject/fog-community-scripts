@@ -16,24 +16,24 @@ fi
 
 #If repository exists, git pull. Else clone it.
 if [[ -d $gitDir/fogproject ]]; then
-    echo "Directory exists, updating fogproject" >> $output
+    echo "$(date +%x_%r) Updating local fogproject repository" >> $output
     mkdir -p $gitDir/fogproject
-    cd $gitDir/fogproject;git pull >> $output;cd $cwd
+    cd $gitDir/fogproject;git pull > /dev/null 2>&1;cd $cwd
 else
-    echo "Directory does not exist, cloning" >> $output
-    git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject >> $output
+    echo "$(date +%x_%r) Local fogproject repository does not exist, cloning" >> $output
+    git clone https://github.com/FOGProject/fogproject.git $gitDir/fogproject > /dev/null 2>&1
 fi
 
 
-echo "Restoring base snapshots" >> $output
+echo "$(date +%x_%r) Restoring base snapshots" >> $output
 $cwd/./restoreSnapshots.sh clean
-echo "Rebooting VMs." >> $output
+echo "$(date +%x_%r) Rebooting VMs." >> $output
 $cwd/./rebootVMs.sh
-echo "Updating Node OSs" >> $output
+echo "$(date +%x_%r) Updating Node OSs" >> $output
 $cwd/./updateNodeOSs.sh
-echo "Rebooting VMs." >> $output
+echo "$(date +%x_%r) Rebooting VMs." >> $output
 $cwd/./rebootVMs.sh
-echo "Creating temporary snapshots." >> $output
+echo "$(date +%x_%r) Creating temporary snapshots." >> $output
 $cwd/./createSnapshots.sh updated
 sleep 60
 
@@ -61,11 +61,13 @@ for branch in $branches; do
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
             sleep 60
+            echo "$(date +%x_%r) Rebooting VMs." >> $output
+            $cwd/./rebootVMs.sh
         else
             first="no"
         fi
 
-        echo "Working on branch $branch" >> $output
+        echo "$(date +%x_%r) Working on branch $branch" >> $output
         $cwd/./updateNodeFOGs.sh $branch
 
     #If other branches were updated yesterday, today, or tomorrow, check them too.
@@ -74,11 +76,13 @@ for branch in $branches; do
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
             sleep 60
+            echo "$(date +%x_%r) Rebooting VMs." >> $output
+            $cwd/./rebootVMs.sh
         else
             first="no"
         fi
 
-        echo "Working on branch $branch" >> $output
+        echo "$(date +%x_%r) Working on branch $branch" >> $output
         $cwd/./updateNodeFOGs.sh $branch
   
     #If nothing matches, just continue through the loop.
@@ -90,18 +94,20 @@ done
 
 
 
-
-mkdir -p /var/www/html/fog_distro_check/reports
-chown -R apache:apache /var/www/html/fog_distro_check
-rightNow=$(date +%Y-%m-%d_%H-%M)
-mv $report /var/www/html/fog_distro_check/reports/${rightNow}.log
-chown apache:apache /var/www/html/fog_distro_check/reports/${rightNow}.log
-publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
-echo "New report available: http://$publicIP:20080/fog_distro_check/reports/${rightNow}.log" | slacktee.sh -p
-cat /var/www/html/fog_distro_check/reports/${rightNow}.log | slacktee.sh -p
-
-
-echo "Deleting temprary snapshots." >> $output
+echo "$(date +%x_%r) Deleting temprary snapshots." >> $output
 $cwd/./deleteSnapshots.sh updated
-echo "Shutting down VMs." >> $output
+echo "$(date +%x_%r) Shutting down VMs." >> $output
 $cwd/./shutdownVMs.sh
+
+
+
+mkdir -p $webdir/reports
+chown -R $permissions $webdir
+rightNow=$(date +%Y-%m-%d_%H-%M)
+mv $output $webdir/reports/${rightNow}.log
+chown $permissions $webdir/reports/${rightNow}.log
+publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+
+
+echo "Full Report: http://$publicIP:20080/fog_distro_check/reports/${rightNow}.log" >> $report
+cat $report | slacktee.sh -p

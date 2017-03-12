@@ -31,11 +31,7 @@ File descriptions:
 
 * `deleteSnapshot.sh` Deletes specified snapshot.
 
-* `initialFogGitPull.sh` Currently needs love, not really used. Was meant to provision the servers git setups but turns out it's easier to just do it manually.
-
 * `installBranch.sh` Installs the specified branch. This file gets sent via SCP by `updateNodeFOGs.sh` and runs locally on the remote nodes, and returns altered exit codes to specify where a failure happened.
-
-* `rebootNodes.sh` Sends reboot commands via SSH to all nodes. Sort of flakey with some distributions. 
 
 * `rebootVMs.sh` the reliable way of rebooting all of the nodes.
 
