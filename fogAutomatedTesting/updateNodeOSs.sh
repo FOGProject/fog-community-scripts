@@ -14,8 +14,8 @@ done
 for i in "${storageNodes[@]}"
 do
     #Kick the tires first.
-    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"") > /dev/null 2>&1
-    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"") > /dev/null 2>&1
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
 
     # Start looking for which update commands are available.
     # DNF should always be checked before YUM, but besides that they should be ordered by popularity. Therefore pacman is last.
@@ -43,8 +43,8 @@ do
         echo "$(date +%x_%r) $i successfully updated OS." >> $output
     else
         #Tirekick again.
-        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"") > /dev/null 2>&1
-        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"") > /dev/null 2>&1
+        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
+        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
   
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "$webdir/$i/os"
