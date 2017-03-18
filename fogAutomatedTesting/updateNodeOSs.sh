@@ -17,6 +17,10 @@ do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
 
+    #Remove existing update log if it's present.
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/update_output.txt > /dev/null 2>&1"
+
+
     # Start looking for which update commands are available.
     # DNF should always be checked before YUM, but besides that they should be ordered by popularity. Therefore pacman is last.
     echo "$(date +%x_%r) Updating OS for $i" >> $output
