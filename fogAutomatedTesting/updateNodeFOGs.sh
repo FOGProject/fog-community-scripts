@@ -28,8 +28,8 @@ do
     echo "$(date +%x_%r) Return code was $status" >> $output
 
     if [[ "$status" == "0" ]]; then
-        echo "$i success with $branch" >> $report
-        echo "$(date +%x_%r) $i success with $branch" >> $output
+        echo "$i success with \"$branch\"" >> $report
+        echo "$(date +%x_%r) $i success with \"$branch\"" >> $output
     else
         #Tire kick.
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"wakeup\"" > /dev/null 2>&1
@@ -71,41 +71,41 @@ do
 
 
         if [[ -z $status ]]; then
-            echo "$i on branch $branch returned no exit code" >> $report
-            echo "$(date +%x_%r) $i on branch $branch returned no exit code" >> $output
+            echo "$i failure with \"$branch\", returned no exit code" >> $report
+            echo "$(date +%x_%r) $i failure with \"$branch\", returned no exit code" >> $output
         else
             case $status in
                 -1) 
-                    echo "$i failure with $branch did not return within time limit $fogTimeout" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch did not return within time limit $fogTimeout" >> $output
+                    echo "$i failure with \"$branch\", did not return within time limit \"$fogTimeout\"" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", did not return within time limit \"$fogTimeout\"" >> $output
                     ;;
                 1)
-                    echo "$i failure with $branch, no branch passed" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, no branch passed" >> $output
+                    echo "$i failure with \"$branch\", no branch passed" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", no branch passed" >> $output
                     ;;
                 2)
-                    echo "$i failure with $branch, failed to reset git" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed to reset git" >> $output
+                    echo "$i failure with \"$branch\", failed to reset git" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed to reset git" >> $output
                     ;;
                 3)
-                    echo "$i failure with $branch, failed to 'git pull'" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed to 'git pull'" >> $output
+                    echo "$i failure with \"$branch\", failed to 'git pull'" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed to 'git pull'" >> $output
                     ;;
                 4)
-                    echo "$i failure with $branch, failed to checkout git" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed to checkout git" >> $output
+                    echo "$i failure with \"$branch\", failed to checkout git" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed to checkout git" >> $output
                     ;;
                 5) 
-                    echo "$i failure with $branch, failed to change directory" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed to change directory" >> $output
+                    echo "$i failure with \"$branch\", failed to change directory" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed to change directory" >> $output
                     ;;
                 6)
-                    echo "$i failure with $branch, failed installation" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed installation" >> $output
+                    echo "$i failure with \"$branch\", failed installation" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed installation" >> $output
                     ;;
                 *)
-                    echo "$i failure with $branch, failed with exit code \"$status\"" >> $report
-                    echo "$(date +%x_%r) $i failure with $branch, failed with exit code \"$status\"" >> $output
+                    echo "$i failure with \"$branch\", failed with exit code \"$status\"" >> $report
+                    echo "$(date +%x_%r) $i failure with \"$branch\", failed with exit code \"$status\"" >> $output
                     ;;
             esac
         fi
