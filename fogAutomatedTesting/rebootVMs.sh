@@ -8,7 +8,7 @@ for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $i > /dev/null 2>&1"
 done
-sleep 120
+sleep 30
 
 
 #force-off any stragglers.
@@ -16,7 +16,7 @@ for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $i > /dev/null 2>&1"
 done
-sleep 20
+sleep 10
 
 
 
