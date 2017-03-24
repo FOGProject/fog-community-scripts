@@ -55,23 +55,9 @@ for branch in $branches; do
     #Remove everything before first "/" and including the "/" in branch name.
     branch="${branch##*/}"
 
-    #We want to do the latest working branch every single day.
-    if [[ "$branch" == *"working"* ]]; then
-        #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
-        if [[ "$first" == "no" ]]; then
-            $cwd/./restoreSnapshots.sh updated
-            sleep 60
-            echo "$(date +%x_%r) Rebooting VMs." >> $output
-            $cwd/./rebootVMs.sh
-        else
-            first="no"
-        fi
 
-        echo "$(date +%x_%r) Working on branch $branch" >> $output
-        $cwd/./updateNodeFOGs.sh $branch
-
-    #If other branches were updated yesterday, today, or tomorrow, check them too.
-    elif [[ ( *"$thisBranch"* =~ "$Yesterday" || *"$thisBranch"* =~ "$Today" || *"$thisBranch"* =~ "$Tomorrow" ) && ( "$branch" == "dev-branch" || "branch" == "master" ) ]]; then
+    #If the three main branches were updated yesterday, today, or tomorrow, check them.
+    if [[ ( *"$thisBranch"* =~ "$Yesterday" || *"$thisBranch"* =~ "$Today" || *"$thisBranch"* =~ "$Tomorrow" ) && ( "$branch" == "working" || "$branch" == "dev-branch" || "branch" == "master" ) ]]; then
         #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
@@ -85,9 +71,6 @@ for branch in $branches; do
         echo "$(date +%x_%r) Working on branch $branch" >> $output
         $cwd/./updateNodeFOGs.sh $branch
   
-    #If nothing matches, just continue through the loop.
-    else
-        continue
     fi
 
 done

@@ -13,6 +13,16 @@ done
 #Loop through each box.
 for i in "${storageNodes[@]}"
 do
+    #Kick the tires first.
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
+
+    #Remove existing update log if it's present.
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/update_output.txt > /dev/null 2>&1"
+
+
+    # Start looking for which update commands are available.
+    # DNF should always be checked before YUM, but besides that they should be ordered by popularity. Therefore pacman is last.
     echo "$(date +%x_%r) Updating OS for $i" >> $output
     if [[ $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "command -v dnf > /dev/null 2>&1;echo \$?") -eq "0" ]]; then
         printf $(timeout $osTimeout ssh -o ConnectTimeout=$sshTimeout $i "dnf update -y > /root/update_output.txt;echo \$?") > $cwd/.$i
@@ -33,17 +43,26 @@ do
     if [[ "$status" == "-1" ]]; then
         complete="false"
     elif [[ "$status" == "0" ]]; then
-        echo "$i successfully updated OS to latest." >> $report
-        echo "$(date +%x_%r) $i successfully updated OS to latest." >> $output
+        echo "$i successfully updated OS." >> $report
+        echo "$(date +%x_%r) $i successfully updated OS." >> $output
     else
+        #Tirekick again.
+        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
+        timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
+  
         rightNow=$(date +%Y-%m-%d_%H-%M)
         mkdir -p "$webdir/$i/os"
         chown $permissions $webdir/$i/os
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt $webdir/$i/os/${rightNow}.log
-        chown $permissions $webdir/$i/os/${rightNow}.log
-        publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
-        echo "$i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
-        echo "$(date +%x_%r) $i failed to update OS to latest, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $output
+        if [[ -f $webdir/$i/os/${rightNow}.log ]]; then
+            chown $permissions $webdir/$i/os/${rightNow}.log
+            publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+            echo "$i failed to update OS, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $report
+            echo "$(date +%x_%r) $i failed to update OS, logs here: http://$publicIP:20080/fog_distro_check/$i/os/$rightNow.log" >> $output
+        else
+            echo "$i failed to update OS, no log could be retrieved." >> $report
+            echo "$(date +%x_%r) $i failed to update OS, no log could be retrieved." >> $output
+        fi 
     fi
 done
 
