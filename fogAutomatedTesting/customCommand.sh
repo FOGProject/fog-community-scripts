@@ -2,7 +2,7 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-command="rm -f /root/update_output.txt"
+command="rm -f /root/update_output.txt;cd /root/git/fogproject;git pull > /dev/null 2>&1"
 
 
 #Create hidden file for each node - for status reporting.
