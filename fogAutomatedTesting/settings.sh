@@ -42,13 +42,17 @@ testServerSshAlias="testServer"
 #Snapshots should be prepared with various OSs and partition layouts for testHost1.
 #testHost2 should have a smaller disk, testHost3 should have a larger disk.
 #Because of multiple OSs being tested with one VM, it's not yet possible to test Snapins.
+
 testHost1VM="testHost1"
 testHost1Snapshots="win10"  #space seperated list of snapshots. These are used as image names for capture/deploy to testHost2 & 3.
+testHost1ID="1"
+
 testHost2VM="testHost2"
+testHost2ID="2"
+
 testHost3VM="testHost3"
+testHost3ID="3"
 
 
 
-
-curl -ku 'wayne:harddrive' --header "content-type: application/json" --header "fog-api-token: MzQzMzM1MzA2NjYyMzkzNjM2NjYxMzEzMzMyNjMzMzM3MzMzNzYyNjYzMDMxMzczODY0MzczMTM3NjMzNDYzNjUzMjMxMzYzNzMyNjE2NDYyNjIzMTM3MzczNTY1NjYzNTYyMzEzOTYyMzU2NjY0MzkzMjM3MzczMTM4MzU=" http://10.0.0.2/fog/host/4/task --data "{\"taskTypeID\":1}"
 
