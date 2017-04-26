@@ -7,7 +7,7 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #You will need to modify the below line for any of the scripts in this directory to work.
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
 #storageNodes=( fogsite1 fogsite2 downtown uptown dallas houston floor1 floor2 japan uk )
-storageNodes=( Arch CentOS7 CentOS6 Debian8 Fedora25 Ubuntu17 Ubuntu16 Ubuntu14 )
+storageNodes=( Arch CentOS7 CentOS6 Debian8 Fedora25 Fedora26 Ubuntu17 Ubuntu16 Ubuntu14 )
 
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
 hostsystem="optiplex"
