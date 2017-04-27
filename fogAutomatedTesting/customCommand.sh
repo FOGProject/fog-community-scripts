@@ -11,7 +11,6 @@ do
     echo "-1" > $cwd/.$i
 done
 
-#Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
     printf $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "$command;echo \$?") > $cwd/.$i
