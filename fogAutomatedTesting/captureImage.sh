@@ -35,7 +35,7 @@ echo "$(date +%x_%r) Beginning capture testing. snapshot=\"${snapshot}\" vmGuest
 echo "Beginning capture testing using \"$snapshot\"" >> $report
 
 
-echo "$(date +%x_%r) Restoring snapshot \"$snapshotName\" to $vmGuest" >> $output
+echo "$(date +%x_%r) Restoring snapshot \"$snapshot\" to $vmGuest" >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $snapshot > /dev/null 2>&1"
 #Gracefully shutdown VM.
 echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown if it's not already." >> $output
