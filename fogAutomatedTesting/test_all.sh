@@ -84,6 +84,7 @@ $cwd/./shutdownVMs.sh
 
 
 
+
 mkdir -p $webdir/reports
 chown -R $permissions $webdir
 rightNow=$(date +%Y-%m-%d_%H-%M)

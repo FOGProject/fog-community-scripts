@@ -44,8 +44,10 @@ testServerSshAlias="testServer"
 #Because of multiple OSs being tested with one VM, it's not yet possible to test Snapins.
 
 testHost1VM="testHost1"
-testHost1Snapshots="win10"  #space seperated list of snapshots. These are used as image names for capture/deploy to testHost2 & 3.
 testHost1ID="1"
+
+testHost1Snapshot1="win10"
+testHost1ImageID="1"
 
 testHost2VM="testHost2"
 testHost2ID="2"
