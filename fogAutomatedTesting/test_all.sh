@@ -2,6 +2,12 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
+if pidof -x "test_all.sh" >/dev/null; then
+    echo "Process already running"
+    exit
+fi
+
+
 #If an old report exists here, delete it.
 if [[ -f $report ]]; then
     rm -f $report
