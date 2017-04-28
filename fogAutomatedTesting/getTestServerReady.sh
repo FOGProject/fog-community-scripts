@@ -8,17 +8,9 @@ branch="working"
 
 
 echo "$(date +%x_%r) Configuring the test FOG Server with \"$branch\"" >> $output
+echo "Configuring the test FOG Server with \"$branch\"" >> $report
 
-
-#Give the FOG Server a reboot.
-echo "$(date +%x_%r) Asking $testServerVMName to gracefully shutdown if it's not already." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $testServerVMName > /dev/null 2>&1"
-sleep 30
-#force-off if it straggles.
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $vmGuest > /dev/null 2>&1"
-sh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testServerVMName > /dev/null 2>&1"
-sleep 5
-#Start the server back up.
+#Start the server up.
 echo "$(date +%x_%r) Starting up $testServerVMName." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testServerVMName > /dev/null 2>&1"
 sleep 60
@@ -40,14 +32,15 @@ timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /r
 status=$(cat $cwd/.$testServerSshAlias)
 
 echo "$(date +%x_%r) Return code was $status" >> $output
-
+echo "Return code was $status" >> $report
 
 #Cleanup after all is done.
 rm -f $cwd/.$testServerSshAlias
 
 
 if [[ "$status" != "0" ]]; then
-    echo "$(date +%x_%r) non-zero exit code, not continuing." >> $output
+    echo "$(date +%x_%r) Non-zero exit code, not continuing." >> $output
+    echo "Non-zero exit code, not continuing." >> $report
     exit $status
 fi
 
