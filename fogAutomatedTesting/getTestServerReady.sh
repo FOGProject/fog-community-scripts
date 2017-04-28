@@ -11,7 +11,7 @@ echo "$(date +%x_%r) Configuring the test FOG Server with \"$branch\"" >> $outpu
 echo "Configuring the test FOG Server with \"$branch\"" >> $report
 
 #Start the server up.
-echo "$(date +%x_%r) Starting up $testServerVMName." >> $output
+echo "$(date +%x_%r) Starting up \"$testServerVMName\"" >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testServerVMName > /dev/null 2>&1"
 sleep 60
 
@@ -19,7 +19,7 @@ sleep 60
 
 #Create hidden file for server - for status reporting.
 echo "-1" > $cwd/.$testServerSshAlias
-echo "$(date +%x_%r) Installing branch $branch onto $testServerSshAlias" >> $output
+echo "$(date +%x_%r) Installing branch \"$branch\" onto \"$testServerSshAlias\"" >> $output
 
 #Kick the tires. It helps, makes ssh load into ram, makes the switch learn where the traffic needs to go.
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
@@ -31,8 +31,8 @@ printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $testServerSshAli
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /root/installBranch.sh"
 status=$(cat $cwd/.$testServerSshAlias)
 
-echo "$(date +%x_%r) Return code was $status" >> $output
-echo "Return code was $status" >> $report
+echo "$(date +%x_%r) Return code was \"$status\"" >> $output
+echo "Return code was \"$status\"" >> $report
 
 #Cleanup after all is done.
 rm -f $cwd/.$testServerSshAlias
