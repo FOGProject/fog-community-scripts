@@ -31,7 +31,7 @@ do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $i > /dev/null 2>&1"
     sleep 5
 done
-howLongToWait=120
+howLongToWait=60
 sleep $howLongToWait
 
 
