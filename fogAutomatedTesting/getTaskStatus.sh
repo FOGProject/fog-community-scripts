@@ -16,7 +16,7 @@ fi
 
 
 
-cmd="curl -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/task/active --get --data '{\"hosts\": [${hostID}]}'"
+cmd="curl -i -H 'content-type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/task/active -d '{\"hostID\": [${hostID}]}'"
 eval $cmd
 
 echo

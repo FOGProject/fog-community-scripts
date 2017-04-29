@@ -29,7 +29,7 @@ permissions="www-data:www-data"
 
 #These settings are for the long-standing test FOG Server. It's for testing FOG Functionality.
 #SSH aliases and cert-based auth should be setup between the fogTesting box and this box.
-testServerUserToken="NWExNDQ4ZTljNzg2MTU0ZTQ2MDY3MTgyYWIyYzljYWU2YWRkYmJhMjgwZGI5NDhmNjVkYmU0ZDBlNjE4ZDIyNmU4YTNiZjg4ZDk0ODI5Yjc4OTMwYWU1ZjBlYWNhMzQxZWEzNTIzMmIyNmJhYTEzOWNlMWFkOWZiNTY5ZWJiNWQ="
+testServerUserToken="ZjBkMmE3YmI5NmUzZDcxYTliYzNkZTc4MmJhNTFiYTQ3Mzc2MTg5MzYxMThmNjA5NDYyMjllMTA5YzE0NWUxMjFiNzkyMTc5OTMwZjFhZGM5NWIxMTc3YWZmNTU2MmMwYjFhNjg0NjVmMTkyMGZkNDQxYmY0MzI1NWNkMzQyM2M="
 testServerApiToken="MzI2NDY1NjY2NjM0MzUzMDMzMzA2MzM1MzEzNzYyMzg2NTYyNjQ2MjMxMzczMTM0NjY2NDM0NjUzOTM2NjIzNDM4MzQ2NDM3MzY2MzM2MzMzNjYyMzUzODY0MzUzNDYyMzgzMDY2NjQzNTMxMzI2MzM5NjYzNjYzMzMzMzM0MzA="
 testServerVMName="testServer"
 testServerIP="10.0.0.28"
