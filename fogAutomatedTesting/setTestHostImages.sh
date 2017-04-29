@@ -25,10 +25,7 @@ fi
 echo "$(date +%x_%r) Setting FOG hosts \"$hostIDs\" image IDs to $imageID" >> $output
 
 #Set all the fog hosts to the same image.
-curl -ku "$testServerWebCredentials" --header "content-type: application/json" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/image/${imageID}/edit --data "{\"hosts\": [${hostIDs}]}"
-
-
-
+curl -k --header "content-type: application/json" --header "fog-user-token: $testServerUserToken" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/image/${imageID}/edit -X PUT -d '{"hosts": [${hostIDs}]}'
 
 
 
