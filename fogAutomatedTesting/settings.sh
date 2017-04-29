@@ -19,6 +19,7 @@ osTimeout="60m"
 fogTimeout="60m"
 sshTime="${sshTimeout}s"
 captureLimit="30" #This is how long a capture has to get done in minutes. Unit measurement determined in the captureImage.sh script.
+deployLimit="60" #Measured in minutes, unit of measurement determined in the deployImage.sh script.
 
 report="/root/report.txt"
 output="/root/output.log"

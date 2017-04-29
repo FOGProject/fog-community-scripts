@@ -17,12 +17,28 @@ fi
 
 echo "getTestServerReady.sh"
 $cwd/./getTestServerReady.sh
-echo "setTestHostImages.sh \"${testHost1ID},${testHost2ID},${testHost3ID}\""
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
-echo "captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID"
-$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+#$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+$cwd/./deployImage.sh $testHost2VM $testHost2ID
+$cwd/./deployImage.sh $testHost3VM $testHost3ID
 
+echo "$(date +%x_%r) Waiting for image deployments to complete..." >> $output
 
+count=0
+#Need to monitor task progress somehow. Once done, should exit.
+while true; do
+    if [[ "$($cwd/./getTaskStatus.sh)" == "0" ]]; then
+        echo "$(date +%x_%r) Image deployments complete." >> $output
+        exit
+    else
+        count=$(($count + 1))
+        sleep 60
+        if [[ $count -gt $deployLimit ]]; then
+            echo "$(date +%x_%r) Image deployments did not complete within ${deployLimit} seconds." >> $output
+            break
+        fi
+    fi
+done
 
 
 

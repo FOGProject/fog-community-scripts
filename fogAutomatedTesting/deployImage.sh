@@ -1,8 +1,43 @@
+#!/bin/bash
+
+cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$cwd/settings.sh"
+
+#Ask for the VM guest name.
+if [[ -z $1 ]]; then
+    echo "$(date +%x_%r) No vmGuest name passed for argument 1, exiting." >> $output
+    exit
+else
+    vmGuest=$1
+fi
 
 
+#Ask for the FOG ID of the guest we are to use for deploy.
+if [[ -z $2 ]]; then
+    echo "$(date +%x_%r) No vmGuestFogID passed for argument 2, exiting." >> $output
+    exit
+else
+    vmGuestFogID=$2
+fi
 
 
+echo "$(date +%x_%r) Queuing deploy. vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmGuestFogID}"\" >> $output
 
-curl -ku "fog:password" --header "content-type: application/json" --header "fog-api-token: MzI2NDY1NjY2NjM0MzUzMDMzMzA2MzM1MzEzNzYyMzg2NTYyNjQ2MjMxMzczMTM0NjY2NDM0NjUzOTM2NjIzNDM4MzQ2NDM3MzY2MzM2MzMzNjYyMzUzODY0MzUzNDYyMzgzMDY2NjQzNTMxMzI2MzM5NjYzNjYzMzMzMzM0MzA=" http://10.0.0.28/fog/image/1/edit -X PUT -d '{"hosts": [1,2,3]}'
+#Queue the deploy jobs with the test fog server.
+cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":1}'"
+eval $cmd > /dev/null 2>&1 #Don't care that it says null.
 
+echo
+echo
+echo $cmd
+echo
+echo
+
+sleep 5
+
+#reset the VM forcefully.
+echo "$(date +%x_%r) Forcefully resetting \"$testHost1VM\" to begin capture." >> $output
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1"
+
+sleep 5
 
