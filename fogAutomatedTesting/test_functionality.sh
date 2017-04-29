@@ -18,7 +18,7 @@ fi
 echo "getTestServerReady.sh"
 $cwd/./getTestServerReady.sh
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
-#$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
 $cwd/./deployImage.sh $testHost2VM $testHost2ID
 $cwd/./deployImage.sh $testHost3VM $testHost3ID
 
