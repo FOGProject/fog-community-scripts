@@ -57,15 +57,19 @@ echo "$(date +%x_%r) Starting up \"$testHost1VM\" for capture." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/null 2>&1"
 
 
-
+count=0
 #Need to monitor task progress somehow. Once done, should exit.
-for i in {1..${captureLimit}}; do
+while true; do
     if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
         echo "$(date +%x_%r) Image Capture complete." >> $output
         exit
     else
+        count=$(($count + 1))
         sleep 1
+        if [[ $count -gt $captureLimit ]]; then
+            echo "$(date +%x_%r) Image Capture did not complete within ${captureLimit} seconds." >> $output
+            break
+        fi
     fi
 done
 
-echo "$(date +%x_%r) Image Capture did not complete within ${captureLimit} seconds." >> $output
