@@ -65,7 +65,7 @@ while true; do
         exit
     else
         count=$(($count + 1))
-        sleep 1
+        sleep 60
         if [[ $count -gt $captureLimit ]]; then
             echo "$(date +%x_%r) Image Capture did not complete within ${captureLimit} seconds." >> $output
             break
