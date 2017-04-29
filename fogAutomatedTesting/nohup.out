@@ -1,0 +1,47 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    18    0     0  100    18      0     79 --:--:-- --:--:-- --:--:--    80
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    20  100     4  100    16      8     33 --:--:-- --:--:-- --:--:--    33
+null  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    18    0     0  100    18      0     77 --:--:-- --:--:-- --:--:--    77
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    16    0     0  100    16      0     79 --:--:-- --:--:-- --:--:--    79100    20  100     4  100    16      9     36 --:--:-- --:--:-- --:--:--    36
+null  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    18    0     0  100    18      0     77 --:--:-- --:--:-- --:--:--    77
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100    20  100     4  100    16      9     39 --:--:-- --:--:-- --:--:--    39
+nullProcess already running
+Arch successfully updated OS.
+CentOS7 successfully updated OS.
+CentOS6 successfully updated OS.
+Debian8 successfully updated OS.
+Fedora25 successfully updated OS.
+Fedora26 successfully updated OS.
+Ubuntu17 successfully updated OS.
+Ubuntu16 successfully updated OS.
+Ubuntu14 successfully updated OS.
+Arch success with "dev-branch"
+CentOS7 success with "dev-branch"
+CentOS6 success with "dev-branch"
+Debian8 success with "dev-branch"
+Fedora25 success with "dev-branch"
+Fedora26 success with "dev-branch"
+Ubuntu17 success with "dev-branch"
+Ubuntu16 success with "dev-branch"
+Ubuntu14 success with "dev-branch"
+Arch success with "working"
+CentOS7 success with "working"
+CentOS6 success with "working"
+Debian8 success with "working"
+Fedora25 success with "working"
+Fedora26 success with "working"
+Ubuntu17 success with "working"
+Ubuntu16 success with "working"
+Ubuntu14 success with "working"
+Full Report: http://97.85.148.83:20080/fog_distro_check/reports/2017-04-28_21-46.log
