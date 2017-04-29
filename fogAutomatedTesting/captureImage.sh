@@ -57,6 +57,8 @@ echo "$(date +%x_%r) Starting up \"$testHost1VM\" for capture." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/null 2>&1"
 
 
+echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
+
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
