@@ -54,28 +54,12 @@ echo "$(date +%x_%r) Starting up \"$testHost1VM\" for capture." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/null 2>&1"
 
 
-# Now what?
-#Need to monitor task progress somehow.
-#Need to grab the small files from the image on the server.
-#Need to get a directory listing of the image on the server.
-#Need to somehow check if the reference box can still boot. This may require the fog client & a snapin task.
+
+
+#Need to monitor task progress somehow. Once done, should exit.
 
 
 
 sleep 3600
-
-#At the end, we know to shut down these VMs.
-echo "$(date +%x_%r) Asking $testServerVMName to gracefully shutdown if it's not already." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $testServerVMName > /dev/null 2>&1"
-sleep 30
-#force-off if it straggles.
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testServerVMName > /dev/null 2>&1"
-#Shutdown test guest.
-echo "$(date +%x_%r) Asking $vmGuest to gracefully shutdown if it's not already." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $vmGuest > /dev/null 2>&1"
-sleep 30
-#force-off if it straggles.
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $vmGuest > /dev/null 2>&1"
-
 
 
