@@ -18,7 +18,7 @@ sshTimeout=15 #seconds to wait for ssh connection to be established when running
 osTimeout="60m"
 fogTimeout="60m"
 sshTime="${sshTimeout}s"
-
+captureLimit="2000" #This is how long a capture has to get done in seconds.
 
 report="/root/report.txt"
 output="/root/output.log"
@@ -54,7 +54,6 @@ testHost2ID="2"
 
 testHost3VM="testHost3"
 testHost3ID="3"
-
 
 
 

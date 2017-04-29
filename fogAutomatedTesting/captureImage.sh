@@ -47,7 +47,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev
 echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 
 #Queue the capture job with the test fog server.
-cmd="curl -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
+cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
 eval $cmd >> $output
 
 sleep 5
@@ -58,15 +58,14 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/n
 
 
 
-
 #Need to monitor task progress somehow. Once done, should exit.
-
-while true; do
-    sleep 3
-    curl -k --header "content-type: application/json" --header 'fog-user-token: ${testServerUserToken}' --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/host/${vmGuestFogID}/task -X '{"hosts": [${vmGuestFogID}]}'
+for i in {1..${captureLimit}}; do
+    if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
+        echo "$(date +%x_%r) Image Capture complete." >> $output
+        exit
+    else
+        sleep 1
+    fi
 done
 
-
-
-
-
+echo "$(date +%x_%r) Image Capture did not complete within ${captureLimit} seconds." >> $output
