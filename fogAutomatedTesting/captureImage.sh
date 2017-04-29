@@ -58,8 +58,12 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/n
 
 #Need to monitor task progress somehow. Once done, should exit.
 
+while true; do
+    sleep 3
+    curl -ku "$testServerWebCredentials" --header "content-type: application/json" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/host/${vmGuestFogID}/task -X '{"hosts": [${vmGuestFogID}]}'
+done
 
 
-sleep 3600
+
 
 

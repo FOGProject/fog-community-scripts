@@ -25,7 +25,11 @@ fi
 echo "$(date +%x_%r) Setting FOG hosts \"$hostIDs\" image IDs to $imageID" >> $output
 
 #Set all the fog hosts to the same image.
-curl -k --header "content-type: application/json" --header "fog-user-token: $testServerUserToken" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/image/${imageID}/edit -X PUT -d '{"hosts": [${hostIDs}]}'
-
-
-
+cmd="curl -k -H 'Content-Type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/image/${imageID}/edit -X PUT -d '{\"hosts\": [${hostIDs}]}' -vvv"
+echo -e "Command to be run:\n\t${cmd}"
+echo
+echo
+echo here
+echo
+echo "Running command now"
+eval $cmd
