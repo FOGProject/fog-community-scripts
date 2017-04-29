@@ -41,11 +41,14 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $s
 echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown if it's not already." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown \"$vmGuest\" > /dev/null 2>&1"
 sleep 30
+#Kill it if it lags.
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
 
 echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
+
 #Queue the capture job with the test fog server.
-curl -ku "$testServerWebCredentials" --header "content-type: application/json" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/host/${vmGuestFogID}/task --data "{\"taskTypeID\":2}"
+cmd="curl -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
+eval $cmd >> $output
 
 sleep 5
 
@@ -60,7 +63,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/n
 
 while true; do
     sleep 3
-    curl -ku "$testServerWebCredentials" --header "content-type: application/json" --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/host/${vmGuestFogID}/task -X '{"hosts": [${vmGuestFogID}]}'
+    curl -k --header "content-type: application/json" --header 'fog-user-token: ${testServerUserToken}' --header "fog-api-token: $testServerApiToken" http://${testServerIP}/fog/host/${vmGuestFogID}/task -X '{"hosts": [${vmGuestFogID}]}'
 done
 
 
