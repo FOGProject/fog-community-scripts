@@ -19,7 +19,7 @@ $cwd/./getTestServerReady.sh
 
 #Push new postinit and postdownload scripts to the test server.
 echo "$(date +%x_%r) Sending new post scripts to \"$testServerSshAlias\"" >> $output
-nsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
 sleep 5
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
