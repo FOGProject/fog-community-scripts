@@ -50,6 +50,10 @@ echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
 eval $cmd > /dev/null 2>&1 #Don't care that it says null.
 
+echo
+echo
+echo "$cmd"
+echo
 sleep 5
 
 #Start the VM back up.
@@ -75,3 +79,4 @@ while true; do
     fi
 done
 
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
