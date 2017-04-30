@@ -30,7 +30,7 @@ eval $cmd > /dev/null 2>&1 #Don't care that it says null.
 sleep 5
 
 #reset the VM forcefully.
-echo "$(date +%x_%r) Forcefully resetting \"$testHost1VM\" to begin capture." >> $output
+echo "$(date +%x_%r) Resetting \"$testHost1VM\" to begin deploy." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1"
 
