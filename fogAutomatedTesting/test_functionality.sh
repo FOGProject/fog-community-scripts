@@ -36,14 +36,15 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3V
 sleep 5
 
 #Push new postinit and postdownload scripts to the test server.
+nsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
+sleep 5
+timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/dev/postinitscripts/postinit.sh"
+timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/dev/postinitscripts/postinit.sh
+timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/postdownloadscripts/postdownload.sh"
+timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/postdownloadscripts/postdownload.sh
 
-
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
-timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
-
-
-testServerSshAlias
-
+sleep 5
 
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
 sleep 10
@@ -65,6 +66,8 @@ while true; do
         count=$(($count + 1))
         sleep 60
         if [[ $count -gt $deployLimit ]]; then
+            #Kill the monitoring scripts if they are still running.
+            pkill deployImage.sh
             echo "$(date +%x_%r) All image deployments did not complete within ${deployLimit} minutes." >> $output
             break
         fi
