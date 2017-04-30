@@ -38,7 +38,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/n
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
-    if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
+    if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
         echo "$(date +%x_%r) Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $output
         echo "Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $report
         exit
@@ -52,8 +52,8 @@ while true; do
         fi
     fi
 done
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
 sleep 5
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
 

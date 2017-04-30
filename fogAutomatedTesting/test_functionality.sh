@@ -63,7 +63,7 @@ echo "$(date +%x_%r) Waiting for image deployments to complete." >> $output
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
-    if [[ "$($cwd/./getTaskStatus.sh)" == "0" ]]; then
+    if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh)" == "0" ]]; then
         echo "$(date +%x_%r) All image deployments complete." >> $output
         break
     else
@@ -80,8 +80,8 @@ done
 
 #Destory test hosts, shutdown test server.
 echo "$(date +%x_%r) Shutting down all test hosts and test server." >> $output
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost1VM" > /dev/null 2>&1
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost2VM" > /dev/null 2>&1
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost3VM" > /dev/null 2>&1

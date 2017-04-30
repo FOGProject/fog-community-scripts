@@ -61,7 +61,7 @@ echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
-    if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
+    if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
         echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
         echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
         break
