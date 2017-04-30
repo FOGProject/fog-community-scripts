@@ -64,7 +64,7 @@ while true; do
     if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
         echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
         echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
-        exit
+        break
     else
         count=$(($count + 1))
         sleep 60

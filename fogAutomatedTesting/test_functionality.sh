@@ -54,6 +54,7 @@ while true; do
     fi
 done
 
+echo "$(date +%x_%r) Shutting down all test hosts and test server." >> $output
 #Destory test hosts, shutdown test server.
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost1VM" > /dev/null 2>&1"
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost2VM" > /dev/null 2>&1"
