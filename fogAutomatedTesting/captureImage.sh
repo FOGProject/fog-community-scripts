@@ -36,13 +36,13 @@ echo "Beginning capture testing. snapshot=\"${snapshot}\" vmGuest=\"${vmGuest}\"
 
 
 echo "$(date +%x_%r) Restoring snapshot \"$snapshot\" to \"$vmGuest\"" >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $snapshot > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $snapshot" > /dev/null 2>&1
 #Gracefully shutdown VM incase it's on.
 echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown \"$vmGuest\" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown \"$vmGuest\" > /dev/null 2>&1
 sleep 30
 #Kill it if it lags.
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
 
 echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 
@@ -54,7 +54,7 @@ sleep 5
 
 #Start the VM.
 echo "$(date +%x_%r) Starting up \"$testHost1VM\" for capture." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM" > /dev/null 2>&1
 
 echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
 
@@ -76,7 +76,7 @@ while true; do
     fi
 done
 
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
 
 sleep 5
 
