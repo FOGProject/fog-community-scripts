@@ -19,8 +19,21 @@ echo "getTestServerReady.sh"
 $cwd/./getTestServerReady.sh
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
 $cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+
+sleep 5
+
+#Restore blank snapshots to the three test hosts.
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost1VM $blankSnapshot" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost2VM $blankSnapshot" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3VM $blankSnapshot" > /dev/null 2>&1"
+
+sleep 5
+
 $cwd/./deployImage.sh $testHost2VM $testHost2ID &
+
+#Small delay here to give the queuing system the best chance at actually queuing.
 sleep 10
+
 $cwd/./deployImage.sh $testHost3VM $testHost3ID &
 
 echo "$(date +%x_%r) Waiting for image deployments to complete..." >> $output

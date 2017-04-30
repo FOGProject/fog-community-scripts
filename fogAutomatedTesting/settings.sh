@@ -56,5 +56,5 @@ testHost2ID="2"
 testHost3VM="testHost3"
 testHost3ID="3"
 
-
+blankSnapshot="blank"
 

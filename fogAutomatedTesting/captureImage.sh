@@ -32,13 +32,13 @@ else
 fi
 
 echo "$(date +%x_%r) Beginning capture testing. snapshot=\"${snapshot}\" vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmGuestFogID}"\" >> $output
-echo "Beginning capture testing using \"$snapshot\"" >> $report
+echo "Beginning capture testing. snapshot=\"${snapshot}\" vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmGuestFogID}"\" >> $report
 
 
 echo "$(date +%x_%r) Restoring snapshot \"$snapshot\" to \"$vmGuest\"" >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $snapshot > /dev/null 2>&1"
-#Gracefully shutdown VM.
-echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown if it's not already." >> $output
+#Gracefully shutdown VM incase it's on.
+echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown \"$vmGuest\" > /dev/null 2>&1"
 sleep 30
 #Kill it if it lags.
@@ -50,16 +50,11 @@ echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
 eval $cmd > /dev/null 2>&1 #Don't care that it says null.
 
-echo
-echo
-echo "$cmd"
-echo
 sleep 5
 
-#Start the VM back up.
+#Start the VM.
 echo "$(date +%x_%r) Starting up \"$testHost1VM\" for capture." >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM > /dev/null 2>&1"
-
 
 echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
 
@@ -67,16 +62,21 @@ count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
     if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
-        echo "$(date +%x_%r) Image Capture complete." >> $output
+        echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
+        echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
         exit
     else
         count=$(($count + 1))
         sleep 60
         if [[ $count -gt $captureLimit ]]; then
-            echo "$(date +%x_%r) Image Capture did not complete within ${captureLimit} seconds." >> $output
+            echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $output
+            echo "Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $report
             break
         fi
     fi
 done
 
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
+
+sleep 5
+
