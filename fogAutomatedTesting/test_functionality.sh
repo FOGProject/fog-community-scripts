@@ -51,11 +51,11 @@ sleep 5
 
 
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
-sleep 60
+sleep 120
 $cwd/./deployImage.sh $testHost2VM $testHost2ID &
-sleep 60
+sleep 120
 $cwd/./deployImage.sh $testHost3VM $testHost3ID &
-sleep 60
+sleep 120
 
 
 echo "$(date +%x_%r) Waiting for image deployments to complete." >> $output
