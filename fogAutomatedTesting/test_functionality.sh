@@ -40,8 +40,10 @@ nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlia
 sleep 5
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/dev/postinitscripts/postinit.sh > /dev/null 2>&1
+timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/postdownloadscripts/postdownload.sh" > /dev/null 2>&1
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/postdownloadscripts/postdownload.sh > /dev/null 2>&1
+timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x /images/postdownloadscripts/postdownload.sh" > /dev/null 2>&1
 
 sleep 5
 
