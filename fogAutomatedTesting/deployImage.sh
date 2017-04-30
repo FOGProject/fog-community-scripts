@@ -31,7 +31,7 @@ sleep 5
 
 #reset the VM forcefully.
 echo "$(date +%x_%r) Resetting \"$vmGuest\" to begin deploy." >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
+#ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1
 
 
