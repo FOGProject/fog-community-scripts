@@ -35,6 +35,16 @@ echo "$(date +%x_%r) Restoring snapshot \"$blankSnapshot\" to \"$testHost3VM\"" 
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3VM $blankSnapshot" > /dev/null 2>&1
 sleep 5
 
+#Push new postinit and postdownload scripts to the test server.
+
+
+timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "rm -f /root/installBranch.sh"
+timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $i:/root/installBranch.sh
+
+
+testServerSshAlias
+
+
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
 sleep 10
 $cwd/./deployImage.sh $testHost2VM $testHost2ID &
