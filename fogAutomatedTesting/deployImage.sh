@@ -27,16 +27,11 @@ echo "$(date +%x_%r) Queuing deploy. vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmG
 cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":1}'"
 eval $cmd > /dev/null 2>&1 #Don't care that it says null.
 
-echo
-echo
-echo $cmd
-echo
-echo
-
 sleep 5
 
 #reset the VM forcefully.
 echo "$(date +%x_%r) Forcefully resetting \"$testHost1VM\" to begin capture." >> $output
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1"
 
 sleep 5
