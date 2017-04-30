@@ -14,8 +14,6 @@ fi
 
 
 #Here, we begin testing fog functionality.
-
-echo "getTestServerReady.sh"
 $cwd/./getTestServerReady.sh
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
 $cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
@@ -36,6 +34,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3V
 sleep 5
 
 #Push new postinit and postdownload scripts to the test server.
+echo "$(date +%x_%r) Sending new post scripts to \"$testServerSshAlias\"" >> $output
 nsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
 sleep 5
