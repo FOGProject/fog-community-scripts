@@ -34,5 +34,24 @@ echo "$(date +%x_%r) Forcefully resetting \"$testHost1VM\" to begin capture." >>
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1"
 
-sleep 5
+
+count=0
+#Need to monitor task progress somehow. Once done, should exit.
+while true; do
+    if [[ "$($cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
+        echo "$(date +%x_%r) Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $output
+        echo "Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $report
+        exit
+    else
+        count=$(($count + 1))
+        sleep 60
+        if [[ $count -gt $deployLimit ]]; then
+            echo "$(date +%x_%r) Image Capture did not complete within ${deployLimit} seconds." >> $output
+            echo "Image Capture did not complete within ${deployLimit} minutes." >> $report
+            break
+        fi
+    fi
+done
+
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1"
 
