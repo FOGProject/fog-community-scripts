@@ -26,12 +26,13 @@ sleep 5
 
 #Restore blank snapshots to the three test hosts.
 echo "$(date +%x_%r) Restoring snapshot \"$blankSnapshot\" to \"$testHost1VM\"" >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost1VM $blankSnapshot" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost1VM $blankSnapshot" > /dev/null 2>&1
+sleep 5
 echo "$(date +%x_%r) Restoring snapshot \"$blankSnapshot\" to \"$testHost2VM\"" >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost2VM $blankSnapshot" > /dev/null 2>&1"
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost2VM $blankSnapshot" > /dev/null 2>&1
+sleep 5
 echo "$(date +%x_%r) Restoring snapshot \"$blankSnapshot\" to \"$testHost3VM\"" >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3VM $blankSnapshot" > /dev/null 2>&1"
-
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3VM $blankSnapshot" > /dev/null 2>&1
 sleep 5
 
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
@@ -48,13 +49,13 @@ count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
     if [[ "$($cwd/./getTaskStatus.sh)" == "0" ]]; then
-        echo "$(date +%x_%r) Image deployments complete." >> $output
+        echo "$(date +%x_%r) All image deployments complete." >> $output
         break
     else
         count=$(($count + 1))
         sleep 60
         if [[ $count -gt $deployLimit ]]; then
-            echo "$(date +%x_%r) Image deployments did not complete within ${deployLimit} minutes." >> $output
+            echo "$(date +%x_%r) All image deployments did not complete within ${deployLimit} minutes." >> $output
             break
         fi
     fi
