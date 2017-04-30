@@ -9,17 +9,17 @@ if [[ -z $(command -v jq) ]]; then
     exit 1
 fi
 
-
-#Get the host ID if present.
+#Get the host ID if present. Having just a blank variable within brackets breaks it.
 if [[ -z $1 ]]; then
-    hostID=""
+    cmd="curl --silent -X GET -H 'content-type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/task/active -d '{\"hostID\": }'"
 else
     hostID=$1
+    cmd="curl --silent -X GET -H 'content-type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/task/active -d '{\"hostID\": [${hostID}]}'"
 fi
 
-
-cmd="curl --silent -X GET -H 'content-type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/task/active -d '{\"hostID\": [${hostID}]}'"
+#Run the command.
 result=$(eval $cmd)
+
 echo $result | jq '.count'
 
 
