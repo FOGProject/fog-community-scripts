@@ -13,6 +13,18 @@ if [[ -f $output ]]; then
 fi
 
 
+
+#Make sure test VMs are off.
+#Destory test hosts.
+echo "$(date +%x_%r) Making sure all testHosts are off." >> $output
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost1VM" > /dev/null 2>&1
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost2VM" > /dev/null 2>&1
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost3VM" > /dev/null 2>&1
+sleep 5
+
+
 #Here, we begin testing fog functionality.
 $cwd/./getTestServerReady.sh
 
