@@ -56,9 +56,8 @@ while [[ ! $count -gt $deployLimit ]]; do
     if [[ $status -eq 0 ]]; then
         echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${output}
         echo "Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${report}
-        exit
+        break
     fi
-    echo "$(date +%x_%r) still waiting for \"${vmGuest}\". Status is $(timeout ${sshTimeout} ${cwd}/getTaskStatus.sh ${vmGuestFogID})"
     let count+=1
     sleep 60
 done
