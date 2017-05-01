@@ -3,57 +3,70 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-#Ask for the VM guest name.
-if [[ -z $1 ]]; then
+# First argument is our vmname
+vmname="$1"
+# Second argument is the ID
+fogid="$2"
+
+# Ask for the VM guest name.
+if [[ -z $vmname ]]; then
     echo "$(date +%x_%r) No vmGuest name passed for argument 1, exiting." >> $output
     exit
 else
-    vmGuest=$1
+    vmGuest=$vmname
 fi
 
-
-#Ask for the FOG ID of the guest we are to use for deploy.
-if [[ -z $2 ]]; then
+# Ask for the FOG ID of the guest we are to use for deploy.
+if [[ -z $fogid ]]; then
     echo "$(date +%x_%r) No vmGuestFogID passed for argument 2, exiting." >> $output
     exit
 else
-    vmGuestFogID=$2
+    vmGuestFogID=$fogid
 fi
-
 
 echo "$(date +%x_%r) Queuing deploy. vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmGuestFogID}"\" >> $output
 
-#Queue the deploy jobs with the test fog server.
-cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":1}'"
-eval $cmd > /dev/null 2>&1 #Don't care that it says null.
+# Headers
+contenttype="-H 'Content-Type: application/json'"
+usertoken="-H 'fog-user-token: ${testServerUserToken}'"
+apitoken="-H 'fog-api-token: ${testServerApiToken}'"
+
+# Body to send
+body="'{\"taskTypeID\":1}'"
+
+# URL to call
+url="http://${testServerIP}/fog/host/${vmGuestFogID}/task"
+
+# Queue the deploy jobs with the test fog server.
+cmd="curl --silent -k ${contenttype} ${usertoken} ${apitoken} ${url} -d ${body}"
+eval $cmd >/dev/null 2>&1 # Don't care that it says null.
 
 sleep 5
 
-#reset the VM forcefully.
-echo "$(date +%x_%r) Resetting \"$vmGuest\" to begin deploy." >> $output
-#ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start \"$vmGuest\" > /dev/null 2>&1
+# Reset the VM forcefully.
+echo "$(date +%x_%r) Resetting \"${vmGuest}\" to begin deploy." >> ${output}
+ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "virsh start \"${vmGuest}\"" >/dev/null 2>&1
 
 
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
-while true; do
-    if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
-        echo "$(date +%x_%r) Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $output
-        echo "Completed image deployment to \"$vmGuest\" in about \"$count\" minutes." >> $report
+getStatus="${cwd}/getTaskStatus.sh ${vmGuestFogID}"
+while [[ ! $count -gt $deployLimit ]]; do
+    status=$($getStatus)
+    if [[ $status -eq 0 ]]; then
+        echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${output}
+        echo "Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${report}
         exit
-    else
-        count=$(($count + 1))
-        sleep 60
-        if [[ $count -gt $deployLimit ]]; then
-            echo "$(date +%x_%r) Image Capture did not complete within ${deployLimit} seconds." >> $output
-            echo "Image Capture did not complete within ${deployLimit} minutes." >> $report
-            break
-        fi
     fi
+    echo "$(date +%x_%r) still waiting for \"${vmGuest}\". Status is $(timeout ${sshTimeout} ${cwd}/getTaskStatus.sh ${vmGuestFogID})"
+    let count+=1
+    sleep 60
 done
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
+if [[ $count -gt $deployLimit ]]; then
+    echo "$(date +%x_%r) Image Capture did not complete within ${deployLimit} seconds." >> ${output}
+    echo "Image Capture did not complete within ${deployLimit} minutes." >> ${report}
+fi
+nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo wakeup")
+nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo get ready")
 sleep 5
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
-
+ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "virsh destroy \"${vmGuest}\"" >/dev/null 2>&1
