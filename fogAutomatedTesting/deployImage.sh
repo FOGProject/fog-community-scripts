@@ -62,8 +62,8 @@ while [[ ! $count -gt $deployLimit ]]; do
     sleep 60
 done
 if [[ $count -gt $deployLimit ]]; then
-    echo "$(date +%x_%r) Image Capture did not complete within ${deployLimit} seconds." >> ${output}
-    echo "Image Capture did not complete within ${deployLimit} minutes." >> ${report}
+    echo "$(date +%x_%r) Image deployment did not complete within ${deployLimit} minutes." >> ${output}
+    echo "Image deployment did not complete within ${deployLimit} minutes." >> ${report}
 fi
 nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo wakeup")
 nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo get ready")
