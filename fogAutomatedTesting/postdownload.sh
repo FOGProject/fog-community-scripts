@@ -43,7 +43,7 @@
 
 
 #Formulate filename.
-postDownloadOutput="/fogtesting/${hostname}_postdownload.log"
+postDownloadOutput="/var/log/postdownload.log"
 
 
 echo "#################### sfdisk -Vxl /dev/sda" > $postDownloadOutput

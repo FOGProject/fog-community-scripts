@@ -41,6 +41,12 @@ url="http://${testServerIP}/fog/host/${vmGuestFogID}/task"
 cmd="curl --silent -k ${contenttype} ${usertoken} ${apitoken} ${url} -d ${body}"
 eval $cmd >/dev/null 2>&1 # Don't care that it says null.
 
+#Make the hosts directory for logs on the share.
+rm -rf ${shareDir}/${vmGuest}
+mkdir -p ${shareDir}/${vmGuest}
+chown -R ${shareDir}
+
+
 sleep 5
 
 # Reset the VM forcefully.
@@ -69,3 +75,19 @@ nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} 
 nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo get ready")
 sleep 5
 ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "virsh destroy \"${vmGuest}\"" >/dev/null 2>&1
+
+#Attempt to pack the log files.
+publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+if [[ -d "${sharedDir}/${vmGuest}" ]]; then
+    rightNow=$(date +%Y-%m-%d_%H-%M)
+    mkdir -p ${webdir}/${vmGuest}
+    tar -cv ${sharedDir}/${vmGuest} | gzip > ${webdir}/${vmGuest}/${rightNow}_${vmGuest}.tar.gz
+    rm -rf ${sharedDir}/${vmGuest}
+    echo "$(date +%x_%r) Logs from ${vmGuest}: http://${publicIP}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${output}
+    echo "Logs from ${vmGuest}: http://${publicIP}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${report}
+else
+    echo "$(date +%x_%r) Logs could not be retrieved from ${vmGuest}" >> ${output}
+    echo "Logs could not be retrieved from ${vmGuest}" >> ${report}
+fi
+
+

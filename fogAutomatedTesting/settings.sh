@@ -28,6 +28,12 @@ webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"
 
 
+#The local shared directory where postinitscripts and postdownloadscripts puts stuff.
+sharedDir="/fogtesting"
+sharePermissions="fogtesting:fogtesting"
+
+
+
 #These settings are for the long-standing test FOG Server. It's for testing FOG Functionality.
 #SSH aliases and cert-based auth should be setup between the fogTesting box and this box.
 testServerUserToken="ZjBkMmE3YmI5NmUzZDcxYTliYzNkZTc4MmJhNTFiYTQ3Mzc2MTg5MzYxMThmNjA5NDYyMjllMTA5YzE0NWUxMjFiNzkyMTc5OTMwZjFhZGM5NWIxMTc3YWZmNTU2MmMwYjFhNjg0NjVmMTkyMGZkNDQxYmY0MzI1NWNkMzQyM2M="
@@ -57,4 +63,10 @@ testHost3VM="testHost3"
 testHost3ID="3"
 
 blankSnapshot="blank"
+
+
+
+
+
+
 
