@@ -33,13 +33,13 @@ rm -f $cwd/.$testServerSshAlias
 
 
 if [[ "$status" != "0" ]]; then
-    echo "$(date +%x_%r) Exit code was \"$status\", not continuing." >> $output
-    echo "Exit code was \"$status\", not continuing." >> $report
+    echo "$(date +%x_%r) \"$testServerSshAlias\" failed to update fog to \"$branch\", exit code was \"$status\"" >> $output
+    echo "\"$testServerSshAlias\" failed to update fog to \"$branch\", exit code was \"$status\"" >> $report
     exit $status
 fi
 
-echo "$(date +%x_%r) Update was successful." >> $output
-echo "Update was successful." >> $report
+echo "$(date +%x_%r) \"$testServerSshAlias\" updated fog to \"$branch\" successfully." >> $output
+echo "\"$testServerSshAlias\" updated fog to \"$branch\" successfully." >> $report
 
 exit 0
 
