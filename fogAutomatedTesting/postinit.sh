@@ -11,11 +11,6 @@ if [[ ! -z $mac ]]; then
     fi
 fi
 
-#Map to a windows/cifs share using username and password.
-mkdir /fogtesting
-mount -t cifs //10.0.0.25/fogtesting /fogtesting -o username=fogtesting -o password=testing,noexec
-
-
 
 #The below are from sourcing the funcs.sh script.
 # ftp		# IP Address from Storage Management-General
@@ -57,6 +52,10 @@ mount -t cifs //10.0.0.25/fogtesting /fogtesting -o username=fogtesting -o passw
 # caseasset		# Chassis Asset from Host Management-Inventory (from SMBIOS)
 # location		# Host Location (name) from Host Management-General
 
+
+#Map to a windows/cifs share using username and password.
+mkdir /fogtesting
+mount -t cifs //10.0.0.25/fogtesting /fogtesting -o username=fogtesting -o password=testing,noexec
 
 #Formulate filename.
 postInitOutput="/fogtesting/${hostname}_postinit.log"
