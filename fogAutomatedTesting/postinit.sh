@@ -58,7 +58,7 @@ fi
 sleep 15
 mv /var/log /var/log.old
 mkdir -p /var/log
-mount -t cifs //10.0.0.25/fogtesting/${hostname} /var/log -o username=fogtesting -o password=testing,noexec
+mount -t cifs //10.0.0.25/fogtesting/${hostname} /var/log -o username=fogtesting,password=testing
 mv /var/log.old/* /var/log
 rm -rf /var/log.old
 sleep 15
