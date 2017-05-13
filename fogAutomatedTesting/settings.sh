@@ -27,9 +27,10 @@ output="/root/output.log"
 webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"
 domainName="perpetuum.io"
-publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 
-
+#This is how you would use your Public IP instead of a domain name:
+#publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+#domainName=$publicIP
 
 #The local shared directory where postinitscripts and postdownloadscripts puts stuff.
 shareDir="/fogtesting"
