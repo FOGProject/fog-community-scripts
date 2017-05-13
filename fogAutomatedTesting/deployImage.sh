@@ -79,14 +79,13 @@ sleep 5
 ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "virsh destroy \"${vmGuest}\"" >/dev/null 2>&1
 
 #Attempt to pack the log files.
-publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 if [[ -d "${shareDir}/${vmGuest}" ]]; then
     rightNow=$(date +%Y-%m-%d_%H-%M)
     mkdir -p ${webdir}/${vmGuest}
     tar -cv ${shareDir}/${vmGuest} | gzip > ${webdir}/${vmGuest}/${rightNow}_${vmGuest}.tar.gz
     rm -rf ${shareDir}/${vmGuest}
-    echo "$(date +%x_%r) Logs from ${vmGuest}: http://${publicIP}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${output}
-    echo "Logs from ${vmGuest}: http://${publicIP}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${report}
+    echo "$(date +%x_%r) Logs from ${vmGuest}: http://${domainName}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${output}
+    echo "Logs from ${vmGuest}: http://${domainName}:20080/fog_distro_check/${vmGuest}/${rightNow}_${vmGuest}.tar.gz" >> ${report}
 else
     echo "$(date +%x_%r) Logs could not be retrieved from ${vmGuest}" >> ${output}
     echo "Logs could not be retrieved from ${vmGuest}" >> ${report}

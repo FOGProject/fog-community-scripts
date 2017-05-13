@@ -26,6 +26,9 @@ output="/root/output.log"
 
 webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"
+domainName="perpetuum.io"
+publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
+
 
 
 #The local shared directory where postinitscripts and postdownloadscripts puts stuff.

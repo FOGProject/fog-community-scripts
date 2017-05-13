@@ -92,8 +92,7 @@ chown -R $permissions $webdir
 rightNow=$(date +%Y-%m-%d_%H-%M)
 mv $output $webdir/reports/${rightNow}.log
 chown $permissions $webdir/reports/${rightNow}.log
-publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 
 
-echo "Full Report: http://$publicIP:20080/fog_distro_check/reports/${rightNow}.log" >> $report
+echo "Full Report: http://$domainName:20080/fog_distro_check/reports/${rightNow}.log" >> $report
 cat $report | slacktee.sh -p
