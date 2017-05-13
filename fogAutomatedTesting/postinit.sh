@@ -55,11 +55,13 @@ fi
 
 #Map to a windows/cifs share using username and password.
 #We mount to /var/log so we can caputre all logs in FOS.
+sleep 15
 mv /var/log /var/log.old
 mkdir -p /var/log
 mount -t cifs //10.0.0.25/fogtesting/${hostname} /var/log -o username=fogtesting -o password=testing,noexec
 mv /var/log.old/* /var/log
 rm -rf /var/log.old
+sleep 15
 
 #Formulate filename.
 postInitOutput="/var/log/postinit.log"

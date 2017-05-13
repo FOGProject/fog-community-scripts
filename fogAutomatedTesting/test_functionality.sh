@@ -26,7 +26,7 @@ sleep 5
 
 
 #Here, we begin testing fog functionality.
-$cwd/./getTestServerReady.sh
+#$cwd/./getTestServerReady.sh
 
 
 #Push new postinit and postdownload scripts to the test server.
@@ -43,8 +43,11 @@ timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x
 
 sleep 5
 
+
+#Set host images.
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
-$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+#Capture.
+#$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
 
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
