@@ -31,33 +31,16 @@ $cwd/./getTestServerReady.sh
 #Clear all existing tasks on test server.
 $cwd/./cancelTasks.sh
 
-
-
-#Push new postinit and postdownload scripts to the test server.
-echo "$(date +%x_%r) Sending new post scripts to \"$testServerSshAlias\"" >> $output
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
-sleep 5
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
-timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/dev/postinitscripts/postinit.sh > /dev/null 2>&1
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/postdownloadscripts/postdownload.sh" > /dev/null 2>&1
-timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/postdownloadscripts/postdownload.sh > /dev/null 2>&1
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x /images/postdownloadscripts/postdownload.sh" > /dev/null 2>&1
-
-sleep 5
-
-
 #Set host images.
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
+
 #Capture.
 $cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
 
+#Restore blank snapshots to the three test hosts.
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
 sleep 5
-
-#Restore blank snapshots to the three test hosts.
 echo "$(date +%x_%r) Restoring snapshot \"$blankSnapshot\" to \"$testHost1VM\"" >> $output
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost1VM $blankSnapshot" > /dev/null 2>&1
 sleep 5
@@ -95,8 +78,8 @@ while true; do
     fi
 done
 
-sleep 120 #Make this value double that of the unit of measurement.
-          #This is so the logs fromthe backgrounded deployImage.sh appear in the right order.
+sleep 120 #Make this value do that of the unit of measurement.
+          #This is so the logs from the backgrounded deployImage.sh appear in the right order.
 
 if [[ $count -gt $deployLimit ]]; then
     echo "$(date +%x_%r) All image deployments did not complete within ${deployLimit} minutes." >> $output
@@ -120,9 +103,6 @@ echo "$(date +%x_%r) Testing complete." >> $output
 
 
 #Make the imaging logs available.
-
-
-
 
 
 
