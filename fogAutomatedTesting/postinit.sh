@@ -67,8 +67,8 @@ sleep 15
 postInitOutput="/var/log/postinit.log"
 
 
-echo "#################### sfdisk -Vxl /dev/sda" > $postInitOutput
-sfdisk -Vxl /dev/sda >> $postInitOutput
+echo "#################### sfdisk -Fl /dev/sda" > $postInitOutput
+sfdisk -Fl /dev/sda >> $postInitOutput
 echo "" >> $postInitOutput
 echo "" >> $postInitOutput
 echo "#################### lsblk" >> $postInitOutput

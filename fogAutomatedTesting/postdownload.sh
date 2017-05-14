@@ -46,8 +46,8 @@
 postDownloadOutput="/var/log/postdownload.log"
 
 
-echo "#################### sfdisk -Vxl /dev/sda" > $postDownloadOutput
-sfdisk -Vxl /dev/sda >> $postDownloadOutput
+echo "#################### sfdisk -Fl /dev/sda" > $postDownloadOutput
+sfdisk -Fl /dev/sda >> $postDownloadOutput
 echo "" >> $postDownloadOutput
 echo "" >> $postDownloadOutput
 echo "#################### lsblk" >> $postDownloadOutput

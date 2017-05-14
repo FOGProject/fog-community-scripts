@@ -52,6 +52,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $testHost3V
 sleep 5
 
 
+#Deploy image to the three test hosts with two minutes between each to allow for proper queuing. 
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
 sleep 120
 $cwd/./deployImage.sh $testHost2VM $testHost2ID &
