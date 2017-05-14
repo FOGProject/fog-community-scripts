@@ -26,7 +26,11 @@ sleep 5
 
 
 #Here, we begin testing fog functionality.
-#$cwd/./getTestServerReady.sh
+$cwd/./getTestServerReady.sh
+
+#Clear all existing tasks on test server.
+$cwd/./cancelTasks.sh
+
 
 
 #Push new postinit and postdownload scripts to the test server.
@@ -47,7 +51,7 @@ sleep 5
 #Set host images.
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
 #Capture.
-#$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
 
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
@@ -101,6 +105,8 @@ else
 fi
 
 
+#Clear all existing tasks on test server.
+$cwd/./cancelTasks.sh
 
 #Destory test hosts, shutdown test server.
 echo "$(date +%x_%r) Shutting down all test hosts and test server." >> $output
