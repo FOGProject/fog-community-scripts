@@ -47,7 +47,7 @@ echo "\"$testServerSshAlias\" updated fog to \"$branch\" successfully." >> $repo
 echo "$(date +%x_%r) Sending new post scripts to \"$testServerSshAlias\"" >> $output
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo wakeup")
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "echo get ready")
-isleep 5
+sleep 5
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "rm -f /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/postinit.sh $testServerSshAlias:/images/dev/postinitscripts/postinit.sh > /dev/null 2>&1
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $testServerSshAlias "chmod +x /images/dev/postinitscripts/postinit.sh" > /dev/null 2>&1
