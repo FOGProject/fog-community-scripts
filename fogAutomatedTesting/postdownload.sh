@@ -4,7 +4,6 @@
 postDownloadOutput="/fogtesting/postdownload.log"
 touch $postDownloadOutput
 
-tar -zcvf postdownloadlogs.tar.gz /tmp/ -C /fogtesting
 
 echo "#################### sfdisk -Fl /dev/sda" > $postDownloadOutput
 sfdisk -Fl /dev/sda >> $postDownloadOutput

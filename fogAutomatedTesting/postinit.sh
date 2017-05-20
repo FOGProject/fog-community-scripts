@@ -9,12 +9,23 @@ mkdir /fogtesting
 mount -t cifs //10.0.0.25/fogtesting/$hostname /fogtesting -o username=fogtesting -o password=testing
 
 
+#Setup backgrounded loop that collects logs.
+loop="/backgroundloop.sh"
+echo "#!/bin/bash" > $loop
+echo "while true; do" >> $loop
+echo "    if [[ -f /fogtesting/tar-log.tar.gz ]]; then" >> $loop
+echo "        rm -f /fogtesting/tar-log.tar.gz" >> $loop
+echo "    fi" >> $loop
+echo "    tar -zcvf /fogtesting/var-log.tar.gz /var/log" >> $loop
+echo "    sleep 25" >> $loop
+echo "done" >> $loop
+chmod +x $loop
+$loop &
+
+
 
 postInitOutput="/fogtesting/postinit.log"
 touch $postInitOutput
-
-tar -zcvf postinitlogs.tar.gz /tmp/ -C /fogtesting
-
 
 echo "#################### sfdisk -Fl /dev/sda" > $postInitOutput
 sfdisk -Fl /dev/sda >> $postInitOutput
