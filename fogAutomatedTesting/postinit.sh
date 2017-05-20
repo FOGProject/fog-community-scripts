@@ -13,10 +13,10 @@ mount -t cifs //10.0.0.25/fogtesting/$hostname /fogtesting -o username=fogtestin
 loop="/backgroundloop.sh"
 echo "#!/bin/bash" > $loop
 echo "while true; do" >> $loop
-echo "    if [[ -f /fogtesting/tar-log.tar.gz ]]; then" >> $loop
-echo "        rm -f /fogtesting/tar-log.tar.gz" >> $loop
+echo "    if [[ -f /fogtesting/var-log.tar ]]; then" >> $loop
+echo "        rm -f /fogtesting/var-log.tar" >> $loop
 echo "    fi" >> $loop
-echo "    tar -zcvf /fogtesting/var-log.tar.gz /var/log" >> $loop
+echo "    tar -cf /fogtesting/var-log.tar -C /var/log ." >> $loop
 echo "    sleep 25" >> $loop
 echo "done" >> $loop
 chmod +x $loop
