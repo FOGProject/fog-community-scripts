@@ -30,7 +30,7 @@ echo "$(date +%x_%r) Queuing deploy. vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmG
 #Make the hosts directory for logs on the share.
 rm -rf ${shareDir}/${vmGuest}
 mkdir -p ${shareDir}/${vmGuest}
-chown -R ${shareDir}
+chown -R $sharePermissions $shareDir
 
 
 # Headers
