@@ -104,6 +104,53 @@ echo "$(date +%x_%r) Testing complete." >> $output
 
 
 #Make the imaging logs available.
+rightNow=$(date +%Y-%m-%d_%H-%M)
+
+if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
+    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
+    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
+    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
+else
+    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
+    echo "$testHost1VM /var/log could not be retrieved." >> $report
+fi    
+
+if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
+    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
+    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
+    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
+else
+    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
+    echo "$testHost1VM /var/log could not be retrieved." >> $report
+fi
+
+if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
+    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
+    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
+    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
+else
+    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
+    echo "$testHost1VM /var/log could not be retrieved." >> $report
+fi
+
+
+
+
+
+
+
+
+
+
+
+
+
+mv ${shareDir}/${vmGuest}/postinit.log ${webdir}/${vmGuest}/${rightNow}_postinit.log
+mv ${shareDir}/${vmGuest}/postdownload.log ${webdir}/${vmGuest}/${rightNow}_postdownload.log
+
+
+
+
 
 
 
