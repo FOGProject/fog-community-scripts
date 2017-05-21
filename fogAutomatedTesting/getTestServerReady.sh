@@ -9,7 +9,7 @@ branch="working"
 
 #Start the server up.
 
-if [[ $(virsh domstate $testServerVMName) == "running" ]]; then
+if [[ $(ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh domstate $testServerVMName") == "running" ]]; then
     echo "$(date +%x_%r) \"$testServerVMName\" already running."
 else
     echo "$(date +%x_%r) Starting up \"$testServerVMName\"" >> $output

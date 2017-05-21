@@ -49,7 +49,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh snapshot-revert $vmGuest $s
 
 
 #Gracefully shutdown VM incase it's on.
-if [[ $(virsh domstate $vmGuest) == "running" ]]; then
+if [[ $(ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh domstate $vmGuest") == "running" ]]; then
     echo "$(date +%x_%r) Asking \"$vmGuest\" to gracefully shutdown." >> $output
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown \"$vmGuest\" > /dev/null 2>&1
     sleep 30
@@ -74,7 +74,7 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testHost1VM" > /dev/
 echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
 
 count=0
-#Need to monitor task progress somehow. Once done, should exit.
+#Need to monitor task progress somehow.
 while true; do
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
