@@ -70,7 +70,7 @@ while true; do
         break
     else
         count=$(($count + 1))
-        sleep 60
+        sleep $deployLimitUnit
         if [[ $count -gt $deployLimit ]]; then
             #Kill the monitoring scripts if they are still running.
             pkill deployImage.sh
@@ -79,7 +79,7 @@ while true; do
     fi
 done
 
-sleep 120 #Make this value double that of the unit of measurement.
+sleep $(( $deployLimitUnit * 2 )) #Make this value double that of the unit of measurement.
           #This is so the logs from the backgrounded deployImage.sh appear in the right order.
 
 if [[ $count -gt $deployLimit ]]; then

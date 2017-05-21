@@ -67,7 +67,7 @@ while [[ ! $count -gt $deployLimit ]]; do
         break
     fi
     let count+=1
-    sleep 60
+    sleep $deployLimitUnit
 done
 if [[ $count -gt $deployLimit ]]; then
     echo "$(date +%x_%r) Image deployment did not complete within ${deployLimit} minutes." >> ${output}

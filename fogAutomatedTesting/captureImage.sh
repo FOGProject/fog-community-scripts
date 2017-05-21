@@ -67,7 +67,7 @@ while true; do
         break
     else
         count=$(($count + 1))
-        sleep 60
+        sleep $captureLimitUnit
         if [[ $count -gt $captureLimit ]]; then
             echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $output
             echo "Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $report
