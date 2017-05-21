@@ -61,6 +61,12 @@ count=0
 getStatus="${cwd}/getTaskStatus.sh ${vmGuestFogID}"
 while [[ ! $count -gt $deployLimit ]]; do
     status=$($getStatus)
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh screenshot $vmGuest /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
+    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/$vmGuest > /dev/null 2>&1
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
+
     if [[ $status -eq 0 ]]; then
         echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${output}
         echo "Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${report}
