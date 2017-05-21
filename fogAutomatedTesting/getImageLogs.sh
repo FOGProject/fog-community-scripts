@@ -36,9 +36,9 @@ else
 fi
 
 #Screenshots.
-count=$(ls -1 ${shareDir}/${testHost}/*.ppm 2>/dev/null | wc -l)
+count=$(ls -1 ${shareDir}/${testHost}/screenshots/*.ppm 2>/dev/null | wc -l)
 if [[ $count -gt 0 ]]; then
-    tar -cf ${webdir}/${testHost}/${rightNow}_deploy_screenshots.tar -C ${shareDir}/${testHost}/*.ppm .
+    tar -cf ${webdir}/${testHost}/${rightNow}_deploy_screenshots.tar -C ${shareDir}/${testHost}/screenshots .
     echo "$(date +%x_%r) \"$testHost\" deploy screenshots: ${domainName}/${testHost}/${rightNow}_deploy_screenshots.tar" >> $output
     echo "\"$testHost\" deploy screenshots: ${domainName}/${testHost}/${rightNow}_deploy_screenshots.tar" >> $report
 else

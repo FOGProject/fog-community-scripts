@@ -29,7 +29,7 @@ echo "$(date +%x_%r) Queuing deploy. vmGuest=\"${vmGuest}\" vmGuestFogID=\"${vmG
 
 #Make the hosts directory for logs on the share.
 rm -rf ${shareDir}/${vmGuest}
-mkdir -p ${shareDir}/${vmGuest}
+mkdir -p ${shareDir}/${vmGuest}/screenshots
 chown -R $sharePermissions $shareDir
 
 
@@ -64,7 +64,7 @@ while [[ ! $count -gt $deployLimit ]]; do
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh screenshot $vmGuest /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
-    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/$vmGuest > /dev/null 2>&1
+    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/${vmGuest}/screenshots > /dev/null 2>&1
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ $status -eq 0 ]]; then

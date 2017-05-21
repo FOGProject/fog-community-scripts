@@ -39,7 +39,7 @@ echo "Beginning capture testing. snapshot=\"${snapshot}\" vmGuest=\"${vmGuest}\"
 
 #Make the hosts directory for logs on the share.
 rm -rf ${shareDir}/${vmGuest}
-mkdir -p ${shareDir}/${vmGuest}
+mkdir -p ${shareDir}/${vmGuest}/screenshots
 chown -R $sharePermissions $shareDir
 
 
@@ -79,7 +79,7 @@ while true; do
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh screenshot $vmGuest /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
-    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/$vmGuest > /dev/null 2>&1
+    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/${vmGuest}/screenshots > /dev/null 2>&1
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
@@ -100,9 +100,9 @@ done
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
 
 #Screenshots.
-count=$(ls -1 ${shareDir}/${vmGuest}/*.ppm 2>/dev/null | wc -l)
+count=$(ls -1 ${shareDir}/${vmGuest}/screenshots/*.ppm 2>/dev/null | wc -l)
 if [[ $count -gt 0 ]]; then
-    tar -cf ${webdir}/${vmGuest}/${rightNow}_capture_screenshots.tar -C ${shareDir}/${vmGuest}/*.ppm .
+    tar -cf ${webdir}/${vmGuest}/${rightNow}_capture_screenshots.tar -C ${shareDir}/${vmGuest}/screenshots .
     echo "$(date +%x_%r) \"$vmGuest\" capture screenshots: ${domainName}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $output
     echo "\"$vmGuest\" capture screenshots: ${domainName}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $report
 else
