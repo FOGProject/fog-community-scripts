@@ -18,10 +18,10 @@ if [[ -z $task ]]; then
 fi
 
 
-if [[ -f ${shareDir}/${testHost}/var-log.tar ]]; then
-    mv ${shareDir}/${testHost}/var-log.tar ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
-    echo "$(date +%x_%r) \"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar" >> $output
-    echo "\"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar" >> $report
+if [[ -f ${shareDir}/${testHost}/var-log.tar.gz ]]; then
+    mv ${shareDir}/${testHost}/var-log.tar.gz ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz
+    echo "$(date +%x_%r) \"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $output
+    echo "\"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} /var/log could not be retrieved." >> $output
     echo "\"$testHost\" ${task} /var/log could not be retrieved." >> $report
@@ -48,9 +48,9 @@ fi
 #Screenshots.
 count=$(ls -1 ${shareDir}/${testHost}/screenshots/*.ppm 2>/dev/null | wc -l)
 if [[ $count -gt 0 ]]; then
-    tar -cf ${webdir}/${testHost}/${rightNow}_${task}_screenshots.tar -C ${shareDir}/${testHost}/screenshots .
-    echo "$(date +%x_%r) \"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar" >> $output
-    echo "\"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar" >> $report
+    tar -czf ${webdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz -C ${shareDir}/${testHost}/screenshots .
+    echo "$(date +%x_%r) \"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $output
+    echo "\"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} screenshots could be retrieved." >> $output
     echo "\"$testHost\" ${task} screenshots could be retrieved." >> $report

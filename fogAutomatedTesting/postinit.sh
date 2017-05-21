@@ -16,7 +16,7 @@ echo "while true; do" >> $loop
 echo "    if [[ -f /fogtesting/var-log.tar ]]; then" >> $loop
 echo "        rm -f /fogtesting/var-log.tar" >> $loop
 echo "    fi" >> $loop
-echo "    tar -cf /fogtesting/var-log.tar -C /var/log ." >> $loop
+echo "    tar -czf /fogtesting/var-log.tar.gz -C /var/log ." >> $loop
 echo "    sleep 25" >> $loop
 echo "done" >> $loop
 chmod +x $loop
