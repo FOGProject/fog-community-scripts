@@ -31,6 +31,7 @@ output="/root/output.log"
 webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"
 domainName="perpetuum.io"
+netdir="/fog_distro_check"
 port=":20080"
 
 #This is how you would use your Public IP instead of a domain name:

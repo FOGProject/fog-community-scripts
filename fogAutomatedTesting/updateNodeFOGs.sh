@@ -112,8 +112,8 @@ do
 
 
         if [[ ! -z $foglog || ! -z $commit  ]]; then
-            echo "Fog log: http://${domainName}${port}/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $report
-            echo "$(date +%x_%r) Fog log: http://${domainName}${port}/fog_distro_check/$i/fog/${rightNow}_fog.log" >> $output
+            echo "Fog log: http://${domainName}${port}${netdir}/$i/fog/${rightNow}_fog.log" >> $report
+            echo "$(date +%x_%r) Fog log: http://${domainName}${port}${netdir}/$i/fog/${rightNow}_fog.log" >> $output
         else
             rm -f $webdir/$i/fog/${rightNow}_fog.log > /dev/null 2>&1
             echo "No fog log could be retrieved from $i" >> $report
@@ -121,8 +121,8 @@ do
         fi
  
         if [[ -f $webdir/$i/fog/${rightNow}_apache.log ]]; then
-            echo "Apache log: http://${domainName}${port}/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $report
-            echo "$(date +%x_%r) Apache log: http://${domainName}${port}/fog_distro_check/$i/fog/${rightNow}_apache.log" >> $output
+            echo "Apache log: http://${domainName}${port}${netdir}/$i/fog/${rightNow}_apache.log" >> $report
+            echo "$(date +%x_%r) Apache log: http://${domainName}${port}${netdir}/$i/fog/${rightNow}_apache.log" >> $output
         else
             echo "No apache log could be retrieved from $i" >> $report
             echo "$(date +%x_%r) No apache log could be retrieved from $i" >> $output

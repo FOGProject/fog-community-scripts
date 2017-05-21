@@ -56,8 +56,8 @@ do
         timeout $sshTime scp -o ConnectTimeout=$sshTimeout $i:/root/update_output.txt $webdir/$i/os/${rightNow}.log
         if [[ -f $webdir/$i/os/${rightNow}.log ]]; then
             chown $permissions $webdir/$i/os/${rightNow}.log
-            echo "$i failed to update OS, logs here: http://${domainName}${port}/fog_distro_check/$i/os/$rightNow.log" >> $report
-            echo "$(date +%x_%r) $i failed to update OS, logs here: http://${domainName}${port}/fog_distro_check/$i/os/$rightNow.log" >> $output
+            echo "$i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $report
+            echo "$(date +%x_%r) $i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $output
         else
             echo "$i failed to update OS, no log could be retrieved." >> $report
             echo "$(date +%x_%r) $i failed to update OS, no log could be retrieved." >> $output
