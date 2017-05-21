@@ -45,4 +45,9 @@ else
 
 fi
 
+#Cleanup.
+rm -rf ${shareDir}/${1}
+
+
+
 

@@ -96,6 +96,8 @@ else
 
 fi
 
+#Cleanup
+rm -rf ${shareDir}/${vmGuest}
 
 sleep 5
 
