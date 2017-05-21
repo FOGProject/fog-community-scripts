@@ -99,20 +99,8 @@ done
 
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $vmGuest" > /dev/null 2>&1
 
-#Screenshots.
-count=$(ls -1 ${shareDir}/${vmGuest}/screenshots/*.ppm 2>/dev/null | wc -l)
-if [[ $count -gt 0 ]]; then
-    tar -cf ${webdir}/${vmGuest}/${rightNow}_capture_screenshots.tar -C ${shareDir}/${vmGuest}/screenshots .
-    echo "$(date +%x_%r) \"$vmGuest\" capture screenshots: http://${domainName}${port}${netdir}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $output
-    echo "\"$vmGuest\" capture screenshots: http://${domainName}${port}${netdir}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $report
-else
-    echo "$(date +%x_%r) \"$vmGuest\" No capture screenshots could be retrieved." >> $output
-    echo "\"$vmGuest\" No capture screenshots could be retrieved." >> $report
-
-fi
-
-#Cleanup
-rm -rf ${shareDir}/${vmGuest}
+#Get capture logs.
+$cwd/./getImageLogs.sh $vmGuest capture
 
 sleep 5
 
