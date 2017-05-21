@@ -79,7 +79,7 @@ while true; do
     fi
 done
 
-sleep 120 #Make this value do that of the unit of measurement.
+sleep 120 #Make this value double that of the unit of measurement.
           #This is so the logs from the backgrounded deployImage.sh appear in the right order.
 
 if [[ $count -gt $deployLimit ]]; then
@@ -100,56 +100,15 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost1VM" > /de
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost2VM" > /dev/null 2>&1
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $testHost3VM" > /dev/null 2>&1
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $testServer" > /dev/null 2>&1
-echo "$(date +%x_%r) Testing complete." >> $output
 
 
 #Make the imaging logs available.
-rightNow=$(date +%Y-%m-%d_%H-%M)
-
-if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
-    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
-    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
-    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
-else
-    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
-    echo "$testHost1VM /var/log could not be retrieved." >> $report
-fi    
-
-if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
-    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
-    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
-    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
-else
-    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
-    echo "$testHost1VM /var/log could not be retrieved." >> $report
-fi
-
-if [[ -f ${shareDir}/${testHost1VM}/var-log.tar ]]; then
-    mv ${shareDir}/${testHost1VM}/var-log.tar ${webdir}/${testHost1VM}/${rightNow}_var-log.tar
-    echo "$(date +%x_%r) $testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $output
-    echo "$testHost1VM /var/log here: ${domanName}/${testHost1VM}/${rightNow}_var-log.tar" >> $report
-else
-    echo "$(date +%x_%r) $testHost1VM /var/log could not be retrieved." >> $output
-    echo "$testHost1VM /var/log could not be retrieved." >> $report
-fi
+$cwd/./getImageLogs $testHost1VM
+$cwd/./getImageLogs $testHost2VM
+$cwd/./getImageLogs $testHost3VM
 
 
-
-
-
-
-
-
-
-
-
-
-
-mv ${shareDir}/${vmGuest}/postinit.log ${webdir}/${vmGuest}/${rightNow}_postinit.log
-mv ${shareDir}/${vmGuest}/postdownload.log ${webdir}/${vmGuest}/${rightNow}_postdownload.log
-
-
-
+echo "$(date +%x_%r) Testing complete." >> $output
 
 
 
