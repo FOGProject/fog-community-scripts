@@ -19,7 +19,8 @@ fi
 
 
 if [[ -f ${shareDir}/${testHost}/var-log.tar.gz ]]; then
-    mv ${shareDir}/${testHost}/var-log.tar.gz ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz
+    mv ${shareDir}/${testHost}/var-log.tar ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
+    gzip ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
     echo "$(date +%x_%r) \"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $output
     echo "\"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $report
 else
