@@ -12,6 +12,10 @@ if [[ -f $output ]]; then
     rm -f $output
 fi
 
+#Make needed directories.
+mkdir -p ${webdir}/${testHost1VM}
+mkdir -p ${webdir}/${testHost2VM}
+mkdir -p ${webdir}/${testHost3VM}
 
 
 #Make sure test VMs are off.
