@@ -97,7 +97,7 @@ while true; do
     fi
 done
 
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
+ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $vmGuest" > /dev/null 2>&1
 
 #Screenshots.
 count=$(ls -1 ${shareDir}/${vmGuest}/screenshots/*.ppm 2>/dev/null | wc -l)
