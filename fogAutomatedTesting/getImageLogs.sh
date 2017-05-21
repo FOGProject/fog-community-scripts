@@ -36,12 +36,12 @@ fi
 #Screenshots.
 count=$(ls -1 ${shareDir}/${1}/*.ppm 2>/dev/null | wc -l)
 if [[ $count -gt 0 ]]; then
-    tar -cf ${webdir}/{$1}/${rightNow}_screenshots.tar -C ${shareDir}/${1}/*.ppm .
-    echo "$(date +%x_%r) \"$1\" screenshots: ${domanName}/${1}/${rightNow}_screenshots.tar" >> $output
-    echo "\"$1\" screenshots: ${domanName}/${1}/${rightNow}_screenshots.tar" >> $report
+    tar -cf ${webdir}/${1}/${rightNow}_deploy_screenshots.tar -C ${shareDir}/${1}/*.ppm .
+    echo "$(date +%x_%r) \"$1\" deploy screenshots: ${domanName}/${1}/${rightNow}_deploy_screenshots.tar" >> $output
+    echo "\"$1\" deploy screenshots: ${domanName}/${1}/${rightNow}_deploy_screenshots.tar" >> $report
 else
-    echo "$(date +%x_%r) \"$1\" No screenshots could be retrieved." >> $output
-    echo "\"$1\" No screenshots could be retrieved." >> $report
+    echo "$(date +%x_%r) \"$1\" No deploy screenshots could be retrieved." >> $output
+    echo "\"$1\" No deploy screenshots could be retrieved." >> $report
 
 fi
 

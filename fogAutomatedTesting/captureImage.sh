@@ -61,6 +61,12 @@ echo "$(date +%x_%r) Waiting for capture to complete..." >> $output
 count=0
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+    nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh screenshot $vmGuest /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
+    timeout $sshTime scp -o ConnectTimeout=$sshTimeout $hostsystem:/root/${vmGuest}_${count}.ppm ${shareDir}/$vmGuest > /dev/null 2>&1
+    timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
+
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
         echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
         echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
@@ -77,6 +83,19 @@ while true; do
 done
 
 ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy \"$vmGuest\" > /dev/null 2>&1
+
+#Screenshots.
+count=$(ls -1 ${shareDir}/${vmGuest}/*.ppm 2>/dev/null | wc -l)
+if [[ $count -gt 0 ]]; then
+    tar -cf ${webdir}/${vmGuest}/${rightNow}_capture_screenshots.tar -C ${shareDir}/${vmGuest}/*.ppm .
+    echo "$(date +%x_%r) \"$vmGuest\" capture screenshots: ${domanName}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $output
+    echo "\"$vmGuest\" capture screenshots: ${domanName}/${vmGuest}/${rightNow}_capture_screenshots.tar" >> $report
+else
+    echo "$(date +%x_%r) \"$vmGuest\" No capture screenshots could be retrieved." >> $output
+    echo "\"$vmGuest\" No capture screenshots could be retrieved." >> $report
+
+fi
+
 
 sleep 5
 
