@@ -103,9 +103,9 @@ ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $testServer" > /de
 
 
 #Make the imaging logs available.
-$cwd/./getImageLogs $testHost1VM
-$cwd/./getImageLogs $testHost2VM
-$cwd/./getImageLogs $testHost3VM
+$cwd/./getImageLogs.sh $testHost1VM
+$cwd/./getImageLogs.sh $testHost2VM
+$cwd/./getImageLogs.sh $testHost3VM
 
 
 echo "$(date +%x_%r) Testing complete." >> $output
