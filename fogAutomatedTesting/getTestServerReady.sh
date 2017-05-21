@@ -8,10 +8,14 @@ branch="working"
 
 
 #Start the server up.
-echo "$(date +%x_%r) Starting up \"$testServerVMName\"" >> $output
-ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testServerVMName > /dev/null 2>&1"
-sleep 60
 
+if [[ $(virsh domstate $testServerVMName) == "running" ]]; then
+    echo "$(date +%x_%r) \"$testServerVMName\" already running."
+else
+    echo "$(date +%x_%r) Starting up \"$testServerVMName\"" >> $output
+    ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $testServerVMName > /dev/null 2>&1"
+    sleep 60
+fi
 
 
 #Create hidden file for server - for status reporting.
