@@ -31,6 +31,7 @@ output="/root/output.log"
 webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"
 domainName="perpetuum.io"
+port="20080"
 
 #This is how you would use your Public IP instead of a domain name:
 #publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)

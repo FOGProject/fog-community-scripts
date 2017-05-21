@@ -94,5 +94,5 @@ mv $output $webdir/reports/${rightNow}.log
 chown $permissions $webdir/reports/${rightNow}.log
 
 
-echo "Full Report: http://$domainName:20080/fog_distro_check/reports/${rightNow}.log" >> $report
+echo "Full Report: http://$domainName:${port}/fog_distro_check/reports/${rightNow}.log" >> $report
 cat $report | slacktee.sh -p
