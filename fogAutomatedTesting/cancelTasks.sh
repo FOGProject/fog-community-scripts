@@ -11,7 +11,7 @@ fi
 
 #Get the host ID if present. If present, just delete host's tasks. Else, delete all tasks.
 if [[ -z $1 ]]; then
-    echo "$(date +%x_%r) Canceling all tasks on \"testServerIP\"" >> $output
+    echo "$(date +%x_%r) Canceling all tasks on \"$testServerIP\"" >> $output
     cmd="timeout $sshTimeout curl --silent -X DELETE -H 'content-type: application/json' -H 'fog-user-token: ${testServerUserToken}' -H 'fog-api-token: ${testServerApiToken}' http://${testServerIP}/fog/task/cancel -d '{\"typeID\": [1,2] }'"
 else
     hostID=$1
