@@ -18,7 +18,7 @@ if [[ -z $task ]]; then
 fi
 
 
-if [[ -f ${shareDir}/${testHost}/var-log.tar.gz ]]; then
+if [[ -f ${shareDir}/${testHost}/var-log.tar ]]; then
     mv ${shareDir}/${testHost}/var-log.tar ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
     gzip ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
     echo "$(date +%x_%r) \"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $output
@@ -50,8 +50,8 @@ fi
 count=$(ls -1 ${shareDir}/${testHost}/screenshots/*.ppm 2>/dev/null | wc -l)
 if [[ $count -gt 0 ]]; then
     tar -czf ${webdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz -C ${shareDir}/${testHost}/screenshots .
-    echo "$(date +%x_%r) \"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $output
-    echo "\"$testHost\" deploy screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $report
+    echo "$(date +%x_%r) \"$testHost\" ${task} screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $output
+    echo "\"$testHost\" ${task} screenshots: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_screenshots.tar.gz" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} screenshots could be retrieved." >> $output
     echo "\"$testHost\" ${task} screenshots could be retrieved." >> $report
