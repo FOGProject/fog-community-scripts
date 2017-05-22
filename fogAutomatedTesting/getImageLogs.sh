@@ -21,8 +21,8 @@ fi
 if [[ -f ${shareDir}/${testHost}/var-log.tar ]]; then
     mv ${shareDir}/${testHost}/var-log.tar ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
     gzip ${webdir}/${testHost}/${rightNow}_${task}_var-log.tar
-    echo "$(date +%x_%r) \"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $output
-    echo "\"$testHost\" /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $report
+    echo "$(date +%x_%r) \"$testHost\" ${task} /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $output
+    echo "\"$testHost\" ${task} /var/log here: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_var-log.tar.gz" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} /var/log could not be retrieved." >> $output
     echo "\"$testHost\" ${task} /var/log could not be retrieved." >> $report
@@ -30,17 +30,17 @@ fi
 
 if [[ -f ${shareDir}/${testHost}/postinit.log ]]; then
     mv ${shareDir}/${testHost}/postinit.log ${webdir}/${testHost}/${rightNow}_${task}_postinit.log
-    echo "$(date +%x_%r) \"$testHost\" postinit.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postinit.log" >> $output
-    echo "\"$testHost\" postinit.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postinit.log" >> $report
+    echo "$(date +%x_%r) \"$testHost\" ${task} postinit.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postinit.log" >> $output
+    echo "\"$testHost\" ${task} postinit.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postinit.log" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} postinit.log could not be retrieved." >> $output
     echo "\"$testHost\" ${task} postinit.log could not be retrieved." >> $report
 fi
 
 if [[ -f ${shareDir}/${testHost}/postdownload.log ]]; then
-    mv ${shareDir}/${testHost}/postdownload.log ${webdir}/${$testHost}/${rightNow}_${task}_postdownload.log
-    echo "$(date +%x_%r) \"$testHost\" postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $output
-    echo "\"$testHost\" postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $report
+    mv ${shareDir}/${testHost}/postdownload.log ${webdir}/${testHost}/${rightNow}_${task}_postdownload.log
+    echo "$(date +%x_%r) \"$testHost\" ${task} postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $output
+    echo "\"$testHost\" ${task} postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $report
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} postdownload.log could not be retrieved." >> $output
     echo "\"$testHost\" ${task} postdownload.log could not be retrieved." >> $report
