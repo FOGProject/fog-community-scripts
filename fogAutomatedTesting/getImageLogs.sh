@@ -37,8 +37,8 @@ else
     echo "\"$testHost\" ${task} postinit.log could not be retrieved." >> $report
 fi
 
-if [[ -f ${shareDir}/${$testHost}/postdownload.log ]]; then
-    mv ${shareDir}/${$testHost}/postdownload.log ${webdir}/${$testHost}/${rightNow}_${task}_postdownload.log
+if [[ -f ${shareDir}/${testHost}/postdownload.log ]]; then
+    mv ${shareDir}/${testHost}/postdownload.log ${webdir}/${$testHost}/${rightNow}_${task}_postdownload.log
     echo "$(date +%x_%r) \"$testHost\" postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $output
     echo "\"$testHost\" postdownload.log: http://${domainName}${port}${netdir}/${testHost}/${rightNow}_${task}_postdownload.log" >> $report
 else
