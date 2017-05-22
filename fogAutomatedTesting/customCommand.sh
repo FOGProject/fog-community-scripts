@@ -2,7 +2,7 @@
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-command="rm -f /root/update_output.txt;cd /root/git/fogproject;git pull > /dev/null 2>&1"
+command="rm -f /root/update_output.txt;cd /root/git/fogproject;git checkout working > /dev/null 2>&1;git pull > /dev/null 2>&1"
 
 
 #Create hidden file for each node - for status reporting.
@@ -11,7 +11,6 @@ do
     echo "-1" > $cwd/.$i
 done
 
-#Start the commands going in unison.
 for i in "${storageNodes[@]}"
 do
     printf $(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "$command;echo \$?") > $cwd/.$i
