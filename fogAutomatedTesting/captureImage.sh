@@ -82,15 +82,15 @@ while true; do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
-        echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
-        echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
+        echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$(($count / 2))\" minutes." >> $output
+        echo "Image capture of \"$vmGuest\" completed in about \"$(($count / 2))\" minutes." >> $report
         break
     else
         count=$(($count + 1))
         sleep $captureLimitUnit
         if [[ $count -gt $captureLimit ]]; then
-            echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $output
-            echo "Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $report
+            echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within $(($captureLimit / 2)) minutes." >> $output
+            echo "Image capture of \"$vmGuest\" did not complete within $(($captureLimit / 2)) minutes." >> $report
             break
         fi
     fi
