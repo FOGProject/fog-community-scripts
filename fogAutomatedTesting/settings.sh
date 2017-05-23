@@ -62,9 +62,11 @@ testServerSshAlias="testServer"
 
 testHost1VM="testHost1"
 testHost1ID="1"
+testHost1Disk="/data/pool2/testHost1.qcow2"
 
 testHost1Snapshot1="win10"
 testHost1ImageID="1"
+
 
 testHost2VM="testHost2"
 testHost2ID="2"
@@ -72,10 +74,9 @@ testHost2ID="2"
 testHost3VM="testHost3"
 testHost3ID="3"
 
+
+testHostDisksDir="/data/pool2"
 blankSnapshot="blank"
-
-
-
 
 
 
