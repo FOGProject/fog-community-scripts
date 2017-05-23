@@ -90,7 +90,8 @@ sleep $(( $deployLimitUnit * 2 )) #Make this value double that of the unit of me
 if [[ $count -gt $deployLimit ]]; then
     echo "$(date +%x_%r) All image deployments did not complete within ${deployLimit} minutes." >> $output
 else
-    echo "$(date +%x_%r) All image deployments complete." >> $output
+    echo "$(date +%x_%r) All image deployments completed in about \"$((count / 2))\" minutes." >> $output
+    echo "All image deployments completed in about \"$((count / 2))\" minutes." >> $report
 fi
 
 

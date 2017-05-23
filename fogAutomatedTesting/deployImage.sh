@@ -68,8 +68,8 @@ while [[ ! $count -gt $deployLimit ]]; do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ $status -eq 0 ]]; then
-        echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"$(($count / 2))\" minutes." >> ${output}
-        echo "Completed image deployment to \"${vmGuest}\" in about \"$(($count / 2))" minutes." >> ${report}
+        echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"$((count / 2))\" minutes." >> ${output}
+        echo "Completed image deployment to \"${vmGuest}\" in about \"$((count / 2))" minutes." >> ${report}
         break
     fi
     let count+=1
