@@ -61,8 +61,9 @@ fi
 echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 
 #Queue the capture job with the test fog server.
-cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
+cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2,\"shutdown\": true}'"
 eval $cmd > /dev/null 2>&1 #Don't care that it says null.
+
 
 sleep 5
 
@@ -82,15 +83,15 @@ while true; do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh $vmGuestFogID)" == "0" ]]; then
-        echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $output
-        echo "Image capture of \"$vmGuest\" completed in about \"$count\" minutes." >> $report
+        echo "$(date +%x_%r) Image capture of \"$vmGuest\" completed in about \"$((count / 2))\" minutes." >> $output
+        echo "Image capture of \"$vmGuest\" completed in about \"$((count / 2))\" minutes." >> $report
         break
     else
         count=$(($count + 1))
         sleep $captureLimitUnit
         if [[ $count -gt $captureLimit ]]; then
-            echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $output
-            echo "Image capture of \"$vmGuest\" did not complete within ${captureLimit} minutes." >> $report
+            echo "$(date +%x_%r) Image capture of \"$vmGuest\" did not complete within $((captureLimit / 2)) minutes." >> $output
+            echo "Image capture of \"$vmGuest\" did not complete within $((captureLimit / 2)) minutes." >> $report
             break
         fi
     fi

@@ -39,7 +39,7 @@ usertoken="-H 'fog-user-token: ${testServerUserToken}'"
 apitoken="-H 'fog-api-token: ${testServerApiToken}'"
 
 # Body to send
-body="'{\"taskTypeID\":1}'"
+body="'{\"taskTypeID\":1,\"shutdown\": true}'"
 
 # URL to call
 url="http://${testServerIP}/fog/host/${vmGuestFogID}/task"
@@ -68,16 +68,16 @@ while [[ ! $count -gt $deployLimit ]]; do
     timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "rm -f /root/${vmGuest}_${count}.ppm" > /dev/null 2>&1
 
     if [[ $status -eq 0 ]]; then
-        echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${output}
-        echo "Completed image deployment to \"${vmGuest}\" in about \"${count}\" minutes." >> ${report}
+        echo "$(date +%x_%r) Completed image deployment to \"${vmGuest}\" in about \"$((count / 2))\" minutes." >> ${output}
+        echo "Completed image deployment to \"${vmGuest}\" in about \"$((count / 2))\" minutes." >> ${report}
         break
     fi
     let count+=1
     sleep $deployLimitUnit
 done
 if [[ $count -gt $deployLimit ]]; then
-    echo "$(date +%x_%r) Image deployment did not complete within ${deployLimit} minutes." >> ${output}
-    echo "Image deployment did not complete within ${deployLimit} minutes." >> ${report}
+    echo "$(date +%x_%r) Image deployment did not complete within \"$((deployLimit / 2))\" minutes." >> ${output}
+    echo "Image deployment did not complete within \"$((deployLimit / 2))\" minutes." >> ${report}
 fi
 nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo wakeup")
 nonsense=$(timeout ${sshTime} ssh -o ConnectTimeout=${sshTimeout} ${hostsystem} "echo get ready")
