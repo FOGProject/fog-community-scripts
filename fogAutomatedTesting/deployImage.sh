@@ -39,7 +39,7 @@ usertoken="-H 'fog-user-token: ${testServerUserToken}'"
 apitoken="-H 'fog-api-token: ${testServerApiToken}'"
 
 # Body to send
-body="'{\"taskTypeID\":1}'"
+body="'{\"taskTypeID\":1,\"shutdown\": true}'"
 
 # URL to call
 url="http://${testServerIP}/fog/host/${vmGuestFogID}/task"

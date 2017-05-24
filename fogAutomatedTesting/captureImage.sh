@@ -61,8 +61,9 @@ fi
 echo "$(date +%x_%r) Queuing the capture job on the server." >> $output
 
 #Queue the capture job with the test fog server.
-cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2}'"
+cmd="curl --silent -k --header 'content-type: application/json' --header 'fog-user-token: ${testServerUserToken}' --header 'fog-api-token: $testServerApiToken' http://${testServerIP}/fog/host/${vmGuestFogID}/task --data '{\"taskTypeID\":2,\"shutdown\": true}'"
 eval $cmd > /dev/null 2>&1 #Don't care that it says null.
+
 
 sleep 5
 

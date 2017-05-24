@@ -98,13 +98,6 @@ else
 fi
 
 
-
-
-
-
-
-
-
 #Cleanup.
 rm -rf ${shareDir}/${testHost}
 

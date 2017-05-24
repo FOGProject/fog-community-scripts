@@ -31,7 +31,7 @@ sleep 5
 
 
 #Here, we begin testing fog functionality.
-$cwd/./getTestServerReady.sh
+#$cwd/./getTestServerReady.sh
 
 #Clear all existing tasks on test server.
 $cwd/./cancelTasks.sh
@@ -40,7 +40,7 @@ $cwd/./cancelTasks.sh
 $cwd/./setTestHostImages.sh $testHost1ImageID "${testHost1ID},${testHost2ID},${testHost3ID}"
 
 #Capture.
-$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
+#$cwd/./captureImage.sh $testHost1Snapshot1 $testHost1VM $testHost1ID
 
 #Restore blank snapshots to the three test hosts.
 nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
