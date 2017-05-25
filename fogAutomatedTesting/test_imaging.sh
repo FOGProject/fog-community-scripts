@@ -68,7 +68,7 @@ sleep 120
 
 echo "$(date +%x_%r) Waiting for image deployments to complete." >> $output
 
-count=0
+count=12
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh)" == "0" ]]; then
