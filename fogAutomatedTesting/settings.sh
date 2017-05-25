@@ -75,7 +75,7 @@ testHost3VM="testHost3"
 testHost3ID="3"
 
 
-testHostDisksDir="/data/pool2"
+testHostDisksDir="/data/pool3"
 blankSnapshot="blank"
 
 
