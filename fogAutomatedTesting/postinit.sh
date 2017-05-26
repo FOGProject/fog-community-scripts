@@ -55,8 +55,3 @@ echo "#################### lvdisplay" >> $postInitOutput
 lvdisplay >> $postInitOutput
 echo "" >> $postInitOutput
 echo "" >> $postInitOutput
-echo "#################### df -h" >> $postInitOutput
-df -h >> $postInitOutput
-echo "" >> $postInitOutput
-echo "" >> $postInitOutput
-
