@@ -59,16 +59,16 @@ sleep 5
 
 #Deploy image to the three test hosts with two minutes between each to allow for proper queuing. 
 $cwd/./deployImage.sh $testHost1VM $testHost1ID &
-sleep 120
+sleep 60
 $cwd/./deployImage.sh $testHost2VM $testHost2ID &
-sleep 120
+sleep 60
 $cwd/./deployImage.sh $testHost3VM $testHost3ID &
-sleep 120
+sleep 60
 
 
 echo "$(date +%x_%r) Waiting for image deployments to complete." >> $output
 
-count=12
+count=6
 #Need to monitor task progress somehow. Once done, should exit.
 while true; do
     if [[ "$(timeout $sshTimeout $cwd/./getTaskStatus.sh)" == "0" ]]; then
