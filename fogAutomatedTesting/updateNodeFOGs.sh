@@ -11,7 +11,7 @@ do
 done
 
 #Begin the dashboard building.
-echo '<h2>Clean FOG Installation Status<h2><br>' >> $installer_dashboard
+echo '<h2>Clean FOG Installation Status</h2><br>' >> $installer_dashboard
 echo "Last updated: $(date +%c)<br>"
 echo '<table>' >> $installer_dashboard
 echo '<tr>' >> $installer_dashboard
