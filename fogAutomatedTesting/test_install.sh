@@ -127,6 +127,7 @@ mv $output $webdir/reports/${rightNow}_install.log
 chown $permissions $webdir/reports/${rightNow}_install.log
 
 
+echo "<br>Full Report: http://${domainName}${port}${netdir}/reports/${rightNow}_install.log<br><br><br>" >> $installer_dashboard
 #Close the html document.
 echo '</body>' >> $installer_dashboard
 echo '</html>' >> $installer_dashboard
