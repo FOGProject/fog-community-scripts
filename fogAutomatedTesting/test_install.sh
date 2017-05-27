@@ -20,6 +20,9 @@ if [[ -f $installer_dashboard ]]; then
 fi
 
 
+
+
+
 #Setup html header and style and stuff.
 echo '<!DOCTYPE html>' >> $installer_dashboard
 echo '<html>' >> $installer_dashboard
@@ -128,7 +131,22 @@ chown $permissions $webdir/reports/${rightNow}_install.log
 echo '</body>' >> $installer_dashboard
 echo '</html>' >> $installer_dashboard
 
-
+#Replace red, orange, and green if they exist.
+if [[ -e ${webdir}/${redfile} ]]; then
+    rm -f ${webdir}/${redfile}
+fi
+cp ${cwd}/${redfile} ${webdir}/${redfile}
+chown $permissions ${webdir}/${redfile}
+if [[ -e ${webdir}/${orangefile} ]]; then
+    rm -f ${webdir}/${orangefile}
+fi
+cp ${cwd}/${orangefile} ${webdir}/${orangefile}
+chown $permissions ${webdir}/${orangefile}
+if [[ -e ${webdir}/${greenfile} ]]; then
+    rm -f ${webdir}/${greenfile}
+fi
+cp ${cwd}/${orangefile} ${webdir}/${greenfile}
+chown $permissions ${webdir}/${greenfile}
 
 
 if [[ -e $webdir/installer_dashboard.html ]]; then

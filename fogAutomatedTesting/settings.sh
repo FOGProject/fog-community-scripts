@@ -29,9 +29,12 @@ report="/root/report.txt"
 output="/root/output.log"
 installer_dashboard="/root/installer_dashboard.html"
 imaging_dashboard="/root/imaging_dashboard.html"
-red="red"
-orange="orange"
-green="green"
+redfile="red.png"
+orangefile="orange.png"
+greenfile="green.png"
+red="<img src=\"${redfile}\" alt=\"Failure\" title=\"Failure\">"
+orange="<img src=\"${orangefile}\" alt=\"Possible issue\" title=\"Possible issue\">"
+green="<img src=\"${orangefile}\" alt=\"Success\" title=\"Success\">"
 
 
 
