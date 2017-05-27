@@ -49,7 +49,7 @@ echo '}' >> $installer_dashboard
 echo '</style>' >> $installer_dashboard
 echo '</head>' >> $installer_dashboard
 echo '<body>' >> $installer_dashboard
-echo '<h1>FOG Installer Dashboard</h1><br><br><br>' >> $installer_dashboard
+echo '<h1>FOG Installer Dashboard</h1><br><br>' >> $installer_dashboard
 
 
 
