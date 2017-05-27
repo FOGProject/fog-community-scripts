@@ -55,16 +55,16 @@ do
     if [[ "$status" == "-1" ]]; then
         complete="false"
         echo '<tr>' >> $installer_dashboard
-        echo "<th>${i}</th>" >> $installer_dashboard
-        echo "<th>${orange}</th>" >> $installer_dashboard
+        echo "<td>${i}</td>" >> $installer_dashboard
+        echo "<td>${orange}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
 
     elif [[ "$status" == "0" ]]; then
         echo "$i successfully updated OS." >> $report
         echo "$(date +%x_%r) $i successfully updated OS." >> $output
         echo '<tr>' >> $installer_dashboard
-        echo "<th>${i}</th>" >> $installer_dashboard
-        echo "<th>${green}</th>" >> $installer_dashboard
+        echo "<td>${i}</td>" >> $installer_dashboard
+        echo "<td>${green}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         #Tirekick again.
@@ -80,15 +80,15 @@ do
             echo "$i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $report
             echo "$(date +%x_%r) $i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $output
             echo '<tr>' >> $installer_dashboard
-            echo "<th>${i}</th>" >> $installer_dashboard
-            echo "<th>${red}</th>" >> $installer_dashboard
+            echo "<td>${i}</td>" >> $installer_dashboard
+            echo "<td>${red}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         else
             echo "$i failed to update OS, no log could be retrieved." >> $report
             echo "$(date +%x_%r) $i failed to update OS, no log could be retrieved." >> $output
             echo '<tr>' >> $installer_dashboard
-            echo "<th>${i}</th>" >> $installer_dashboard
-            echo "<th>${red}</th>" >> $installer_dashboard
+            echo "<td>${i}</td>" >> $installer_dashboard
+            echo "<td>${red}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         fi 
     fi

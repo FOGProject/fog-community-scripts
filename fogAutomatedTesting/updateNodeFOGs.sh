@@ -42,9 +42,9 @@ do
         echo "$i success with \"$branch\"" >> $report
         echo "$(date +%x_%r) $i success with \"$branch\"" >> $output
         echo '<tr>' >> $installer_dashboard
-        echo "<th>${i}</th>" >> $installer_dashboard
-        echo "<th>${branch}</th>" >> $installer_dashboard
-        echo "<th>${green}</th>" >> $installer_dashboard
+        echo "<td>${i}</td>" >> $installer_dashboard
+        echo "<td>${branch}</td>" >> $installer_dashboard
+        echo "<td>${green}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         #Tire kick.
@@ -90,9 +90,9 @@ do
             echo "$i failure with \"$branch\", returned no exit code" >> $report
             echo "$(date +%x_%r) $i failure with \"$branch\", returned no exit code" >> $output
             echo '<tr>' >> $installer_dashboard
-            echo "<th>${i}</th>" >> $installer_dashboard
-            echo "<th>${branch}</th>" >> $installer_dashboard
-            echo "<th>${orange}</th>" >> $installer_dashboard
+            echo "<td>${i}</td>" >> $installer_dashboard
+            echo "<td>${branch}</td>" >> $installer_dashboard
+            echo "<td>${orange}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         else
             case $status in
@@ -100,72 +100,72 @@ do
                     echo "$i failure with \"$branch\", did not return within time limit \"$fogTimeout\"" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", did not return within time limit \"$fogTimeout\"" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 1)
                     echo "$i failure with \"$branch\", no branch passed" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", no branch passed" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 2)
                     echo "$i failure with \"$branch\", failed to reset git" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed to reset git" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 3)
                     echo "$i failure with \"$branch\", failed to 'git pull'" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed to 'git pull'" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 4)
                     echo "$i failure with \"$branch\", failed to checkout git" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed to checkout git" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 5) 
                     echo "$i failure with \"$branch\", failed to change directory" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed to change directory" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 6)
                     echo "$i failure with \"$branch\", failed installation" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed installation" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${red}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${red}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
                 *)
                     echo "$i failure with \"$branch\", failed with exit code \"$status\"" >> $report
                     echo "$(date +%x_%r) $i failure with \"$branch\", failed with exit code \"$status\"" >> $output
                     echo '<tr>' >> $installer_dashboard
-                    echo "<th>${i}</th>" >> $installer_dashboard
-                    echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${orange}</th>" >> $installer_dashboard
+                    echo "<td>${i}</td>" >> $installer_dashboard
+                    echo "<td>${branch}</td>" >> $installer_dashboard
+                    echo "<td>${orange}</td>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
             esac
