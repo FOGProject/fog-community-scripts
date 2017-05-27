@@ -10,6 +10,18 @@ do
     echo "-1" > $cwd/.$i
 done
 
+
+
+#Begin the dashboard building.
+echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
+echo '<table>' >> $installer_dashboard
+echo '<caption>OS Patching Status</caption>' >> $installer_dashboard
+echo '<tr>' >> $installer_dashboard
+echo '<th>OS</th>' >> $installer_dashboard
+echo '<th>Status</th>' >> $installer_dashboard
+echo '</tr>' >> $installer_dashboard
+
+
 #Loop through each box.
 for i in "${storageNodes[@]}"
 do
@@ -42,9 +54,18 @@ do
     status=$(cat $cwd/.$i)
     if [[ "$status" == "-1" ]]; then
         complete="false"
+        echo '<tr>' >> $installer_dashboard
+        echo "<td>${i}</td>" >> $installer_dashboard
+        echo "<td>${orange}</td>" >> $installer_dashboard
+        echo '</tr>' >> $installer_dashboard
+
     elif [[ "$status" == "0" ]]; then
         echo "$i successfully updated OS." >> $report
         echo "$(date +%x_%r) $i successfully updated OS." >> $output
+        echo '<tr>' >> $installer_dashboard
+        echo "<td>${i}</td>" >> $installer_dashboard
+        echo "<td>${green}</td>" >> $installer_dashboard
+        echo '</tr>' >> $installer_dashboard
     else
         #Tirekick again.
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
@@ -58,14 +79,23 @@ do
             chown $permissions $webdir/$i/os/${rightNow}.log
             echo "$i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $report
             echo "$(date +%x_%r) $i failed to update OS, logs here: http://${domainName}${port}${netdir}/$i/os/$rightNow.log" >> $output
+            echo '<tr>' >> $installer_dashboard
+            echo "<td>${i}</td>" >> $installer_dashboard
+            echo "<td>${red}</td>" >> $installer_dashboard
+            echo '</tr>' >> $installer_dashboard
         else
             echo "$i failed to update OS, no log could be retrieved." >> $report
             echo "$(date +%x_%r) $i failed to update OS, no log could be retrieved." >> $output
+            echo '<tr>' >> $installer_dashboard
+            echo "<td>${i}</td>" >> $installer_dashboard
+            echo "<td>${red}</td>" >> $installer_dashboard
+            echo '</tr>' >> $installer_dashboard
         fi 
     fi
 done
 
 
+echo '</table><br>' >> $installer_dashboard
 
 
 #Cleanup after all is done.

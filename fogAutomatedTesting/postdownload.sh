@@ -33,9 +33,3 @@ echo "#################### lvdisplay" >> $postDownloadOutput
 lvdisplay >> $postDownloadOutput
 echo "" >> $postDownloadOutput
 echo "" >> $postDownloadOutput
-echo "#################### df -h" >> $postDownloadOutput
-df -h >> $postDownloadOutput
-echo "" >> $postDownloadOutput
-echo "" >> $postDownloadOutput
-
-

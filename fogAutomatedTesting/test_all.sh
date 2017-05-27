@@ -7,5 +7,5 @@ source "$cwd/settings.sh"
 $cwd/./test_install.sh 
 
 #Test imaging.
-$cwd/./test_imaging.sh
+#$cwd/./test_imaging.sh
 
