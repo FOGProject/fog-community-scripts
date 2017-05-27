@@ -27,6 +27,14 @@ deployLimit="180" #Measured in "deployLimitUnit" which is seconds.
 
 report="/root/report.txt"
 output="/root/output.log"
+installer_dashboard="/root/installer_dashboard.html"
+imaging_dashboard=/root/imaging_dashboard.html"
+red="red file"
+orange="orange file"
+green="green file"
+
+
+
 
 webdir="/var/www/html/fog_distro_check"
 permissions="www-data:www-data"

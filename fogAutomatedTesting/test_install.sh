@@ -14,6 +14,12 @@ if [[ -f $output ]]; then
     rm -f $output
 fi
 
+#If old dashboard file exists, delete it.
+if [[ -f $installer_dashboard ]]; then
+    rm -f $installer_dashboard
+fi
+
+
 
 
 #If repository exists, git pull. Else clone it.
