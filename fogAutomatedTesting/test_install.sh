@@ -27,6 +27,7 @@ fi
 echo '<!DOCTYPE html>' >> $installer_dashboard
 echo '<html>' >> $installer_dashboard
 echo '<head>' >> $installer_dashboard
+echo '<title>FOG Installer Dashboard</title>' >> $installer_dashboard
 echo '<style>' >> $installer_dashboard
 echo 'table {' >> $installer_dashboard
 echo '    border-collapse: collapse;' >> $installer_dashboard
