@@ -183,7 +183,7 @@ do
 done
 
 
-echo '<table>' >> $installer_dashboard
+echo '</table><br><br><br>' >> $installer_dashboard
 
 
 #Cleanup after all is done.
