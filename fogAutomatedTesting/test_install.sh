@@ -97,7 +97,7 @@ for branch in $branches; do
 
 
     #If the three main branches were updated yesterday, today, or tomorrow, check them.
-    if [[ ( *"$thisBranch"* =~ "$Yesterday" || *"$thisBranch"* =~ "$Today" || *"$thisBranch"* =~ "$Tomorrow" ) && ( "$branch" == "working" || "$branch" == "dev-branch" || "$branch" == "master" ) ]]; then
+    if [[ "$branch" == "working" || "$branch" == "dev-branch" || "$branch" == "master" ]]; then
         #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
         if [[ "$first" == "no" ]]; then
             $cwd/./restoreSnapshots.sh updated
