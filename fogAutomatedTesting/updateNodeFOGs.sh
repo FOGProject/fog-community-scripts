@@ -41,6 +41,11 @@ do
     if [[ "$status" == "0" ]]; then
         echo "$i success with \"$branch\"" >> $report
         echo "$(date +%x_%r) $i success with \"$branch\"" >> $output
+        echo '<tr>' >> $installer_dashboard
+        echo "<th>${i}</th>" >> $installer_dashboard
+        echo "<th>${branch}</th>" >> $installer_dashboard
+        echo "<th>${green}</th>" >> $installer_dashboard
+        echo '</tr>' >> $installer_dashboard
     else
         #Tire kick.
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"wakeup\"" > /dev/null 2>&1
@@ -84,6 +89,11 @@ do
         if [[ -z $status ]]; then
             echo "$i failure with \"$branch\", returned no exit code" >> $report
             echo "$(date +%x_%r) $i failure with \"$branch\", returned no exit code" >> $output
+            echo '<tr>' >> $installer_dashboard
+            echo "<th>${i}</th>" >> $installer_dashboard
+            echo "<th>${branch}</th>" >> $installer_dashboard
+            echo "<th>${orange}</th>" >> $installer_dashboard
+            echo '</tr>' >> $installer_dashboard
         else
             case $status in
                 -1) 
@@ -155,7 +165,7 @@ do
                     echo '<tr>' >> $installer_dashboard
                     echo "<th>${i}</th>" >> $installer_dashboard
                     echo "<th>${branch}</th>" >> $installer_dashboard
-                    echo "<th>${red}</th>" >> $installer_dashboard
+                    echo "<th>${orange}</th>" >> $installer_dashboard
                     echo '</tr>' >> $installer_dashboard
                     ;;
             esac
