@@ -11,7 +11,7 @@ do
 done
 
 #Begin the dashboard building.
-echo 'Clean FOG Installation Status<br>' >> $installer_dashboard
+echo '<h2>Clean FOG Installation Status<h2><br>' >> $installer_dashboard
 echo '<table>' >> $installer_dashboard
 echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard

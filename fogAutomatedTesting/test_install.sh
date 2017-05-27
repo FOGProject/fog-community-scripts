@@ -20,6 +20,30 @@ if [[ -f $installer_dashboard ]]; then
 fi
 
 
+#Setup html header and style and stuff.
+echo '<!DOCTYPE html>' >> $installer_dashboard
+echo '<html>' >> $installer_dashboard
+echo '<head>' >> $installer_dashboard
+echo '<style>' >> $installer_dashboard
+echo 'table {' >> $installer_dashboard
+echo '    border-collapse: collapse;' >> $installer_dashboard
+echo '    width: 50%;' >> $installer_dashboard
+echo '}' >> $installer_dashboard
+echo 'th, td {' >> $installer_dashboard
+echo '    text-align: left;' >> $installer_dashboard
+echo '    padding: 8px;' >> $installer_dashboard
+echo '}' >> $installer_dashboard
+echo 'tr:nth-child(even){background-color: #f2f2f2}' >> $installer_dashboard
+echo 'th {' >> $installer_dashboard
+echo '    background-color: #4CAF50;' >> $installer_dashboard
+echo '    color: white;' >> $installer_dashboard
+echo '}' >> $installer_dashboard
+echo '</style>' >> $installer_dashboard
+echo '</head>' >> $installer_dashboard
+echo '<body>' >> $installer_dashboard
+
+
+
 
 
 #If repository exists, git pull. Else clone it.
@@ -98,6 +122,14 @@ chown -R $permissions $webdir
 rightNow=$(date +%Y-%m-%d_%H-%M)
 mv $output $webdir/reports/${rightNow}_install.log
 chown $permissions $webdir/reports/${rightNow}_install.log
+
+
+#Close the html document.
+echo '</body>' >> $installer_dashboard
+echo '</html>' >> $installer_dashboard
+
+
+
 
 if [[ -e $webdir/installer_dashboard.html ]]; then
     rm -f $webdir/installer_dashboard.html
