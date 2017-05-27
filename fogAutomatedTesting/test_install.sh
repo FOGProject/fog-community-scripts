@@ -99,6 +99,11 @@ rightNow=$(date +%Y-%m-%d_%H-%M)
 mv $output $webdir/reports/${rightNow}_install.log
 chown $permissions $webdir/reports/${rightNow}_install.log
 
+if [[ -e $webdir/installer_dashboard.html ]]; then
+    rm -f $webdir/installer_dashboard.html
+fi
+mv $installer_dashboard $webdir/installer_dashboard.html
+chown $permissions $webdir/installer_dashboard.html
 
 echo "Full Report: http://${domainName}${port}${netdir}/reports/${rightNow}_install.log" >> $report
 cat $report | slacktee.sh -p
