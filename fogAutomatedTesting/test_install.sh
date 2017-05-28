@@ -138,20 +138,27 @@ echo '</body>' >> $installer_dashboard
 echo '</html>' >> $installer_dashboard
 
 #Replace red, orange, and green if they exist.
+
 if [[ -e ${webdir}/${redfile} ]]; then
     rm -f ${webdir}/${redfile}
 fi
 cp ${cwd}/${redfile} ${webdir}/${redfile}
 chown $permissions ${webdir}/${redfile}
+
+
+
 if [[ -e ${webdir}/${orangefile} ]]; then
     rm -f ${webdir}/${orangefile}
 fi
 cp ${cwd}/${orangefile} ${webdir}/${orangefile}
 chown $permissions ${webdir}/${orangefile}
+
+
+
 if [[ -e ${webdir}/${greenfile} ]]; then
     rm -f ${webdir}/${greenfile}
 fi
-cp ${cwd}/${orangefile} ${webdir}/${greenfile}
+cp ${cwd}/${greenfile} ${webdir}/${greenfile}
 chown $permissions ${webdir}/${greenfile}
 
 
