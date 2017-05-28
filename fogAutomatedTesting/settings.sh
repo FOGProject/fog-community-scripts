@@ -15,8 +15,8 @@ gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
 
-osTimeout="60m"
-fogTimeout="60m"
+osTimeout="15m"
+fogTimeout="15m"
 sshTime="${sshTimeout}s"
 
 captureLimitUnit="30"
