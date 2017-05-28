@@ -87,6 +87,17 @@ first="yes"
 
 
 
+#Begin the dashboard building for the branches.
+echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
+echo '<table>' >> $installer_dashboard
+echo '<caption>Clean FOG Installation Status</caption>' >> $installer_dashboard
+echo '<tr>' >> $installer_dashboard
+echo '<th>OS</th>' >> $installer_dashboard
+echo '<th>Branch</th>' >> $installer_dashboard
+echo '<th>Status</th>' >> $installer_dashboard
+echo '</tr>' >> $installer_dashboard
+
+
 #Get last x branches.
 for branch in $branches; do    
 
@@ -115,6 +126,8 @@ for branch in $branches; do
 
 done
 
+#Close table.
+echo '</table><br>' >> $installer_dashboard
 
 
 echo "$(date +%x_%r) Deleting temprary snapshots." >> $output

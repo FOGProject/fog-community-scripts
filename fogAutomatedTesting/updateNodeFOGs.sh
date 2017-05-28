@@ -10,16 +10,6 @@ do
     echo "-1" > $cwd/.$i
 done
 
-#Begin the dashboard building.
-echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
-echo '<table>' >> $installer_dashboard
-echo '<caption>Clean FOG Installation Status</caption>' >> $installer_dashboard
-echo '<tr>' >> $installer_dashboard
-echo '<th>OS</th>' >> $installer_dashboard
-echo '<th>Branch</th>' >> $installer_dashboard
-echo '<th>Status</th>' >> $installer_dashboard
-echo '</tr>' >> $installer_dashboard
-
 
 #Loop through each box.
 for i in "${storageNodes[@]}"
@@ -193,7 +183,6 @@ do
 done
 
 
-echo '</table><br>' >> $installer_dashboard
 
 
 #Cleanup after all is done.
