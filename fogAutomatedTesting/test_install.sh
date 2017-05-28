@@ -87,6 +87,17 @@ first="yes"
 
 
 
+#Begin the dashboard building for the branches.
+echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
+echo '<table>' >> $installer_dashboard
+echo '<caption>Clean FOG Installation Status</caption>' >> $installer_dashboard
+echo '<tr>' >> $installer_dashboard
+echo '<th>OS</th>' >> $installer_dashboard
+echo '<th>Branch</th>' >> $installer_dashboard
+echo '<th>Status</th>' >> $installer_dashboard
+echo '</tr>' >> $installer_dashboard
+
+
 #Get last x branches.
 for branch in $branches; do    
 
@@ -115,6 +126,8 @@ for branch in $branches; do
 
 done
 
+#Close table.
+echo '</table><br>' >> $installer_dashboard
 
 
 echo "$(date +%x_%r) Deleting temprary snapshots." >> $output
@@ -138,20 +151,27 @@ echo '</body>' >> $installer_dashboard
 echo '</html>' >> $installer_dashboard
 
 #Replace red, orange, and green if they exist.
+
 if [[ -e ${webdir}/${redfile} ]]; then
     rm -f ${webdir}/${redfile}
 fi
 cp ${cwd}/${redfile} ${webdir}/${redfile}
 chown $permissions ${webdir}/${redfile}
+
+
+
 if [[ -e ${webdir}/${orangefile} ]]; then
     rm -f ${webdir}/${orangefile}
 fi
 cp ${cwd}/${orangefile} ${webdir}/${orangefile}
 chown $permissions ${webdir}/${orangefile}
+
+
+
 if [[ -e ${webdir}/${greenfile} ]]; then
     rm -f ${webdir}/${greenfile}
 fi
-cp ${cwd}/${orangefile} ${webdir}/${greenfile}
+cp ${cwd}/${greenfile} ${webdir}/${greenfile}
 chown $permissions ${webdir}/${greenfile}
 
 
