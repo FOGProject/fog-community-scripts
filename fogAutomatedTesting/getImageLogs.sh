@@ -81,21 +81,21 @@ fi
 
 
 #Get checksums of vm disks.
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
-nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
-sleep 5
-sum=$(ssh -o ConnectTimeout=$sshTimeout $hostsystem "sha256sum ${testHostDisksDir}/${testHost}.qcow2 | cut -d' ' -f1")
-if [[ -e ${webdir}/${testHost}/disk_sums.log ]]; then
-    last=$(tail -n 1 ${webdir}/${testHost}/disk_sums.log)
-fi
-echo "$sum" >> ${webdir}/${testHost}/disk_sums.log
-if [[ "$sum" == "$last" ]]; then
-    echo "$(date +%x_%r) \"$testHost\" ${task} disk checksum matches last one." >> $output
-    echo " \"$testHost\" ${task} disk checksum matches last one." >> $report
-else
-    echo "$(date +%x_%r) \"$testHost\" ${task} disk checksum does not match last one." >> $output
-    echo " \"$testHost\" ${task} disk checksum does not match last one." >> $report
-fi
+#nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo wakeup")
+#nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $hostsystem "echo get ready")
+#sleep 5
+#sum=$(ssh -o ConnectTimeout=$sshTimeout $hostsystem "sha256sum ${testHostDisksDir}/${testHost}.qcow2 | cut -d' ' -f1")
+#if [[ -e ${webdir}/${testHost}/disk_sums.log ]]; then
+#    last=$(tail -n 1 ${webdir}/${testHost}/disk_sums.log)
+#fi
+#echo "$sum" >> ${webdir}/${testHost}/disk_sums.log
+#if [[ "$sum" == "$last" ]]; then
+#    echo "$(date +%x_%r) \"$testHost\" ${task} disk checksum matches last one." >> $output
+#    echo " \"$testHost\" ${task} disk checksum matches last one." >> $report
+#else
+#    echo "$(date +%x_%r) \"$testHost\" ${task} disk checksum does not match last one." >> $output
+#    echo " \"$testHost\" ${task} disk checksum does not match last one." >> $report
+#fi
 
 
 #Cleanup.
