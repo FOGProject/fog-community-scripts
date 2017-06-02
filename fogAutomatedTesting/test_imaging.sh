@@ -31,7 +31,7 @@ sleep 5
 
 
 #Here, we begin testing fog functionality.
-$cwd/./getTestServerReady.sh
+#$cwd/./getTestServerReady.sh
 
 #Clear all existing tasks on test server.
 $cwd/./cancelTasks.sh

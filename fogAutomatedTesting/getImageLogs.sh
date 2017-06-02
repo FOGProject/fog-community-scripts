@@ -37,10 +37,10 @@ if [[ -f ${shareDir}/${testHost}/postinit.log ]]; then
     echo "$sum" >> ${webdir}/${testHost}/postinit_sums.log
     if [[ "$sum" == "$last" ]]; then
         echo "$(date +%x_%r) \"$testHost\" ${task} postinit.log checksum matches last one." >> $output
-        echo " \"$testHost\" ${task} postinit.log checksum matches last one." >> $report
+        echo "\"$testHost\" ${task} postinit.log checksum matches last one." >> $report
     else
         echo "$(date +%x_%r) \"$testHost\" ${task} postinit.log checksum does not match last one." >> $output
-        echo " \"$testHost\" ${task} postinit.log checksum does not match last one." >> $report
+        echo "\"$testHost\" ${task} postinit.log checksum does not match last one." >> $report
     fi
 else
     echo "$(date +%x_%r) \"$testHost\" ${task} postinit.log could not be retrieved." >> $output
