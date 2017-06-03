@@ -13,9 +13,8 @@ done
 
 
 #Begin the dashboard building.
-echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
 echo '<table>' >> $installer_dashboard
-echo '<caption>OS Patching Status</caption>' >> $installer_dashboard
+echo "<caption>OS Patching Status - Last updated: $(date +%c)</caption>" >> $installer_dashboard
 echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard

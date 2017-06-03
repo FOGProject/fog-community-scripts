@@ -88,9 +88,8 @@ first="yes"
 
 
 #Begin the dashboard building for the branches.
-echo "Last updated: $(date +%c)<br>" >> $installer_dashboard
 echo '<table>' >> $installer_dashboard
-echo '<caption>Clean FOG Installation Status</caption>' >> $installer_dashboard
+echo "<caption>Clean FOG Installation Status - Last updated: $(date +%c)</caption>" >> $installer_dashboard
 echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Branch</th>' >> $installer_dashboard
