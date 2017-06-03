@@ -30,7 +30,7 @@ echo '<head>' >> $installer_dashboard
 echo '<title>FOG Installer Dashboard</title>' >> $installer_dashboard
 echo '<style>' >> $installer_dashboard
 echo 'table {' >> $installer_dashboard
-echo '    width:100%;' >> $installer_dashboard
+echo '    width:50%;' >> $installer_dashboard
 echo '}' >> $installer_dashboard
 echo 'table, th, td {' >> $installer_dashboard
 echo '    border: 1px solid black;' >> $installer_dashboard
