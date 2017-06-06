@@ -17,6 +17,7 @@ sshTimeout=15 #seconds to wait for ssh connection to be established when running
 
 osTimeout="20m"
 fogTimeout="20m"
+rebootTimeout="300" #seconds to wait for reboots to complete.
 sshTime="${sshTimeout}s"
 
 captureLimitUnit="30"
