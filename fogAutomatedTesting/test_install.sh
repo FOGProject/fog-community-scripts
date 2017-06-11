@@ -96,6 +96,10 @@ echo '<th>Branch</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard
 echo '</tr>' >> $installer_dashboard
 
+if [[ ! -z $1 ]]; then
+    branches=$1
+    echo "$(date +%x_%r) Branch name \"$branches\" was passed, only testing this." >> $output
+fi
 
 #Get last x branches.
 for branch in $branches; do    
@@ -106,7 +110,7 @@ for branch in $branches; do
     branch="${branch##*/}"
 
 
-    #If the three main branches were updated yesterday, today, or tomorrow, check them.
+    #Allow testing the following branches.
     if [[ "$branch" == "working" || "$branch" == "dev-branch" || "$branch" == "master" ]]; then
         #If this is the first run, we don't need to restore the snapshot we just took. Otherwise restore snapshot.
         if [[ "$first" == "no" ]]; then
