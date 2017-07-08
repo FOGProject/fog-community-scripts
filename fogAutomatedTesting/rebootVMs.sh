@@ -39,6 +39,7 @@ sleep $howLongToWait
 #Initially set completion status to false in order to enter into the loop.
 complete="false"
 
+count=0
 #Run this loop until completion isn't false. This is the outter loop.
 while [[ "$complete" == "false" ]]; do
 
@@ -55,5 +56,11 @@ while [[ "$complete" == "false" ]]; do
         fi
     done #Inner loop done.
 
+    count=$(($count + 1))
+    if [[ $count -gt $rebootTimeout ]]; then
+        break
+    fi
     sleep 1 #Update frequency.
 done #Outter loop done.
+
+
