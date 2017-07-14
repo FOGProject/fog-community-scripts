@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# This script returns the number of tasks for a single host ID, or for all hosts.
+# Argument 1 is optional, the host ID.
+# If the host ID is provided, the number of tasks for that host is returned.
+# If the host ID is not provided, the total number of tasks is returned.
+
+# No tasks in queue returns '0'
+# Requires that jq is installed.
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+#Script that reboots all $storageNodes VMs, and any stragglers that didn't want to reboot too.
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

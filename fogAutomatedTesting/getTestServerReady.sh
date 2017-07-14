@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Script that gets the latest $branch (below) installed on the test fog server.
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

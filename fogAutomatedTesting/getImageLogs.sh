@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# This is a utility script that retrieves a log file that postinit scripts create, 
+# and moves it into a web directory for availibility to the general public.
+# Requires arguments.
+# 1. The testHost name. This is used for pathing, and is also integrated into the init scripts.
+# 2. Task Type, this is used to properly name the log file.
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

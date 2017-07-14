@@ -1,8 +1,21 @@
 #!/bin/bash
+
+# Script that restores a previous snapshot by name to all $storageNodes.
+# Requires argument: Snapshot name.
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-snapshotName=$1
+
+#Ask for the snapshot name to be passed in.
+if [[ -z $1 ]]; then
+    echo "$(date +%x_%r) No snapshotName passed for argument 1, exiting." >> $output
+    exit
+else
+    snapshotName=$1
+fi
+
+
 
 
 for i in "${storageNodes[@]}"

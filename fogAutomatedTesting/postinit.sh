@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# This is a postinit script that mounts a remote password protected CIFS/smb share.
+# It then starts and backgrounds a loop that packages up everything in /var/log to the share.
+# This constant log collecting just-about ensures you will get the crash log from FOS.
+# It also takes initial information about the local disks and puts that on the share.
+
 #Sourcing the functions file gives us access to all kernel variables and many neat functions.
 source /usr/share/fog/lib/funcs.sh
 

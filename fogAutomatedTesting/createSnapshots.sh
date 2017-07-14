@@ -1,8 +1,21 @@
 #!/bin/bash
+
+
+# This script creates a new snapshot of the name passed in argument 1 for all $storageNodes in the settings.sh file.
+# If a snapshot of this name already exists, it is deleted.
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
-snapshotName=$1
+
+#Ask for the snapshot name to be passed in.
+if [[ -z $1 ]]; then
+    echo "$(date +%x_%r) No snapshotName passed for argument 1, exiting." >> $output
+    exit
+else
+    snapshotName=$1
+fi
 
 
 #Start the commands going in unison.

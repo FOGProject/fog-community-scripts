@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# This script optionally accepts the hostID you want to cancel tasks on.
+# Requires that jq is installed.
+# If no host ID is supplied as an argument, all host's tasks are canceled.
+# Example usages:
+
+# Cancel all tasks:
+# ./cancelTasks.sh
+# Cancel all tasks for host 5:
+# ./cancelTasks.sh 5
+
+
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

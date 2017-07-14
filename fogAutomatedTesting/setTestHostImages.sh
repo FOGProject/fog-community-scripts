@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# Script that sets the specified hosts to use the specified images.
+# Requires arguments:
+# 1. The Image ID. example:  5
+# 2. The hosts. Examples:
+# 1
+# 1,2,3
+# 1,3,5,7,9
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

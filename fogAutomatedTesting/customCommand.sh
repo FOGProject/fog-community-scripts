@@ -1,4 +1,9 @@
 #!/bin/bash
+
+#This is a custom command to send to all the nodes. Put your command in the "command" variable below.
+#Depending on if you want to use parameter expansion or not, you need to single or double quote, and escape properly.
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
