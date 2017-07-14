@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#Simple little utility script to shutdown the test fog server VM.
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

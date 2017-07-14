@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+# This deploys an image to the specified VM, with a specified FOG ID.
+# Required arguments are 1 the VM's name, 2 the VM's FOG ID.
+# This script will deploy the pre-associated image with these FOG hosts only.
+
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+# This script calls the API to capture from the specified host, and also restores a snapshot to that host at the VM layer.
+# Argument 1 must be a snapshot name
+# Argument 2 must be the vmGuest's name
+# Argument 3 must be the FOG ID of the guest.
+
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This is a postdownload script that just gathers some information about the local disks.
+# It puts this information onto a mounted share that the postinit should have accomplished.
+
 #Formulate filename.
 postDownloadOutput="/fogtesting/postdownload.log"
 touch $postDownloadOutput

@@ -6,7 +6,6 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #This is a list of all storage node aliases and are space seperated. There is no limit on the number of items.
 #You will need to modify the below line for any of the scripts in this directory to work.
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
-#storageNodes=( fogsite1 fogsite2 downtown uptown dallas houston floor1 floor2 japan uk )
 storageNodes=( Arch CentOS7 CentOS6 Debian8 Debian9 Fedora25 Fedora26 Ubuntu17 Ubuntu16 Ubuntu14 )
 
 #The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
@@ -15,51 +14,54 @@ gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
 
-osTimeout="20m"
-fogTimeout="20m"
+osTimeout="20m" #Time to wait for OS updates to complete.
+fogTimeout="20m" #Time to wait for FOG installation to complete.
 rebootTimeout="300" #seconds to wait for reboots to complete.
-sshTime="${sshTimeout}s"
+sshTime="${sshTimeout}s" #Time to wait for small SSH commands to complete.
 
-captureLimitUnit="30"
+captureLimitUnit="30"  # Time to wait for captures to complete.
 captureLimit="60" #This is how long a capture has to get done measured by "captureLimitUnit".
 
-deployLimitUnit="30"
-deployLimit="180" #Measured in "deployLimitUnit" which is seconds.
+deployLimitUnit="30" # Time to wait for deployments to complete, is seconds. #Recommended not to change this, the math is tricky.
+deployLimit="180" #Measured in "deployLimitUnit" which is seconds. #Recommended not to change this, the math is tricky.
 
-report="/root/report.txt"
-output="/root/output.log"
-installer_dashboard="/root/installer_dashboard.html"
-imaging_dashboard="/root/imaging_dashboard.html"
-redfile="red.png"
-orangefile="orange.png"
-greenfile="green.png"
-red="<img src=\"${redfile}\" alt=\"Failure\" title=\"Failure\">"
-orange="<img src=\"${orangefile}\" alt=\"Possible issue\" title=\"Possible issue\">"
-green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"
-
-
+report="/root/report.txt"  #Where the short report goes.
+output="/root/output.log"  #Where all output goes.
+installer_dashboard="/root/installer_dashboard.html" #The dashboard file before being moved to the web directory.
+imaging_dashboard="/root/imaging_dashboard.html" #The dashboard file before being moved to the web directory.
+redfile="red.png"  #Red dot used for dashboard.
+orangefile="orange.png"   #Orange dot used for dashboard.
+greenfile="green.png"  #Green dot used for dashboard.
+red="<img src=\"${redfile}\" alt=\"Failure\" title=\"Failure\">"  #HTML for using the red dot.
+orange="<img src=\"${orangefile}\" alt=\"Possible issue\" title=\"Possible issue\">"   #HTML for using orange dot.
+green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"   #HTML for using the green dot.
 
 
-webdir="/var/www/html/fog_distro_check"
-permissions="www-data:www-data"
-domainName="perpetuum.io"
-netdir="/fog_distro_check"
-port=":20080"
+
+
+webdir="/var/www/html/fog_distro_check"   #This is the web directory to put reports and file structure into.
+permissions="www-data:www-data"   #What the web file's ownership should be.
+domainName="perpetuum.io"   #Your domain name.
+netdir="/fog_distro_check"   #This is the net directory, what gets added to the domain name to get to the webdir.
+port=":20080"    #The port, if any. If default, leave blank.
 
 #This is how you would use your Public IP instead of a domain name:
 #publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
 #domainName=$publicIP
 
 #The local shared directory where postinitscripts and postdownloadscripts puts stuff.
-shareDir="/fogtesting"
+shareDir="/fogtesting"   
 sharePermissions="fogtesting:fogtesting"
 
 
 
 #These settings are for the long-standing test FOG Server. It's for testing FOG Functionality.
 #SSH aliases and cert-based auth should be setup between the fogTesting box and this box.
+
 testServerUserToken="ZjBkMmE3YmI5NmUzZDcxYTliYzNkZTc4MmJhNTFiYTQ3Mzc2MTg5MzYxMThmNjA5NDYyMjllMTA5YzE0NWUxMjFiNzkyMTc5OTMwZjFhZGM5NWIxMTc3YWZmNTU2MmMwYjFhNjg0NjVmMTkyMGZkNDQxYmY0MzI1NWNkMzQyM2M="
+
 testServerApiToken="MzI2NDY1NjY2NjM0MzUzMDMzMzA2MzM1MzEzNzYyMzg2NTYyNjQ2MjMxMzczMTM0NjY2NDM0NjUzOTM2NjIzNDM4MzQ2NDM3MzY2MzM2MzMzNjYyMzUzODY0MzUzNDYyMzgzMDY2NjQzNTMxMzI2MzM5NjYzNjYzMzMzMzM0MzA="
+
 testServerVMName="testServer"
 testServerIP="10.0.0.28"
 testServerSshAlias="testServer"
