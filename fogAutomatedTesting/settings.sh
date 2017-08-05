@@ -8,8 +8,8 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
 storageNodes=( Arch CentOS7 CentOS6 Debian8 Debian9 Fedora25 Fedora26 Ubuntu17 Ubuntu16 Ubuntu14 )
 
-#The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
-hostsystem="optiplex"
+#The name of the SSH alias for the linux KVM+libvirtd host:
+hostsystem="dl580"
 gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
@@ -76,7 +76,7 @@ testServerSshAlias="testServer"
 
 testHost1VM="testHost1"
 testHost1ID="1"
-testHost1Disk="/data/pool3/testHost1.qcow2"
+testHost1Disk="/data/pool0/testHost1.qcow2"
 
 testHost1Snapshot1="win10"
 testHost1ImageID="1"
@@ -89,7 +89,7 @@ testHost3VM="testHost3"
 testHost3ID="3"
 
 
-testHostDisksDir="/data/pool3"
+testHostDisksDir="/data/pool0"
 blankSnapshot="blank"
 
 
