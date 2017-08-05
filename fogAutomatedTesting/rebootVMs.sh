@@ -56,6 +56,7 @@ while [[ "$complete" == "false" ]]; do
 
         if [[ "$status" != "up" ]]; then
             complete="false"
+	    echo "Waiting on \"$i\" to come back online..." >> $output
         fi
     done #Inner loop done.
 
