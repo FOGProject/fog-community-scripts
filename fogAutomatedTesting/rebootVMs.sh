@@ -13,18 +13,18 @@ sleep 5
 for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh shutdown $i > /dev/null 2>&1"
-    sleep 5
+    sleep 3
 done
-sleep 30
+sleep 10
 
 
 #force-off any stragglers.
 for i in "${storageNodes[@]}"
 do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh destroy $i > /dev/null 2>&1"
-    sleep 5
+    sleep 3
 done
-sleep 5
+sleep 3
 
 
 
@@ -34,7 +34,7 @@ do
     ssh -o ConnectTimeout=$sshTimeout $hostsystem "virsh start $i > /dev/null 2>&1"
     sleep 5
 done
-howLongToWait=60
+howLongToWait=30
 sleep $howLongToWait
 
 
@@ -64,7 +64,7 @@ while [[ "$complete" == "false" ]]; do
     if [[ $count -gt $rebootTimeout ]]; then
         break
     fi
-    sleep 1 #Update frequency.
+    sleep 5 #Update frequency.
 done #Outter loop done.
 
 
