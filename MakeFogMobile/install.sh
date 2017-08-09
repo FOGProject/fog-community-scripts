@@ -16,6 +16,15 @@ if [[ ! -f $fogsettings ]]; then
         exit
 fi
 
+#---- Check if this is running as root ----*
+
+currentUser=$(whoami)
+if [[ "$currentUser" != "root" ]]; then
+    echo "I am ${currentUser}, exiting."
+    exit
+fi
+
+
 
 #---- Create directory and copy files ----#
 
