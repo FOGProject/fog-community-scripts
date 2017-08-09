@@ -77,11 +77,14 @@ if [[ -z "$dnsmasq" || "$dnsmasqStatus" != "0" ]]; then
 fi
 
 #---- Create the cron event ----#
+crontab -l -u root | grep -v PATH | crontab -u root -
+newline=$PATH
+(crontab -l -u root; echo "PATH=$newline") | crontab - >/dev/null 2>&1
+
 
 crontab -l -u root | grep -v MakeFogMobile.sh | crontab -u root -
 # */3 for every three minutes.
 newline="*/3 * * * * $targetDir/MakeFogMobile.sh"
 (crontab -l -u root; echo "$newline") | crontab - >/dev/null 2>&1
-
 
 echo "Finished."
