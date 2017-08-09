@@ -14,7 +14,7 @@ done
 #Loop through each box.
 for i in "${storageNodes[@]}"
 do
-    echo "$(date +%x_%r) Installing branch $branch onto $i" >> $output
+    echo "$(date +%x_%r) Installing branch \"$branch\" onto $i" >> $output
 
     #Kick the tires. It helps, makes ssh load into ram, makes the switch learn where the traffic needs to go.
     nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo wakeup")

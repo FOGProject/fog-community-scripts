@@ -3,6 +3,22 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$cwd/settings.sh"
 
 
+#Ensure jq is installed.
+if [[ -z $(command -v jq) ]]; then
+    if [[ ! -z $(command -v dnf) ]]; then
+        dnf -y install jq > /dev/null 2>&1
+    elif [[ ! -z $(command -v yum) ]]; then
+        yum -y install jq > /dev/null 2>&1
+    elif [[ ! -z $(command -v apt-get) ]]; then
+        apt-get -y install jq > /dev/null 2>&1
+    elif [[ ! -z $(command -v pacman) ]]; then
+        pacman --noconfirm --sync jq > /dev/null 2>&1
+    else
+        echo "Don't know how to install jq, please install it first."
+        exit 1
+    fi	
+fi
+
 #If an old report exists here, delete it.
 if [[ -f $report ]]; then
     rm -f $report
@@ -31,7 +47,7 @@ sleep 5
 
 
 #Here, we begin testing fog functionality.
-#$cwd/./getTestServerReady.sh
+$cwd/./getTestServerReady.sh
 
 #Clear all existing tasks on test server.
 $cwd/./cancelTasks.sh

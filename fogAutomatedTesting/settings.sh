@@ -6,10 +6,10 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #This is a list of all storage node aliases and are space seperated. There is no limit on the number of items.
 #You will need to modify the below line for any of the scripts in this directory to work.
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
-storageNodes=( Arch CentOS7 CentOS6 Debian8 Debian9 Fedora25 Fedora26 Ubuntu17 Ubuntu16 Ubuntu14 )
+storageNodes=( Arch CentOS7 Debian8 Debian9 Fedora25 Fedora26 Ubuntu17 Ubuntu16 Ubuntu14 )
 
-#The name of the linux KVM+libvirtd host and is only used for the snapshot related scripts:
-hostsystem="optiplex"
+#The name of the SSH alias for the linux KVM+libvirtd host:
+hostsystem="dl580"
 gitDir="/root/git"
 
 sshTimeout=15 #seconds to wait for ssh connection to be established when running remote commands.
@@ -58,9 +58,9 @@ sharePermissions="fogtesting:fogtesting"
 #These settings are for the long-standing test FOG Server. It's for testing FOG Functionality.
 #SSH aliases and cert-based auth should be setup between the fogTesting box and this box.
 
-testServerUserToken="ZjBkMmE3YmI5NmUzZDcxYTliYzNkZTc4MmJhNTFiYTQ3Mzc2MTg5MzYxMThmNjA5NDYyMjllMTA5YzE0NWUxMjFiNzkyMTc5OTMwZjFhZGM5NWIxMTc3YWZmNTU2MmMwYjFhNjg0NjVmMTkyMGZkNDQxYmY0MzI1NWNkMzQyM2M="
+testServerUserToken="NTZhZDlhN2M0NTcxOGE0ZTdmZGU1YTVhZGRlNzBmNDIzNTI4MTc1NjdiYWYyMzZlZWQyOTgxMWEzNzUxZjllNWVjY2NmOTUxMmEzZTMwNzkyOGJiODlkNjQ5MWUxY2E5ODkzZDFiZGUxMDFiY2IxNjJkZDhmY2NlMzdiZjA0N2Q="
 
-testServerApiToken="MzI2NDY1NjY2NjM0MzUzMDMzMzA2MzM1MzEzNzYyMzg2NTYyNjQ2MjMxMzczMTM0NjY2NDM0NjUzOTM2NjIzNDM4MzQ2NDM3MzY2MzM2MzMzNjYyMzUzODY0MzUzNDYyMzgzMDY2NjQzNTMxMzI2MzM5NjYzNjYzMzMzMzM0MzA="
+testServerApiToken="M2JhM2ViZmJhZDM1MmQ1MTU4NTNjMTNmZjY4YTY3MGUxMTZmNzgyMmQxYzlhOWMwMmRjMTg0NWNmYTE4MmZiY2FkNjFjYzY1ZjY5NGQ4ZTE1Yjk4ZTg5NTQ0YTBiYmIwYzFjYmFiNTFiYzkwZTQ0YzI5MzFlNWM0NzhmMzEyNTk="
 
 testServerVMName="testServer"
 testServerIP="10.0.0.28"
@@ -76,7 +76,7 @@ testServerSshAlias="testServer"
 
 testHost1VM="testHost1"
 testHost1ID="1"
-testHost1Disk="/data/pool2/testHost1.qcow2"
+testHost1Disk="/data/pool0/testHost1.qcow2"
 
 testHost1Snapshot1="win10"
 testHost1ImageID="1"
@@ -89,7 +89,7 @@ testHost3VM="testHost3"
 testHost3ID="3"
 
 
-testHostDisksDir="/data/pool3"
+testHostDisksDir="/data/pool0"
 blankSnapshot="blank"
 
 
