@@ -82,7 +82,7 @@ sleep 60
 Yesterday=$(date -d '-1 day' +%Y-%m-%d)
 Today=$(date +%Y-%m-%d)
 Tomorrow=$(date -d '+1 day' +%Y-%m-%d)
-branches=$(cd $gitDir/fogproject;git for-each-ref --count=10 --sort=-committerdate refs --format='%(committerdate:short)_%(refname:short)';cd $cwd)
+branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(committerdate:short)_%(refname:short)';cd $cwd)
 first="yes"
 
 
@@ -104,8 +104,6 @@ fi
 #Get last x branches.
 for branch in $branches; do    
 
-    #This line is for later checking if the branch was last updated yesterday, today, or tomorrow.
-    thisBranch=$branch
     #Remove everything before first "/" and including the "/" in branch name.
     branch="${branch##*/}"
 
