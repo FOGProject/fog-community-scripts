@@ -83,7 +83,7 @@ Yesterday=$(date -d '-1 day' +%Y-%m-%d)
 Today=$(date +%Y-%m-%d)
 Tomorrow=$(date -d '+1 day' +%Y-%m-%d)
 #branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(committerdate:short)_%(refname:short)';cd $cwd)
-branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(refname:short)';cd $cwd)
+branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(refname:short)' | grep origin;cd $cwd)
 first="yes"
 
 

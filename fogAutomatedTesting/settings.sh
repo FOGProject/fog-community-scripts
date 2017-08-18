@@ -41,7 +41,7 @@ green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"   #HTML for
 
 webdir="/var/www/html/fog_distro_check"   #This is the web directory to put reports and file structure into.
 permissions="www-data:www-data"   #What the web file's ownership should be.
-domainName="perpetuum.io"   #Your domain name.
+domainName="theworkmans.us"   #Your domain name.
 netdir="/fog_distro_check"   #This is the net directory, what gets added to the domain name to get to the webdir.
 port=":20080"    #The port, if any. If default, leave blank.
 
