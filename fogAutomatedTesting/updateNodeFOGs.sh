@@ -35,8 +35,8 @@ do
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${branch}</td>" >> $installer_dashboard
         echo "<td>${green}</td>" >> $installer_dashboard
-	echo "<td>NA</td>" >> $installer_dashboard
-	echo "<td>NA</td>" >> $installer_dashboard
+	echo "<td></td>" >> $installer_dashboard
+	echo "<td></td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         #Tire kick.
@@ -88,12 +88,12 @@ do
             if [[ ! -z $foglog || ! -z $commit  ]]; then
                 echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_fog.log\">Fog</a></td>" >> $installer_dashboard
             else
-                echo "<td>NA</td>" >> $installer_dashboard
+                echo "<td>Could not be retrieved.</td>" >> $installer_dashboard
             fi
             if [[ -f $webdir/$i/fog/${rightNow}_apache.log ]]; then
                 echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_apache.log\">Apache</a></td>" >> $installer_dashboard
             else
-                echo "<td>NA</td>" >> $installer_dashboard
+                echo "<td>Could not be retrieved.</td>" >> $installer_dashboard
             fi
             echo '</tr>' >> $installer_dashboard
         else

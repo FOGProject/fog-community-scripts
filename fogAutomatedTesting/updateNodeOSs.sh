@@ -57,7 +57,7 @@ do
         echo '<tr>' >> $installer_dashboard
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${orange}</td>" >> $installer_dashboard
-        echo "<td>NA</td>" >> $installer_dashboard
+        echo "<td>Did not complete within $osTimeout seconds.</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
       
     elif [[ "$status" == "0" ]]; then
@@ -66,7 +66,7 @@ do
         echo '<tr>' >> $installer_dashboard
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${green}</td>" >> $installer_dashboard
-	echo "<td>NA</td>" >> $installer_dashboard
+	echo "<td></td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         #Tirekick again.
@@ -92,7 +92,7 @@ do
             echo '<tr>' >> $installer_dashboard
             echo "<td>${i}</td>" >> $installer_dashboard
             echo "<td>${red}</td>" >> $installer_dashboard
-	    echo "<td>NA</td>" >> $installer_dashboard
+	    echo "<td>No log could be retrieved.</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         fi 
     fi
