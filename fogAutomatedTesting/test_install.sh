@@ -95,6 +95,8 @@ echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Branch</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard
+echo '<th>Fog Log</th>' >> $installer_dashboard
+echo '<th>Apache Log</th>' >> $installer_dashboard
 echo '</tr>' >> $installer_dashboard
 
 if [[ ! -z $1 ]]; then

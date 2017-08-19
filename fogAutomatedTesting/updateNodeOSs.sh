@@ -18,6 +18,7 @@ echo "<caption>OS Patching Status - Last updated: $(date +%c)</caption>" >> $ins
 echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard
+echo '<th>Patch Log</th>' >> $installer_dashboard
 echo '</tr>' >> $installer_dashboard
 
 
@@ -81,6 +82,7 @@ do
             echo '<tr>' >> $installer_dashboard
             echo "<td>${i}</td>" >> $installer_dashboard
             echo "<td>${red}</td>" >> $installer_dashboard
+	    echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/os/$rightNow.log\">log</a>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         else
             echo "$i failed to update OS, no log could be retrieved." >> $report
