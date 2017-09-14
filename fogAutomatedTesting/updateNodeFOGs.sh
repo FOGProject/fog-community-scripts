@@ -35,6 +35,8 @@ do
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${branch}</td>" >> $installer_dashboard
         echo "<td>${green}</td>" >> $installer_dashboard
+	echo "<td></td>" >> $installer_dashboard
+	echo "<td></td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         #Tire kick.
@@ -83,6 +85,16 @@ do
             echo "<td>${i}</td>" >> $installer_dashboard
             echo "<td>${branch}</td>" >> $installer_dashboard
             echo "<td>${orange}</td>" >> $installer_dashboard
+            if [[ ! -z $foglog || ! -z $commit  ]]; then
+                echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_fog.log\">Fog</a></td>" >> $installer_dashboard
+            else
+                echo "<td>Could not be retrieved.</td>" >> $installer_dashboard
+            fi
+            if [[ -f $webdir/$i/fog/${rightNow}_apache.log ]]; then
+                echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_apache.log\">Apache</a></td>" >> $installer_dashboard
+            else
+                echo "<td>Could not be retrieved.</td>" >> $installer_dashboard
+            fi
             echo '</tr>' >> $installer_dashboard
         else
             case $status in
@@ -93,7 +105,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 1)
                     echo "$i failure with \"$branch\", no branch passed" >> $report
@@ -102,7 +113,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 2)
                     echo "$i failure with \"$branch\", failed to reset git" >> $report
@@ -111,7 +121,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 3)
                     echo "$i failure with \"$branch\", failed to 'git pull'" >> $report
@@ -120,7 +129,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 4)
                     echo "$i failure with \"$branch\", failed to checkout git" >> $report
@@ -129,7 +137,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 5) 
                     echo "$i failure with \"$branch\", failed to change directory" >> $report
@@ -138,7 +145,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 6)
                     echo "$i failure with \"$branch\", failed installation" >> $report
@@ -147,7 +153,6 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${red}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
                 *)
                     echo "$i failure with \"$branch\", failed with exit code \"$status\"" >> $report
@@ -156,9 +161,19 @@ do
                     echo "<td>${i}</td>" >> $installer_dashboard
                     echo "<td>${branch}</td>" >> $installer_dashboard
                     echo "<td>${orange}</td>" >> $installer_dashboard
-                    echo '</tr>' >> $installer_dashboard
                     ;;
             esac
+            if [[ ! -z $foglog || ! -z $commit  ]]; then
+                echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_fog.log\">Fog</a></td>" >> $installer_dashboard
+            else
+                echo "<td>Could not be retrieved</td>" >> $installer_dashboard
+            fi
+            if [[ -f $webdir/$i/fog/${rightNow}_apache.log ]]; then
+                echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/fog/${rightNow}_apache.log\">Apache</a></td>" >> $installer_dashboard
+            else
+                echo "<td>Could not be retrieved</td>" >> $installer_dashboard
+            fi
+	    echo '</tr>' >> $installer_dashboard
         fi
 
 

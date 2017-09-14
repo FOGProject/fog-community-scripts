@@ -82,7 +82,8 @@ sleep 60
 Yesterday=$(date -d '-1 day' +%Y-%m-%d)
 Today=$(date +%Y-%m-%d)
 Tomorrow=$(date -d '+1 day' +%Y-%m-%d)
-branches=$(cd $gitDir/fogproject;git for-each-ref --count=10 --sort=-committerdate refs --format='%(committerdate:short)_%(refname:short)';cd $cwd)
+#branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(committerdate:short)_%(refname:short)';cd $cwd)
+branches=$(cd $gitDir/fogproject;git for-each-ref --sort=-committerdate refs --format='%(refname:short)' | grep origin;cd $cwd)
 first="yes"
 
 
@@ -94,6 +95,8 @@ echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Branch</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard
+echo '<th>Fog Log</th>' >> $installer_dashboard
+echo '<th>Apache Log</th>' >> $installer_dashboard
 echo '</tr>' >> $installer_dashboard
 
 if [[ ! -z $1 ]]; then
@@ -104,8 +107,6 @@ fi
 #Get last x branches.
 for branch in $branches; do    
 
-    #This line is for later checking if the branch was last updated yesterday, today, or tomorrow.
-    thisBranch=$branch
     #Remove everything before first "/" and including the "/" in branch name.
     branch="${branch##*/}"
 
