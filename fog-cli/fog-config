@@ -1,0 +1,31 @@
+#!/usr/bin/python3
+from pathlib import Path
+import os
+import configparser
+import getpass
+config = configparser.ConfigParser()
+home = str(Path.home())
+configdir = home + '/.fog'
+if not os.path.exists(configdir):
+  os.makedirs(configdir)
+cfgfile = open(configdir + '/credentials',"w")
+# add the settings to the structure of the file, and write it out...
+username = input('What FOG username to use, if using toekns leave blank: ')
+if ( username ):
+  password = getpass.getpass(prompt='What is the password for user ' + username + ': ')
+else:
+  apitoken = input('What API Token to use: ')
+  if ( apitoken ):
+    userapitoken = input('What user API token to use: ')
+if ( username and password ):
+  config.add_section('default')
+  config.set('default','Username', username)
+  config.set('default','Password', password)
+  config.write(cfgfile)
+  cfgfile.close()
+elif ( apitoken and userapitoken ):
+  config.add_section('default')
+  config.set('default','apitoken', apitoken)
+  config.set('default','Password', userapitoken)
+  config.write(cfgfile)
+  cfgfile.close()

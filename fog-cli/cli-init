@@ -1,0 +1,12 @@
+#!/usr/bin/python3
+from pathlib import Path
+import os
+import configparser
+home = str(Path.home())
+if ( not os.path.isfile('home' + '/.fog/credentials')):
+  print ("fog-cli is not configured, please run fog-config")
+else:
+  Config = ConfigParser.ConfigParser()
+  Config.read('home' + '/.fog/credentials')
+
+
