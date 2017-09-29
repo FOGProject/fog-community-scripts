@@ -28,6 +28,9 @@ do
 
     echo "$(date +%x_%r) Return code was $status" >> $output
 
+    #make sure streaks dir exists.
+    mkdir -p $streakDir
+
     if [[ "$status" == "0" ]]; then
 
 

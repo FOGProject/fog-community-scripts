@@ -51,6 +51,11 @@ do
 
     sleep 10
 
+
+    #make sure streaks dir exists.
+    mkdir -p $streakDir
+
+
     status=$(cat $cwd/.$i)
     if [[ "$status" == "-1" ]]; then
         complete="false"
