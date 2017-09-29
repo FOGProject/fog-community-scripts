@@ -38,6 +38,9 @@ green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"   #HTML for
 
 
 
+streakDir="/root/git/fog-community-scripts/fogAutomatedTesting/streaks"
+
+
 
 webdir="/var/www/html/fog_distro_check"   #This is the web directory to put reports and file structure into.
 permissions="www-data:www-data"   #What the web file's ownership should be.

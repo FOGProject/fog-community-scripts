@@ -61,6 +61,24 @@ do
         echo '</tr>' >> $installer_dashboard
       
     elif [[ "$status" == "0" ]]; then
+
+        if [[ -f ${streakDir}/${i}_os_current_streak ]]; then
+            current_streak=$(head -n 1 ${streakDir}/${i}_os_current_streak)
+        else
+            current_streak="0"
+        fi
+        if [[ -f ${streakDir}/${i}_os_record_streak ]]; then
+            record_streak=$(head -n 1 ${streakDir}/${i}_os_record_streak)
+        else
+            record_streak="0"
+        fi
+        current_streak=$(($current_streak + 1))
+        if [[ $current_streak -gt $record_streak ]]; then
+            record_streak=$current_streak
+        fi
+        echo $current_streak > ${streakDir}/${i}_os_current_streak
+        echo $record_streak > ${streakDir}/${i}_os_record_streak
+
         echo "$i successfully updated OS." >> $report
         echo "$(date +%x_%r) $i successfully updated OS." >> $output
         echo '<tr>' >> $installer_dashboard
@@ -69,6 +87,25 @@ do
 	echo "<td></td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
+        if [[ -f ${streakDir}/${i}_os_current_streak ]]; then
+            current_streak=$(head -n 1 ${streakDir}/${i}_os_current_streak)
+        else
+            current_streak="0"
+        fi
+        if [[ -f ${streakDir}/${i}_os_record_streak ]]; then
+            record_streak=$(head -n 1 ${streakDir}/${i}_os_record_streak)
+        else
+            record_streak="0"
+        fi
+        current_streak=$(($os_current_streak - 1))
+        if [[ $current_streak -gt $record_streak ]]; then
+            record_streak=$current_streak
+        fi
+        echo $current_streak > ${streakDir}/${i}_os_current_streak
+        echo $record_streak > ${streakDir}/${i}_os_record_streak
+
+
+
         #Tirekick again.
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"hey wake up\"" > /dev/null 2>&1
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"right now\"" > /dev/null 2>&1
