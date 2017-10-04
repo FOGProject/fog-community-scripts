@@ -28,7 +28,30 @@ do
 
     echo "$(date +%x_%r) Return code was $status" >> $output
 
+    #make sure streaks dir exists.
+    mkdir -p $streakDir
+
     if [[ "$status" == "0" ]]; then
+
+
+        if [[ -f ${streakDir}/${i}_fog_${branch}_current_streak ]]; then
+            current_streak=$(head -n 1 ${streakDir}/${i}_fog_${branch}_current_streak)
+        else
+            current_streak="0"
+        fi
+        if [[ -f ${streakDir}/${i}_fog_${branch}_record_streak ]]; then
+            record_streak=$(head -n 1 ${streakDir}/${i}_fog_${branch}_record_streak)
+        else
+            record_streak="0"
+        fi
+        current_streak=$(($current_streak + 1))
+        if [[ $current_streak -gt $record_streak ]]; then
+            record_streak=$current_streak
+        fi
+        echo $current_streak > ${streakDir}/${i}_fog_${branch}_current_streak
+        echo $record_streak > ${streakDir}/${i}_fog_${branch}_record_streak
+
+
         echo "$i success with \"$branch\"" >> $report
         echo "$(date +%x_%r) $i success with \"$branch\"" >> $output
         echo '<tr>' >> $installer_dashboard
@@ -37,8 +60,21 @@ do
         echo "<td>${green}</td>" >> $installer_dashboard
 	echo "<td></td>" >> $installer_dashboard
 	echo "<td></td>" >> $installer_dashboard
+	echo "<td>${current_streak}</td>" >> $installer_dashboard
+	echo "<td>${record_streak}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
+
+        if [[ -f ${streakDir}/${i}_fog_${branch}_current_streak ]]; then
+            current_streak=$(head -n 1 ${streakDir}/${i}_fog_${branch}_current_streak)
+        else
+            current_streak="0"
+        fi
+        if [[ -f ${streakDir}/${i}_fog_${branch}_record_streak ]]; then
+            record_streak=$(head -n 1 ${streakDir}/${i}_fog_${branch}_record_streak)
+        else
+            record_streak="0"
+        fi
         #Tire kick.
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"wakeup\"" > /dev/null 2>&1
         timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $i "echo \"get ready\"" > /dev/null 2>&1
@@ -95,6 +131,8 @@ do
             else
                 echo "<td>Could not be retrieved.</td>" >> $installer_dashboard
             fi
+	    echo "<td>${current_streak}</td>" >> $installer_dashboard
+	    echo "<td>${record_streak}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         else
             case $status in
@@ -173,6 +211,14 @@ do
             else
                 echo "<td>Could not be retrieved</td>" >> $installer_dashboard
             fi
+            current_streak="0"
+            if [[ $current_streak -gt $record_streak ]]; then
+                record_streak=$current_streak
+            fi
+            echo $current_streak > ${streakDir}/${i}_fog_${branch}_current_streak
+            echo $record_streak > ${streakDir}/${i}_fog_${branch}_record_streak
+	    echo "<td>${current_streak}</td>" >> $installer_dashboard
+	    echo "<td>${record_streak}</td>" >> $installer_dashboard
 	    echo '</tr>' >> $installer_dashboard
         fi
 
