@@ -19,6 +19,8 @@ echo '<tr>' >> $installer_dashboard
 echo '<th>OS</th>' >> $installer_dashboard
 echo '<th>Status</th>' >> $installer_dashboard
 echo '<th>Patch Log</th>' >> $installer_dashboard
+echo '<th>Current streak</th>' >> $installer_dashboard
+echo '<th>Record streak</th>' >> $installer_dashboard
 echo '</tr>' >> $installer_dashboard
 
 
@@ -58,11 +60,24 @@ do
 
     status=$(cat $cwd/.$i)
     if [[ "$status" == "-1" ]]; then
+        if [[ -f ${streakDir}/${i}_os_current_streak ]]; then
+            current_streak=$(head -n 1 ${streakDir}/${i}_os_current_streak)
+        else
+            current_streak="0"
+        fi
+        if [[ -f ${streakDir}/${i}_os_record_streak ]]; then
+            record_streak=$(head -n 1 ${streakDir}/${i}_os_record_streak)
+        else
+            record_streak="0"
+        fi
+
         complete="false"
         echo '<tr>' >> $installer_dashboard
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${orange}</td>" >> $installer_dashboard
         echo "<td>Did not complete within $osTimeout seconds.</td>" >> $installer_dashboard
+        echo "<td>${current_streak}</td>" >> $installer_dashboard
+        echo "<td>${record_streak}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
       
     elif [[ "$status" == "0" ]]; then
@@ -90,6 +105,8 @@ do
         echo "<td>${i}</td>" >> $installer_dashboard
         echo "<td>${green}</td>" >> $installer_dashboard
 	echo "<td></td>" >> $installer_dashboard
+	echo "<td>${current_streak}</td>" >> $installer_dashboard
+	echo "<td>${record_streak}</td>" >> $installer_dashboard
         echo '</tr>' >> $installer_dashboard
     else
         if [[ -f ${streakDir}/${i}_os_current_streak ]]; then
@@ -102,7 +119,7 @@ do
         else
             record_streak="0"
         fi
-        current_streak=$(($os_current_streak - 1))
+        current_streak="0"
         if [[ $current_streak -gt $record_streak ]]; then
             record_streak=$current_streak
         fi
@@ -127,6 +144,8 @@ do
             echo "<td>${i}</td>" >> $installer_dashboard
             echo "<td>${red}</td>" >> $installer_dashboard
 	    echo "<td><a href=\"http://${domainName}${port}${netdir}/$i/os/$rightNow.log\">log</a>" >> $installer_dashboard
+	    echo "<td>${current_streak}</td>" >> $installer_dashboard
+	    echo "<td>${record_streak}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         else
             echo "$i failed to update OS, no log could be retrieved." >> $report
@@ -135,6 +154,8 @@ do
             echo "<td>${i}</td>" >> $installer_dashboard
             echo "<td>${red}</td>" >> $installer_dashboard
 	    echo "<td>No log could be retrieved.</td>" >> $installer_dashboard
+	    echo "<td>${current_streak}</td>" >> $installer_dashboard
+	    echo "<td>${record_streak}</td>" >> $installer_dashboard
             echo '</tr>' >> $installer_dashboard
         fi 
     fi
