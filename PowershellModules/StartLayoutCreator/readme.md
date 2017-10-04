@@ -3,6 +3,16 @@
     * Copy the contents to a new folder located at C:\Program Files\WindowsPowerShell\Modules\StartLayoutCreator
     * Open powershell and run 'Import-Module StartLayoutCreator'
 
+* Notes
+    * Setting the start layout to local gpo requires another module that the module will attempt to install. It's called policyfileeditor and is found here https://www.powershellgallery.com/packages/PolicyFileEditor/3.0.0 and here https://github.com/dlwyatt/PolicyFileEditor
+    * A few links on windows 10 start screen customization used while designing this
+        * https://docs.microsoft.com/en-us/windows/configuration/customize-windows-10-start-screens-by-using-group-policy
+        * https://docs.microsoft.com/en-us/windows/configuration/customize-and-export-start-layout
+        * https://docs.microsoft.com/en-us/windows/configuration/start-layout-xml-desktop
+        * https://docs.microsoft.com/en-us/powershell/module/startlayout/import-startlayout?view=win10-ps
+        * https://docs.microsoft.com/en-us/powershell/module/startlayout/get-startapps?view=win10-ps
+    * I intend to add getting taskbar pins to add to the layout as well as setting a given string of programs to pin in the layout for a more dynamic approach.
+
 * Description
     * There are 3 main functions for creating, exporting, and setting a new startlayout from a legacy startmenu. (i.e. the place where all the programs you install automatically add a shortcut and where you probably put shortcuts if you make silent installers for provisioning "%APPDATA%\Microsoft\Windows\Start Menu\Programs" is the default of the current user)
     * New-StartLayout
@@ -21,6 +31,7 @@
     .DESCRIPTION
     Goes through the current user's or a given path of shortcuts and creates a layout with groups and sub groups based on 
     folders and subfolders.
+    Gets the appid of each program and whether it's a desktop or windows store app using the get-startapps cmdlet
     After creating a startlayout you can export-startlayoutxml and then set-startlayout 
     Currently only supports tiles of 2x2 (medium) size. Could be made to work with small tiles, but wide size tiles might be trickier.
     

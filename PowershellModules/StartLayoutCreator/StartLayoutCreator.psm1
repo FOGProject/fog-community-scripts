@@ -1,7 +1,6 @@
 <#
     -----------------------------------------------------------------------------
-    Arrowhead Dental Lab admin_scripts
-    Script Name: StartLayoutCreator
+    Module Name: StartLayoutCreator
     Original Author: JJ Fullmer
     Created Date: 2017-10-04
     Version: 1.0
@@ -15,6 +14,7 @@ function New-StartLayout {
     .DESCRIPTION
     Goes through the current user's or a given path of shortcuts and creates a layout with groups and sub groups based on 
     folders and subfolders.
+    Gets the appid of each program and whether it's a desktop or windows store app using the get-startapps cmdlet
     After creating a startlayout you can export-startlayoutxml and then set-startlayout 
     Currently only supports tiles of 2x2 (medium) size. Could be made to work with small tiles, but wide size tiles might be trickier.
     
@@ -40,7 +40,9 @@ function New-StartLayout {
     .EXAMPLE
     Create a new layout, export it to the default 'C:\startLayoutFromStartMenu.xml' and set it via gpo
     New-StartLayout -startMenuPath "$env:ALLUSERSPROFILE\Microsoft\Windows\Start Menu\Programs" | Export-StartLayoutXml | Set-StartLayout -gpo;
-    
+      
+    .LINK
+        https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
     #>
     [CmdletBinding()]
     param (
@@ -114,7 +116,10 @@ function Export-StartLayoutXml {
     .EXAMPLE
     # export a new layout from the current user's start menu to the default location and set the layout to the default profile 
     Export-StartLayoutXml -layout $(New-StartLayout) | Set-StartLayout;
-    
+      
+    .LINK
+        https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
+
     #>
     [CmdletBinding()]
     param (
@@ -197,7 +202,10 @@ function Set-StartLayout {
     Set-StartLayout -xmlFile C:\startLayout.xml
     #use local gpo
     Set-StartLayout -xmlFile C:\startLayout.xml -gpo
-    
+      
+    .LINK
+        https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
+
     #>
     [CmdletBinding()]
     param (
