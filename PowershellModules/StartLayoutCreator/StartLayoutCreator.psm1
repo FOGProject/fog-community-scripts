@@ -3,7 +3,7 @@
     Script Name: StartLayoutCreator
     Original Author: JJ Fullmer
     Created Date: 2017-10-04
-    Version: 2.0
+    Version: 2.2
     -----------------------------------------------------------------------------
 #>
 function New-StartLayout {
@@ -40,6 +40,9 @@ function New-StartLayout {
     .EXAMPLE
     Create a new layout, export it to the default 'C:\startLayoutFromStartMenu.xml' and set it via gpo
     New-StartLayout -startMenuPath "$env:ALLUSERSPROFILE\Microsoft\Windows\Start Menu\Programs" | Export-StartLayoutXml | Set-StartLayout -gpo;
+	
+	.LINK
+		https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
     
     #>
     [CmdletBinding()]
@@ -87,6 +90,11 @@ function New-StartLayout {
                     Write-Verbose "Getting start group from folder $($_.FullName)...";
                     $NextGroup = Get-StartGroup -pth $_.FullName -width $width;
                     if($NextGroup -ne $null) {
+                        Write-Verbose 'changing group names for built in windows folders...';
+                        switch ($NextGroup.name) {
+                            Accessibility { $NextGroup.name = 'Windows Ease of Access' }
+                            Accessories {$NextGroup.name = 'Windows Accessories' }
+                        }
                         $Layout.groups.Add($NextGroup);
                     }
                     else {
@@ -123,6 +131,9 @@ function Export-StartLayoutXml {
     .EXAMPLE
     # export a new layout from the current user's start menu to the default location and set the layout to the default profile 
     Export-StartLayoutXml -layout $(New-StartLayout) | Set-StartLayout;
+	
+	.LINK
+		https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
     
     #>
     [CmdletBinding()]
@@ -208,6 +219,9 @@ function Set-StartLayout {
     Set-StartLayout -xmlFile C:\startLayout.xml
     #use local gpo
     Set-StartLayout -xmlFile C:\startLayout.xml -gpo
+	
+	.LINK
+		https://github.com/FOGProject/fog-community-scripts/tree/master/PowershellModules/StartLayoutCreator
     
     #>
     [CmdletBinding()]
@@ -257,6 +271,15 @@ function Set-StartLayout {
             
             Write-Verbose 'updating layout xml time stamp in case this was just an update...';
             (Get-ChildItem $xmlFile).LastWriteTime = Get-Date; #update date time stamp on file
+
+            Write-Verbose 'Creating self deleting startup script to restart explorer on first logon...';
+            $startup = 'C:\Users\Default\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\restartExplorer.bat';
+            $script = @"
+@ECHO OFF
+@powershell.exe -Command "(Get-Process explorer).Kill();"
+del "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\restartExplorer.bat" & exit
+"@
+            $script | Out-File -FilePath $startup -Force -Encoding oem;
         }
         # else {
         #     Write-Verbose 'Importing startlayout to default profile for new users...';
