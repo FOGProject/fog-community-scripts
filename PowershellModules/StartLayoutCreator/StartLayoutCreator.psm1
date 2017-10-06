@@ -3,7 +3,7 @@
     Script Name: StartLayoutCreator
     Original Author: JJ Fullmer
     Created Date: 2017-10-04
-    Version: 1.6
+    Version: 2.0
     -----------------------------------------------------------------------------
 #>
 function New-StartLayout {
@@ -243,24 +243,25 @@ function Set-StartLayout {
         (Get-ChildItem $xmlFile).LastWriteTime = Get-Date;        
         
         Write-Verbose 'Importing startlayout to default profile for new users...';
-        Set-Location -Path $env:SystemDrive;
+        Set-Location -Path $env:SystemDrive\;
         Import-StartLayout -LayoutLiteralPath $xmlFile -MountLiteralPath $env:SystemDrive;
         
         if($gpo) {
             Write-Verbose 'setting start layout via user level group policy as well as in the default profile...';
             
             Write-Verbose 'Setting start layout xml policy...'
-            Set-PolicyFileEntry $regPol -Key "$winPol" -ValueName StartLayoutFile -Data $xmlFile;
-            Set-PolicyFileEntry $regPol -Key $winPol -ValueName LockedStartLayout -Data 1 -Type DWord;            
-            Update-GptIniVersion $gpt -PolicyType Machine;
+            # $xmlFile = 'C:\Users\Default\AppData\Local\Microsoft\Windows\Shell\LayoutModification.xml';
+            Set-PolicyFileEntry $regPol -Key $winPol -ValueName StartLayoutFile -Data $xmlFile -Type ExpandString;
+            Set-PolicyFileEntry $regPol -Key $winPol -ValueName LockedStartLayout -Data 1 -Type DWord;
+            Update-GptIniVersion $gpt -PolicyType User;
             
             Write-Verbose 'updating layout xml time stamp in case this was just an update...';
             (Get-ChildItem $xmlFile).LastWriteTime = Get-Date; #update date time stamp on file
         }
         # else {
-            # Write-Verbose 'Importing startlayout to default profile for new users...';
-            # Set-Location -Path 'C:\';
-            # Import-StartLayout -LayoutLiteralPath $xmlFile -MountLiteralPath $env:SystemDrive;
+        #     Write-Verbose 'Importing startlayout to default profile for new users...';
+        #     Set-Location -Path $env:SystemDrive\;
+        #     Import-StartLayout -LayoutLiteralPath $xmlFile -MountLiteralPath $env:SystemDrive;
         # }
     }
     
@@ -436,7 +437,8 @@ function Get-Tile {
         $Tile.id = (Get-StartApps | Where-Object Name -eq $name).AppID;
         if ($Tile.id -match '!') {
             Write-Verbose 'Adding uwa tile change type...'
-            $Tile.type = 'start:Tile';   
+            $Tile.type = 'start:Tile';
+            $Tile.id = $Tile.id.Where({ $_ -match '!'});        
         }
         Write-Verbose "tile id is $($Tile.id)";
     }
@@ -507,8 +509,8 @@ return;
 # SIG # Begin signature block
 # MIIRDAYJKoZIhvcNAQcCoIIQ/TCCEPkCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUZhjt+Cu/z0876SFSKZjFyN+2
-# +36ggg1zMIIFiTCCA3GgAwIBAgIQN1osf+GqS6BH6tcXABgA1DANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUt5wLMoZ6/+BsEEQMEMNSYVhs
+# Arqggg1zMIIFiTCCA3GgAwIBAgIQN1osf+GqS6BH6tcXABgA1DANBgkqhkiG9w0B
 # AQsFADBLMRMwEQYKCZImiZPyLGQBGRYDY29tMR8wHQYKCZImiZPyLGQBGRYPYXJy
 # b3doZWFkZGVudGFsMRMwEQYDVQQDEwpBcnJvd1NlY0NhMB4XDTE3MDIwNzIxNTg1
 # MFoXDTIyMDIwNzIyMDg0MlowSzETMBEGCgmSJomT8ixkARkWA2NvbTEfMB0GCgmS
@@ -584,16 +586,16 @@ return;
 # cnJvd2hlYWRkZW50YWwxEzARBgNVBAMTCkFycm93U2VjQ2ECE10AAAAVSdRY3uf8
 # BXoAAAAAABUwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAw
 # GQYJKoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisG
-# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFFSorTk8bUSSrJTvxOhC+76zsPIuMA0G
-# CSqGSIb3DQEBAQUABIICAFBFcLxoawT3Jh8L+oH65+uV8elVsa1eDkBhlKvVXj8k
-# bZzkZN3VN711+Huu+Oc14lodkxN/fFCdB8uo23J6Vxx0D5FD3YuRBA9yoTjTES3i
-# axc2xVg3teuZqzVHu9XmZo7EsGt6rZRXyzOWsopZ1DIDP/DIug5jt8iMIZrgDaWF
-# 6y+YSJX8BuYMlQyoql/sfzaw3Zd5zFDMLXcepcOBuIbxVQ4nzSdnobPO6H5vnbdl
-# QEGMgADDKoUcGvFZwLn/vv/JRzkPRBSSe/vxedexxLkvxwUBJG6nxDEwh7fQAM3j
-# BoTrI/pIoX5bd+tEAqZjWhaovIj6SVNIPekuRdd0R3mpbuEE5ttIsNZCa3Dumpbp
-# TNSGHA4rH63/Pj+CE82fAnrfIYzYLyBe6sgzW+CpXIOPc8qfz3QsDoF4j+Pg0eNX
-# V4USIvqmleKbN8L8glhGd6EJcJfk3HR9Ql6A+JInGBiuoFUERhonksmOgX4fwJML
-# NKptWhncLj1+2vwiqa/UvRA5WkzKRxPySXRKTz3X6z5/iYXEeB3wE/ukazRjwhtP
-# dCLu2VNhzUm+aFtWRfqq2lsPIput2L+R/aVXvqk1IunIz6RYkabpdA6GP9hYF5O8
-# YqI7CcAjxitMo6yWZ/dTAVbYvuWwa2IPPQJtaiBOWh01pucJwSimyw//SUMqAPNS
+# AQQBgjcCARUwIwYJKoZIhvcNAQkEMRYEFJlrXgtbo7+qICP6ZgO7p3pxrDoEMA0G
+# CSqGSIb3DQEBAQUABIICAMS6phMCKjWPXiUO30DSZc5wa7husqFu2mHeT+7SQsME
+# 0nZbdVpPVA7V5UZNHdGpb4kC878ZXhQ752r4mfY2vG7q87brfsGruYODy7FeGCkx
+# jW8Icf5wySKxi6c03S5A4zbY5uXm793tiXl98VuF6z6WL9K2EDZ7F9rFLa2ojapm
+# GPQKvJf70wcNmGt6p5AzpAvM2IYWmPefNYrsA0xnKRWRAFhVj25eDEAYpoO0P67R
+# Pf8m9JXf4OfFu2FExW1156e9MGzlGgZAlQq+c8wEQ+tjWmGG/zCpzt/Vxlh2YXkx
+# 4vQkjvRBRVO7f0EsCSdsm4VgUHHvUPb1RF1DbU2BaiOi3o5Ml5BNPQpbPPfUEC+l
+# /q8rOJ2V8CBTT1teMuPXy0YsYwCviD7r6r9/ArpQndli6/mOsVdkw3EXL4vrIJNG
+# vzEksilOGUqUygnPazTR9w06vSZppM5WHdZE9BNr8YKO/jcW0smpAetp0U5ShT35
+# +yIvFc31VdE8S96+NNW95h2w38qx86bR2eYoLJvwVksWPVbcsBE4ACCwKS2rnp8s
+# vr5bQnekXygBmH3bgAm5UszTE5HhqqzXKEL5kiIX9Ov7pJ0aavfAjemn0kRPXKfn
+# B81iqUsxzNmDcrPr+YHeNgpR1iIU09dUKPRl+Wh+5BLnyjlnvrAnmloLXlPY3UJo
 # SIG # End signature block
