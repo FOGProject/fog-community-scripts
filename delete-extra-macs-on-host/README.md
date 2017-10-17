@@ -8,20 +8,21 @@ All other MACs associated with that hostID will be deleted.
 
 Create a root crontab event. You will need to be root to do this.
 You can switch to root with:
-sudo -i
+`sudo -i`
 
 Then enter into root's crontab with:
-crontab -e
+`crontab -e`
 
 
 Add this line to the file to run the script every minute. The path should be the path to the script.
-* * * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh
+
+`* * * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh`
 
 Or this to run every 3 minutes:
-*/3 * * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh
+`*/3 * * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh`
 
 Or once a day:
-0 12 * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh
+`0 12 * * * /root/git/fog-community-scripts/delete-extra-macs-on-host/delete-extra-macs.sh`
 
 This tool is licensed under the fog community scripts license.
 
