@@ -38,7 +38,7 @@ green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"   #HTML for
 
 
 
-streakDir="/root/git/fog-community-scripts/fogAutomatedTesting/streaks"
+streakDir="/root/streaks"
 
 
 
