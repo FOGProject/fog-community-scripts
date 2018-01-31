@@ -58,6 +58,7 @@ count=$($mysql $options "$getHostsWithMissingPrimaryMacCount")
 
 if [[ "$count" == "0" ]]; then
     exit
+    #echo
 fi
 
 echo "Date & time: $($date)" >> $log
@@ -96,7 +97,7 @@ echo "Last 50 history events" >> $log
 echo "################################################" >> $log
 
 echo "hText,hUser,hTime,hIP" >> $log
-$mysql $options "$getHostsWithMissingPrimaryMac" | while read hText hUser hTime hIP; do
+$mysql $options "$getLast50historyEntries" | while read hText hUser hTime hIP; do
     echo "$hText,$hUser,$hTime,$hIP" >> $log
 done
 
