@@ -6,7 +6,7 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #This is a list of all storage node aliases and are space seperated. There is no limit on the number of items.
 #You will need to modify the below line for any of the scripts in this directory to work.
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
-storageNodes=( Arch CentOS7 Debian8 Debian9 Fedora25 Fedora26 Fedora27Workstation Ubuntu17 Ubuntu16 Ubuntu14 )
+storageNodes=( Arch CentOS7 Debian8 Debian9 Fedora25 Fedora26 Fedora27Workstation Ubuntu17.10 Ubuntu16 Ubuntu14 )
 
 #The name of the SSH alias for the linux KVM+libvirtd host:
 hostsystem="dl580"
@@ -38,7 +38,7 @@ green="<img src=\"${greenfile}\" alt=\"Success\" title=\"Success\">"   #HTML for
 
 
 
-streakDir="/root/git/fog-community-scripts/fogAutomatedTesting/streaks"
+streakDir="/root/streaks"
 
 
 

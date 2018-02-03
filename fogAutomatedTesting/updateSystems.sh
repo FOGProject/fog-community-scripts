@@ -9,3 +9,5 @@ $cwd/./customCommand.sh
 $cwd/./updateNodeOSs.sh
 $cwd/./rebootVMs.sh
 
+echo "complete"
+
