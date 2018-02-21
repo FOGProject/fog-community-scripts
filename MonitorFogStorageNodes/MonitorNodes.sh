@@ -26,13 +26,13 @@ getHostnames="SELECT \`ngmHostname\`, \`ngmMemberName\` FROM \`nfsGroupMembers\`
 
 #----- Build mysql options -----#
 options="-sN"
-if [[$snmysqlhost != ""]]; then
+if [[ $snmysqlhost != "" ]]; then
         options="$options -h$snmysqlhost"
 fi
-if [[$snmysqluser != ""]]; then
+if [[ $snmysqluser != "" ]]; then
         options="$options -u$snmysqluser"
 fi
-if [[$snmysqlpass != ""]]; then
+if [[ $snmysqlpass != "" ]]; then
         options="$options -p$snmysqlpass"
 fi
 options="$options -D fog -e"
