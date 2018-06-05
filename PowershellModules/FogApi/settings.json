@@ -1,0 +1,5 @@
+{
+    "fogApiToken": "fog API token found at https://fog-server/fog/management/index.php?node=about&sub=settings under API System",
+    "fogUserToken": "your fog user api token found in the user settings https://fog-server/fog/management/index.php?node=user&sub=list select your api enabled used and view the api tab",
+    "fogServer": "your fog server hostname or ip address to be used for created the url used in api calls default is fog-server or fogServer"
+}
