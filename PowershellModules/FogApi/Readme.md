@@ -1,5 +1,8 @@
 To install this module you need at least powershell v3, was created with 5.1 and intended to be cross platform compatible with powershell v6
 To Install this module follow these steps
+* Easiest method: Install from PSGallery https://www.powershellgallery.com/packages/FogApi `Install-Module -name fogApi` 
+
+* Manual Method:
 * download the zip of this repo https://github.com/FOGProject/fog-community-scripts/archive/master.zip and extract it
     * Or clone the repo using your favorite git tool, you just need the FogApi Folder this readme is in
 * Copy the FogApi folder this Readme file is in to...
@@ -57,3 +60,5 @@ $updateITHosts | % {
 ```
 
 This is just one small example of the limitless things you can do with the api and powershell objects.
+
+see also the fogforum thread for the module https://forums.fogproject.org/topic/12026/powershell-api-module/2 
