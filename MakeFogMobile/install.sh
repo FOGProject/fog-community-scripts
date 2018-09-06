@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #---- Set variables ----#
 
 echo "Installing, please wait..."
