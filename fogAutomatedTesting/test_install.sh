@@ -181,11 +181,11 @@ cp ${cwd}/${greenfile} ${webdir}/${greenfile}
 chown $permissions ${webdir}/${greenfile}
 
 
-if [[ -e $webdir/installer_dashboard.html ]]; then
-    rm -f $webdir/installer_dashboard.html
+if [[ -e $webdir/index.html ]]; then
+    rm -f $webdir/index.html
 fi
-mv $installer_dashboard $webdir/installer_dashboard.html
-chown $permissions $webdir/installer_dashboard.html
+mv $installer_dashboard $webdir/index.html
+chown $permissions $webdir/index.html
 
 echo "Full Report: http://${domainName}${port}${netdir}/reports/${rightNow}_install.log" >> $report
 cat $report | slacktee.sh -p
