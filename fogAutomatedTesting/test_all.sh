@@ -9,3 +9,6 @@ $cwd/./test_install.sh
 #Test imaging.
 #$cwd/./test_imaging.sh
 
+
+rsync -r /var/www/html fogtesting:/var/www
+
