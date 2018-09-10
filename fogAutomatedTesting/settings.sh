@@ -44,9 +44,9 @@ streakDir="/root/streaks"
 
 webdir="/var/www/html"   #This is the web directory to put reports and file structure into.
 permissions="www-data:www-data"   #What the web file's ownership should be.
-domainName="theworkmans.us"   #Your domain name.
+domainName="fogtesting.theworkmans.us"   #Your domain name.
 netdir="/"   #This is the net directory, what gets added to the domain name to get to the webdir.
-port=":80"    #The port, if any. If default, leave blank.
+port=""    #The port, if any. If default, leave blank.
 
 #This is how you would use your Public IP instead of a domain name:
 #publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
