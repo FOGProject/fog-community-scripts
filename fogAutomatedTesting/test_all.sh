@@ -10,5 +10,7 @@ $cwd/./test_install.sh
 #$cwd/./test_imaging.sh
 
 
-rsync -r /var/www/html fogtesting:/var/www
+/usr/bin/rsync -r /var/www/html fogtesting:/var/www
+ssh -o ConnectTimeout=$sshTimeout fogtesting "systemctl restart apache2 > /dev/null 2>&1"
+
 
