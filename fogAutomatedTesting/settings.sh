@@ -27,7 +27,7 @@ deployLimit="180" #Measured in "deployLimitUnit" which is seconds. #Recommended 
 
 report="/root/report.txt"  #Where the short report goes.
 output="/root/output.log"  #Where all output goes.
-installer_dashboard="/root/installer_dashboard.html" #The dashboard file before being moved to the web directory.
+installer_dashboard="/root/index.html" #The dashboard file before being moved to the web directory.
 imaging_dashboard="/root/imaging_dashboard.html" #The dashboard file before being moved to the web directory.
 redfile="red.png"  #Red dot used for dashboard.
 orangefile="orange.png"   #Orange dot used for dashboard.
@@ -42,11 +42,11 @@ streakDir="/root/streaks"
 
 
 
-webdir="/var/www/html/fog_distro_check"   #This is the web directory to put reports and file structure into.
+webdir="/var/www/html"   #This is the web directory to put reports and file structure into.
 permissions="www-data:www-data"   #What the web file's ownership should be.
-domainName="theworkmans.us"   #Your domain name.
-netdir="/fog_distro_check"   #This is the net directory, what gets added to the domain name to get to the webdir.
-port=":20080"    #The port, if any. If default, leave blank.
+domainName="fogtesting.theworkmans.us"   #Your domain name.
+netdir="/"   #This is the net directory, what gets added to the domain name to get to the webdir.
+port=""    #The port, if any. If default, leave blank.
 
 #This is how you would use your Public IP instead of a domain name:
 #publicIP=$(/usr/bin/curl -s http://whatismyip.akamai.com/)
