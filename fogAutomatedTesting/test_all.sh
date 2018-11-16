@@ -10,7 +10,9 @@ $cwd/./test_install.sh
 #$cwd/./test_imaging.sh
 
 
-/usr/bin/rsync -r /var/www/html fogtesting:/var/www
-ssh -o ConnectTimeout=$sshTimeout fogtesting "systemctl restart apache2 > /dev/null 2>&1"
+#/usr/bin/rsync -r /var/www/html fogtesting:/var/www
+#ssh -o ConnectTimeout=$sshTimeout fogtesting "systemctl restart apache2 > /dev/null 2>&1"
+
+/usr/bin/s3cmd sync /var/www/html s3://fogtesting.theworkmans.us
 
 
