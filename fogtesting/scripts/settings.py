@@ -6,5 +6,5 @@ branches = ["master"]
 theRegion = "us-east-2"
 zone = theRegion + 'a'
 
-wait = 0.5
+wait = 1
 
