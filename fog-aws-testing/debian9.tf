@@ -6,7 +6,6 @@ resource "aws_instance" "debian9" {
   vpc_security_group_ids = ["${aws_security_group.sg-ssh.id}"]
   associate_public_ip_address = false
   key_name = "${aws_key_pair.ssh-key.key_name}"
-
   connection {
     type     = "ssh"
     user     = "admin"
@@ -15,7 +14,6 @@ resource "aws_instance" "debian9" {
     bastion_user = "admin"
     bastion_private_key = "${file("/root/.ssh/fogtesting_private")}"
   }
-
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
@@ -30,14 +28,12 @@ resource "aws_instance" "debian9" {
       "(sleep 10 && sudo reboot)&"
     ]
   }
-
   tags {
     Name = "${var.project}-debian9"
     Project = "${var.project}"
     OS = "debian9"
   }
 }
-
 resource "aws_route53_record" "debian9-dns-record" {
   zone_id = "${aws_route53_zone.private-zone.zone_id}"
   name    = "debian9.fogtesting.cloud"

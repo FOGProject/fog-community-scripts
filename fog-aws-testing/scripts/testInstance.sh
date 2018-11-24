@@ -20,7 +20,7 @@ sshTime="${sshTimeout}s" #Time to wait for small SSH commands to complete.
 
 
 #Create hidden file for node - for status reporting.
-echo "-1" > $statusDir/.$name
+echo "-1" > $statusDir/.${name}_${branch}
 
 
 
@@ -30,9 +30,9 @@ nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "echo get re
 
 #Start the installation process.
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $name:/root/installBranch.sh
-printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $name "/root/./installBranch.sh $branch;echo \$?") > $statusDir/.$name
+printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $name "/root/./installBranch.sh $branch;echo \$?") > $statusDir/.${name}.${branch}
 timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "rm -f /root/installBranch.sh"
-status=$(cat $statusDir/.$name)
+status=$(cat $statusDir/.${name}.${branch})
 
 
 foglog=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
@@ -45,11 +45,7 @@ echo "foglog='$foglog'"
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $name:$foglog $webdir/$name/${rightNow}_$(basename $foglog) > /dev/null 2>&1
 #Get apache log. It can only be in one of two spots.
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $name:/var/log/httpd/error_log $webdir/$name/${rightNow}_apache.log > /dev/null 2>&1
-echo $?
-echo 'that was httpd'
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $name:/var/log/apache2/error.log $webdir/$name/${rightNow}_apache.log > /dev/null 2>&1
-echo $?
-echo 'that was apache2'
 
 foglog=$webdir/$name/${rightNow}_$(basename $foglog)
 commit=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "cd /root/git/fogproject;git rev-parse HEAD")
