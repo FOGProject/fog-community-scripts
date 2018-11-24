@@ -1,5 +1,8 @@
 #!/bin/bash
 cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
+
+
 
 # Automates installation of FOG.
 # Arguments:
@@ -20,7 +23,7 @@ sshTime="${sshTimeout}s" #Time to wait for small SSH commands to complete.
 
 
 #Create hidden file for node - for status reporting.
-echo "-1" > $statusDir/.${name}_${branch}
+echo "-1" > $statusDir/.${name}.${branch}
 
 
 
@@ -31,7 +34,6 @@ nonsense=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "echo get re
 #Start the installation process.
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $cwd/installBranch.sh $name:/root/installBranch.sh
 printf $(timeout $fogTimeout ssh -o ConnectTimeout=$sshTimeout $name "/root/./installBranch.sh $branch;echo \$?") > $statusDir/.${name}.${branch}
-timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "rm -f /root/installBranch.sh"
 status=$(cat $statusDir/.${name}.${branch})
 
 

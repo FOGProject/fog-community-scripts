@@ -1,15 +1,12 @@
 #!/usr/bin/python
 from threading import Thread
 import subprocess
-import os
 from functions import *
 
 
 
 def runTest(branch,os):
-    cwd = os.path.dirname(os.path.realpath(__file__))
-    print cwd + "/test_instance.sh " + branch + " " + os
-    subprocess.call(cwd + "/test_instance.sh " + branch + " " + os, shell=True)
+    subprocess.call(test_script + " " + branch + " " + os, shell=True)
 
 
 for branch in branches:
@@ -19,6 +16,7 @@ for branch in branches:
         snapshot = get_snapshot("Name",os + '-clean')
         restore_snapshot_to_instance(snapshot,instance)
         threads.append(Thread(target=runTest,args=(branch,os)))
+    time.sleep(20)
     # Start all the tests for this branch.
     for x in threads:
         x.start()
