@@ -36,12 +36,11 @@ status=$(cat $statusDir/.${name}.${branch})
 
 
 foglog=$(timeout $sshTime ssh -o ConnectTimeout=$sshTimeout $name "ls -dtr1 /root/git/fogproject/bin/error_logs/* | tail -1")
+foglog_basename=$foglog
 rightNow=$(date +%Y-%m-%d_%H-%M)
 mkdir -p "$webdir/$name"
 
 #Get fog log.
-echo "foglog='$foglog'"
-
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $name:$foglog $webdir/$name/${rightNow}_$(basename $foglog) > /dev/null 2>&1
 #Get apache log. It can only be in one of two spots.
 timeout $sshTime scp -o ConnectTimeout=$sshTimeout $name:/var/log/httpd/error_log $webdir/$name/${rightNow}_apache.log > /dev/null 2>&1
@@ -53,7 +52,8 @@ echo "Date=$rightNow" > ${foglog}_new
 echo "Branch=$branch" >> ${foglog}_new
 echo "Commit=$commit" >> ${foglog}_new
 echo "OS=$name" >> ${foglog}_new
-echo "#####Begin Log#####" >> ${foglog}_new
+echo "File=$foglog_basename" >> ${foglog}_new
+echo "##### Begin Log#####" >> ${foglog}_new
 cat $foglog >> ${foglog}_new
 rm -f $foglog
 mv ${foglog}_new $foglog
