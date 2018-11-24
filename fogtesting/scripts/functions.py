@@ -8,17 +8,21 @@ ec2client = boto3.client('ec2')
 
 def get_instance(name,value):
     # This assumes one match
+    # Only for instances that are not terminated.
     response = ec2client.describe_instances(
        Filters=[
             {
                 'Name': 'tag:' + name,
                 'Values': [value]
+            },
+            {
+                'Name':'instance-state-name',
+                'Values':['pending','running','shutting-down','stopping','stopped']
             }
        ]
     )
     instance = ec2resource.Instance(response["Reservations"][0]["Instances"][0]["InstanceId"])
     return instance
-
 
 def get_instance_volume(instance):
     # This assumes one volume.
@@ -32,7 +36,7 @@ def wait_until_stopped(instance):
         if instance.state["Name"] == "stopped":
             break
         else:
-            time.sleep(0.5)
+            time.sleep(wait)
     return
 
 def wait_until_running(instance):
@@ -41,7 +45,7 @@ def wait_until_running(instance):
         if instance.state["Name"] == "running":
             break
         else:
-            time.sleep(0.5)
+            time.sleep(wait)
     return
 
 
@@ -60,7 +64,7 @@ def create_snapshot(volume,name_tag):
         if snapshot.state == "completed":
             break
         else:
-            time.sleep(0.5)
+            time.sleep(wait)
     return snapshot
 
 def delete_snapshots(name,value):
@@ -108,7 +112,7 @@ def restore_snapshot_to_instance(snapshot,instance):
         if oldVolume.state == "available":
             break
         else:
-            time.sleep(0.5)
+            time.sleep(wait)
 
     oldVolume.delete()
     newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone)
@@ -118,7 +122,7 @@ def restore_snapshot_to_instance(snapshot,instance):
         if newVolume.state == "available":
             break
         else:
-            time.sleep(0.5)
+            time.sleep(wait)
     instance.attach_volume(VolumeId=newVolume.id,Device='xvda')
     instance.start()
     wait_until_running(instance)
