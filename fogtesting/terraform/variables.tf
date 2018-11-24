@@ -1,3 +1,12 @@
+# Backends cannot use interpolation.
+terraform {
+  backend "s3" {
+    bucket = "remote-state.theworkmans.us"
+    key    = "fogtesting.rs"
+    region = "us-east-2"
+  }
+}
+
 provider "aws" {
     region = "${var.region}"
 }
@@ -18,17 +27,6 @@ variable "amis" {
     "debian9" = "ami-08e2234d40f32eb5c"
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 variable "zone_id" {
     type = "string"
