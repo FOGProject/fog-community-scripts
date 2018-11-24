@@ -32,7 +32,7 @@ resource "aws_instance" "bastion" {
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
       "chmod 600 ~/.aws/config",
-      "sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
+      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
       "git clone https://github.com/wayneworkman/fog-community-scripts.git /home/admin/fog-community-scripts",
     ]
   }
