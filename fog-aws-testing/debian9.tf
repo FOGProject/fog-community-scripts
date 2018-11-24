@@ -16,19 +16,12 @@ resource "aws_instance" "debian9" {
     bastion_private_key = "${file("/root/.ssh/fogtesting_private")}"
   }
 
-  provisioner "file" {
-    source      = "scripts/installBranch.sh"
-    destination = "/home/admin/installBranch.sh"
-  }
-
-
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
       "sudo apt-get -y dist-upgrade",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
       "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
-      "sudo mv /home/admin/installBranch.sh /root/installBranch.sh",
       "sudo mkdir -p /root/.ssh",
       "sudo cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys",
       "sudo apt-get -y install git",
