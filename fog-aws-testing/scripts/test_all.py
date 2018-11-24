@@ -7,8 +7,9 @@ from functions import *
 
 
 def runTest(branch,os):
-    print os.getcwd() + "/testInstance.sh " + branch + " " + os
-    subprocess.call(os.getcwd() + "/testInstance.sh " + branch + " " + os, shell=True)
+    cwd = dir_path = os.path.dirname(os.path.realpath(__file__))
+    print cwd + "/test_instance.sh " + branch + " " + os
+    subprocess.call(cwd + "/test_instance.sh " + branch + " " + os, shell=True)
 
 
 for branch in branches:
