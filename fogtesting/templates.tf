@@ -1,10 +1,10 @@
 data "template_file" "ssh-config" {
-  template = "${file("ssh-config.tpl")}"
+  template = "${file("templates/ssh-config.tpl")}"
 }
 
 
 data "template_file" "aws-config" {
-  template = "${file("aws-config.tpl")}"
+  template = "${file("templates/aws-config.tpl")}"
   vars {
     region = "${var.region}"
   }

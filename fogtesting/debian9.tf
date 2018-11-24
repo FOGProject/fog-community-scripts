@@ -17,7 +17,7 @@ resource "aws_instance" "debian9" {
   }
 
   provisioner "file" {
-    source      = "../installBranch.sh"
+    source      = "scripts/installBranch.sh"
     destination = "/home/admin/installBranch.sh"
   }
 

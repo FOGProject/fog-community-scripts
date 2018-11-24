@@ -1,6 +1,6 @@
 resource "aws_key_pair" "ssh-key" {
   key_name   = "fogtesting"
-  public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC497uSK6PnNNPwODlGd1uM9pKqc8xSgCubCOikOlfwq5rsf6Yd+XktHZ/Ombv7gB4mPQCmYnClOLGqBRKQJb23S4+aqB4JGI+MI2AZGP5ZyT0QhuRiRrj8f6b+Z9G9BLp0PgP16XcULkBuqqBaJPJt2kvitiVWdMYbRJ5XQ2TCq2r/RtzOfddhQ1Jc5Nfuj/FDKcz/noousRu+P8+UGyG2v1Kq9USO0heoNXr0PE3gV6IX+OJylEUaNghPkddzYCt5zdgB5dYYtC7SMsN4Qvnv7ZERwOkHlESXVtvVNqrNx0pi3F4RIzdb3OkJXFS/l5uNgUFVObkk5xG8jZNm+aFrCJHo403dfJzMK2w+2zSArEASl98WHwJqLkzAUwRmgYHNYB7H6utCnOABYDO1XBPap47iIcog9KDZ4DClgMh4i+XG5+Mm76X1aCQk2TbtbVcL9yg6SYNToGFDepWuMlDlJu6iNnjcT3TXe7ir/HbZ1q1gDOLJdXjc4S5s2lML2isvLtT4DRFIJ5Ha7cKW12phR3yl+gdAYjgNkd0arDWSqFSYeWxVagA27Y5j96w45lwaGipapRg5BjAbwezJGDYfisqn3Poua3rrMRs3mGoNpDBhzmoHeuJiHAmKPx5vsBx1SatfNz1wc9EhO9pAfuFVe0z4AVE0f1cl5rlsx/ZyhQ== root@fogTesting"
+  public_key = "${file("/root/.ssh/fogtesting_public")}"
 }
 
 

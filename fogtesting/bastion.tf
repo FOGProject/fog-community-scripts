@@ -23,14 +23,17 @@ resource "aws_instance" "bastion" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install awscli",
+      "sudo apt-get -y install awscli python-pip git",
+      "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
       "echo '${var.waynes-key}' >> /home/admin/.ssh/authorized_keys",
       "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
-      "chmod 600 ~/.aws/config"
+      "chmod 600 ~/.aws/config",
+      "sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
+      "git clone https://github.com/wayneworkman/fog-community-scripts.git /home/admin/fog-community-scripts",
     ]
   }
 
