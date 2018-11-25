@@ -34,6 +34,7 @@ resource "aws_instance" "centos7" {
     Project = "${var.project}"
     OS = "centos7"
   }
+  depends_on = ["aws_route_table_association.private-route-table-association"]
 }
 resource "aws_route53_record" "centos7-dns-record" {
   zone_id = "${aws_route53_zone.private-zone.zone_id}"

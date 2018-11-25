@@ -33,6 +33,7 @@ resource "aws_instance" "debian9" {
     Project = "${var.project}"
     OS = "debian9"
   }
+  depends_on = ["aws_route_table_association.private-route-table-association"]
 }
 resource "aws_route53_record" "debian9-dns-record" {
   zone_id = "${aws_route53_zone.private-zone.zone_id}"
