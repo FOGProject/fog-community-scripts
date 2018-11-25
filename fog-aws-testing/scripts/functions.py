@@ -126,7 +126,6 @@ def restore_snapshot_to_instance(snapshot,instance,device):
     instance.attach_volume(VolumeId=newVolume.id,Device=device)
     while True:
         newVolume.reload()
-        print newVolume.state
         if newVolume.state == "in-use":
             break
         else:
