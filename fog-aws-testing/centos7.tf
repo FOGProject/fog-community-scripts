@@ -24,6 +24,7 @@ resource "aws_instance" "centos7" {
       "sudo yum -y install git",
       "sudo mkdir -p /root/git",
       "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
+      "sudo sed -i.bak 's/^.*\SELINUX=enforcing\b.*$/SELINUX=permissive/' /etc/selinux/config",
       "(sleep 10 && sudo reboot)&"
     ]
   }
