@@ -124,6 +124,13 @@ def restore_snapshot_to_instance(snapshot,instance):
         else:
             time.sleep(wait)
     instance.attach_volume(VolumeId=newVolume.id,Device='xvda')
+    while True:
+        newVolume.reload()
+        print newVolume.state
+        if newVolume.state == "in-use":
+            break
+        else:
+            time.sleep(wait)
     instance.start()
     wait_until_running(instance)
 
