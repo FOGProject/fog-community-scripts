@@ -3,12 +3,9 @@ from threading import Thread
 import subprocess
 from functions import *
 
-
-
 def runTest(branch,os):
     subprocess.call(test_script + " " + branch + " " + os, shell=True)
-
-
+    
 for branch in branches:
     threads = []
     for os in OSs:
@@ -23,10 +20,3 @@ for branch in branches:
     # Wait for all of them to get done before proceeding.
     for x in threads:
         x.join()
-
-
-
-
-
-
-
