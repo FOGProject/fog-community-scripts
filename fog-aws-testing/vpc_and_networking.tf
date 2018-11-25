@@ -153,7 +153,7 @@ resource "aws_security_group" "allow-bastion" {
     from_port       = 0
     to_port         = 0
     protocol        = "-1"
-    cidr_blocks     = ["${aws_instance.bastion.private_ip}/32"]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   tags {

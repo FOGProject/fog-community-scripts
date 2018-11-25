@@ -1,14 +1,14 @@
 
 resource "aws_instance" "centos7" {
   ami           = "${var.amis["centos7"]}"
-  instance_type = "t3.micro"
+  instance_type = "t2.micro"
   subnet_id = "${aws_subnet.private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
   associate_public_ip_address = false
   key_name = "${aws_key_pair.ssh-key.key_name}"
   connection {
     type     = "ssh"
-    user     = "ec2-user"
+    user     = "centos"
     private_key = "${file("/root/.ssh/fogtesting_private")}"
     bastion_host = "${aws_instance.bastion.public_ip}"
     bastion_user = "admin"
