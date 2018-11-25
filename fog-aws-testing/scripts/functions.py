@@ -95,7 +95,7 @@ def get_snapshot(name,value):
     return snapshot
 
 
-def restore_snapshot_to_instance(snapshot,instance):
+def restore_snapshot_to_instance(snapshot,instance,device):
     """
     Stop the instance
     detach and delete the old volume.
@@ -123,7 +123,7 @@ def restore_snapshot_to_instance(snapshot,instance):
             break
         else:
             time.sleep(wait)
-    instance.attach_volume(VolumeId=newVolume.id,Device='/dev/sda1')
+    instance.attach_volume(VolumeId=newVolume.id,Device=device)
     while True:
         newVolume.reload()
         print newVolume.state
