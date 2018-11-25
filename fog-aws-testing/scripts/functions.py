@@ -123,7 +123,7 @@ def restore_snapshot_to_instance(snapshot,instance):
             break
         else:
             time.sleep(wait)
-    instance.attach_volume(VolumeId=newVolume.id,Device='xvda')
+    instance.attach_volume(VolumeId=newVolume.id,Device='/dev/sda1')
     while True:
         newVolume.reload()
         print newVolume.state
