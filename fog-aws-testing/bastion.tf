@@ -48,8 +48,6 @@ resource "aws_iam_instance_profile" "profile" {
   role = "${aws_iam_role.role.name}"
 }
 
-
-
 resource "aws_iam_role_policy" "policy" {
   name = "bastion_policy"
   role = "${aws_iam_role.role.id}"
@@ -89,10 +87,6 @@ resource "aws_iam_role" "role" {
 }
 EOF
 }
-
-
-
-
 
 resource "aws_route53_record" "bastion-dns-record" {
   zone_id = "${var.zone_id}"

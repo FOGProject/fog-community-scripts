@@ -16,16 +16,16 @@ resource "aws_instance" "centos7" {
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo yum -y update",
+      "sudo setenforce 0",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
-      "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
+      "echo 'PermitRootLogin prohibit-password' | sudo tee --append /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
-      "sudo cp /home/ec2-user/.ssh/authorized_keys /root/.ssh/authorized_keys",
-      "sudo yum -y install git",
-      "sudo mkdir -p /root/git",
-      "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
+      "sudo cp /home/centos/.ssh/authorized_keys /root/.ssh/authorized_keys",
       "sudo sed -i '/SELINUX=enforcing/d' /etc/selinux/config",
-      "sudo echo 'SELINUX=permissive' >> /etc/selinux/config",
+      "echo 'SELINUX=permissive' | sudo tee --append /etc/selinux/config",
+      "sudo mkdir -p /root/git",
+      "sudo yum -y install git",
+      "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
       "(sleep 10 && sudo reboot)&"
     ]
   }

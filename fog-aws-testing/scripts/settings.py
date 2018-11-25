@@ -1,5 +1,5 @@
 # The list of OSs.
-OSs = ["debian9"]
+OSs = ["debian9","centos7"]
 
 # The list of branches to process.
 branches = ["master"]
