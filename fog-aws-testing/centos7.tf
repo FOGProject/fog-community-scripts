@@ -6,6 +6,14 @@ resource "aws_instance" "centos7" {
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
   associate_public_ip_address = false
   key_name = "${aws_key_pair.ssh-key.key_name}"
+
+  root_block_device {
+    device_name = "/dev/sda1"
+    volume_type = "standard"
+    volume_size = 8
+    delete_on_termination = true
+  }
+
   connection {
     type     = "ssh"
     user     = "centos"
