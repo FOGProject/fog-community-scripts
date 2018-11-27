@@ -1,17 +1,24 @@
 #!/usr/bin/python
 
-
+from threading import Thread
 from functions import *
 
-
+threads = []
 for os in OSs:
     instance = get_instance("Name","fogtesting-" + os)
     snapshot = get_snapshot("Name",os + '-clean')
     if os == "debian9":
-        restore_snapshot_to_instance(snapshot,instance,"xvda")
+        threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"xvda")))
     elif os == "centos7":
-        restore_snapshot_to_instance(snapshot,instance,"/dev/sda1")
+        threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
+# Start all the threads.
+for x in threads:
+    x.start()
+
+# Wait for all threads to exit.
+for x in threads:
+    x.join()
 
 
 
