@@ -10,16 +10,17 @@ def create_clean_snapshot(os,instance):
 
 threads = []
 for os in OSs:
+    delete_snapshots("Name", os + "-clean")
+    threads.append(Thread(target=delete_snapshots,args=("Name", os + "-clean")))
+
+complete_threads(threads)
+
+threads = []
+for os in OSs:
     instance = get_instance("Name","fogtesting-" + os)
     threads.append(Thread(target=create_clean_snapshot,args=(os,instance)))
 
-# Start all the threads.
-for x in threads:
-    x.start()
-
-# Wait for all threads to exit.
-for x in threads:
-    x.join()
+complete_threads(threads)
 
 
 

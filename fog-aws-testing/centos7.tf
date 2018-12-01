@@ -33,7 +33,7 @@ resource "aws_instance" "centos7" {
       "sudo mkdir -p /root/git",
       "sudo yum -y install git",
       "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
-      "sudo yum -y update",
+      "# sudo yum -y update",
       "(sleep 10 && sudo reboot)&"
     ]
   }

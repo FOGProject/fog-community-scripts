@@ -6,6 +6,17 @@ from settings import *
 ec2resource = boto3.resource('ec2')
 ec2client = boto3.client('ec2')
 
+
+def complete_threads(threads):
+    # Start all the threads.
+    for x in threads:
+        x.start()
+
+    # Wait for all threads to exit.
+    for x in threads:
+        x.join()
+
+
 def get_instance(name,value):
     # This assumes one match
     # Only for instances that are not terminated.

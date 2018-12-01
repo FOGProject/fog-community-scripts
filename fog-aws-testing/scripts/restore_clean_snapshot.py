@@ -12,13 +12,6 @@ for os in OSs:
     elif os == "centos7":
         threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
-# Start all the threads.
-for x in threads:
-    x.start()
-
-# Wait for all threads to exit.
-for x in threads:
-    x.join()
-
+complete_threads(threads)
 
 

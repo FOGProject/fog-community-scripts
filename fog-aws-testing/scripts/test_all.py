@@ -16,13 +16,7 @@ for os in OSs:
     elif os == "centos7":
         threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
-# Start all the threads.
-for x in threads:
-    x.start()
-
-# Wait for all threads to exit.
-for x in threads:
-    x.join()
+complete_threads(threads)
 
 now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get initial index.html file.
@@ -40,25 +34,14 @@ for branch in branches:
         elif os == "centos7":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
-    # Start snapshot restore threads.
-    for x in threads:
-        x.start()
-    # Wait for all threads to be done.
-    for x in threads:
-        x.join()
-
+    complete_threads(threads)
 
     # Reset threads.
     threads = []
     for os in OSs:
         threads.append(Thread(target=runTest,args=(branch,os,webdir,statusDir,now)))
 
-    # Start all the tests for this branch.
-    for x in threads:
-        x.start()
-    # Wait for all of them to get done before proceeding.
-    for x in threads:
-        x.join()
+    complete_threads(threads)
 
     dashboard = dashboard + "\n<table>"
     dashboard = dashboard + "\n<tr>"
