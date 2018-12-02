@@ -26,6 +26,7 @@ variable "amis" {
   default = {
     "debian9" = "ami-08e2234d40f32eb5c"
     "centos7" = "ami-e1496384"
+    "rhel7" = "ami-cfdafaaa"
   }
 }
 
