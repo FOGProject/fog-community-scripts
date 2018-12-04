@@ -111,6 +111,7 @@ for branch in branches:
     dashboard = dashboard + "\n<th>Reason</th>"
     dashboard = dashboard + "\n<th>Fog Log</th>"
     dashboard = dashboard + "\n<th>Apache Log</th>"
+    dashboard = dashboard + "\n<th>PHP-FPM Log</th>"
     dashboard = dashboard + "\n</tr>"
 
     # Here, need to gather the results and write an html file.
@@ -128,8 +129,27 @@ for branch in branches:
         else:
             dashboard = dashboard + "\n<td>" + red + "</td>"
             dashboard = dashboard + "\n<td>Unknown installation failure, exit code '" + exitCode + "'</td>"
-        dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_fog.log\">Fog log</td>"
-        dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_apache.log\">Apache log</a></td>"
+
+
+        if os.path.isfile(os.path.join(webdir,OS,now + "_installer.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_fog.log\">Fog log</td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
+        if os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_apache.log\">Apache log</a></td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
+
+        if os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
+
+
+
         dashboard = dashboard + "\n</tr>"
     dashboard = dashboard + "\n</table>"
 
