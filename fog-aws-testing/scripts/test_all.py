@@ -45,9 +45,10 @@ def runTest(branch,OS,webdir,statusDir,now):
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/apache2/error.log " + os.path.join(webdir,OS,now + "_apache.log"), shell=True)
 
     print "Getting php-fpm logs"
-    # Get php-fpm logs. Can be in only two places.
+    # Get php-fpm logs. Can be in several places...
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log"), shell=True)
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/error.log " + os.path.join(webdir,OS,now + "_php-fpm.log"), shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php*-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log"), shell=True)
 
     print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
@@ -114,8 +115,8 @@ for branch in branches:
 
     # Here, need to gather the results and write an html file.
     for OS in OSs:
-        statusFile = os.path.join(statusDir, OS + "." + branch)
-        with open(statusFile, 'r') as content_file:
+        resultFile = os.path.join(statusDir, OS + "." + branch + ".result")
+        with open(resultFile, 'r') as content_file:
             exitCode = content_file.read()
 
         dashboard = dashboard + "\n<tr>"
