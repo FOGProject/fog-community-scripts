@@ -19,44 +19,44 @@ usage() {
 }
 output="/root/result"
 
-[[ -z $branch ]] && echo "1" > $output
+[[ -z $branch ]] && printf "1" > $output
 export PATH="$PATH:/usr/bin/core_perl"
 
 cd /root/git/fogproject >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "5" > $output
+[[ ! $stat -eq 0 ]] && printf "5" > $output
 
 
 git reset --hard >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "2" > $output
+[[ ! $stat -eq 0 ]] && printf "2" > $output
 
 
 git pull >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "3" > $output
+[[ ! $stat -eq 0 ]] && printf "3" > $output
 
 
 git checkout $branch >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "4" > $output
+[[ ! $stat -eq 0 ]] && printf "4" > $output
 
 
 git pull >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "2" > $output
+[[ ! $stat -eq 0 ]] && printf "2" > $output
 
 
 cd bin >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "5" > $output
+[[ ! $stat -eq 0 ]] && printf "5" > $output
 
 
 ./installfog.sh -y >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && echo "6" > $output
+[[ ! $stat -eq 0 ]] && printf "6" > $output
 
 # Here, we completed successfully.
-echo "0" > $output
+printf "0" > $output
 
 
