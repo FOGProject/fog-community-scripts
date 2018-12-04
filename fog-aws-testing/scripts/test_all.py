@@ -19,8 +19,8 @@ def runTest(branch,OS,webdir,statusDir,now):
 
     print  "Kickin tires"
     # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
-    subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup"', shell=True)
-    subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready"', shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup" > /dev/null 2>&1', shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready" > /dev/null 2>&1', shell=True)
 
     print "Scp script to remote box"
     # Scp a script onto the remote box that we will later call.
