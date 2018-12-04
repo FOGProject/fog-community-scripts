@@ -1,5 +1,5 @@
 # The list of OSs.
-OSs = ["debian9","centos7"]
+OSs = ["debian9"]
 
 # The list of branches to process.
 branches = ["master"]
@@ -28,6 +28,19 @@ domainname = "fogtesting.theworkmans.us"
 http = "http://"
 port = ""
 netdir = ""
+
+remoteResult = "/root/result"
+
+
+ssh = "/usr/bin/ssh"
+scp = "/usr/bin/scp"
+timeout = "/usr/bin/timeout"
+
+sshTimeout = "15"
+fogTimeout= "20m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
+sshTime="15s" #Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
+
+
 
 
 codes = {
