@@ -17,7 +17,7 @@ def runTest(branch,OS,webdir,statusDir,now):
         content_file.write("-1") 
 
     print  "Kickin tires"
-    # Kick the tires a bit, this helps the remote hOSt to 'wake up', and for a network path to be learned by involved routers.
+    # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
     subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup"', shell=True)
     subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready"', shell=True)
 
@@ -85,7 +85,7 @@ for branch in branches:
         snapshot = get_snapshot("Name",OS + '-clean')
         if OS == "debian9":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"xvda")))
-        elif OS == "centOS7":
+        elif OS == "centos7":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
     complete_threads(threads)
