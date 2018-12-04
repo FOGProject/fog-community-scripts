@@ -1,10 +1,30 @@
 import boto3
 import time
 from settings import *
+import os 
+cwd = os.path.dirname(os.path.realpath(__file__))
+
+
 
 
 ec2resource = boto3.resource('ec2')
 ec2client = boto3.client('ec2')
+
+
+def read_file(path):
+    if os.path.isfile(path):
+        with open(path, 'r') as content_file:
+            try:
+                return content_file.read()
+            except Exception as e:
+                return e
+    else:
+        return "The file '" + path + "' does not exist."
+
+
+def make_dir(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 
 def complete_threads(threads):

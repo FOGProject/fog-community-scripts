@@ -4,7 +4,7 @@
 # Arguments:
 #  $1 The branch to checkout/pull from.
 branch=$1
-# Returns Error code, will exit with same error code.
+# writes error code to /root/result
 #  Error 1 = Failed to call script properly.
 #  Error 2 = Failed to reset git.
 #  Error 3 = Failed to pull git.
@@ -17,28 +17,46 @@ usage() {
     echo "Usage $0 <branch>"
 	exit $errCode
 }
-[[ -z $branch ]] && exit 1
+output = "/root/result"
+
+[[ -z $branch ]] && echo "1" > $output
 export PATH="$PATH:/usr/bin/core_perl"
 
 cd /root/git/fogproject >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 5
+[[ ! $stat -eq 0 ]] && echo "5" > $output
+
+
 git reset --hard >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 2
+[[ ! $stat -eq 0 ]] && echo "2" > $output
+
+
 git pull >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 3
+[[ ! $stat -eq 0 ]] && echo "3" > $output
+
+
 git checkout $branch >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 4
+[[ ! $stat -eq 0 ]] && echo "4" > $output
+
+
 git pull >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 2
+[[ ! $stat -eq 0 ]] && echo "2" > $output
+
+
 cd bin >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 5
+[[ ! $stat -eq 0 ]] && echo "5" > $output
+
+
 ./installfog.sh -y >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && exit 6
-exit 0
+[[ ! $stat -eq 0 ]] && echo "6" > $output
+
+# Here, we completed successfully.
+echo "0" > $output
+
+
