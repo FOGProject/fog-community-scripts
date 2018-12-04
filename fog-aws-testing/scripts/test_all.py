@@ -8,8 +8,9 @@ import time
 
 
 def runTest(branch,OS,webdir,statusDir,now):
-    make_dir(webdir)
+    make_dir(os.path.join(webdir,OS))
     make_dir(statusDir)
+
     
     # Create hidden file for node - for status reporting.
     print "Creating " + str(os.path.join(statusDir,OS + "." + branch + ".result"))
