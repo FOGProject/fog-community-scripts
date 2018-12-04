@@ -12,8 +12,8 @@ def runTest(branch,OS,webdir,statusDir,now):
     make_dir(statusDir)
     
     # Create hidden file for node - for status reporting.
-    print "Creating " + str(os.path.join(statusDir,OS + "." + branch))
-    with open(os.path.join(statusDir,OS + "." + branch), 'w') as content_file:
+    print "Creating " + str(os.path.join(statusDir,OS + "." + branch + ".result"))
+    with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
         content_file.write("-1") 
 
     print  "Kickin tires"
