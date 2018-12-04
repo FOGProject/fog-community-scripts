@@ -9,7 +9,7 @@ def runTest(branch,os,webdir,statusDir,now):
     make_dir(statusDir)
     
     # Create hidden file for node - for status reporting.
-    print "Creating " + os.path.join(statusDir,name + "." + branch)
+    print "Creating " + str(os.path.join(statusDir,name + "." + branch))
     with open(os.path.join(statusDir,name + "." + branch), 'w') as content_file:
         content_file.write("-1") 
 
@@ -69,24 +69,11 @@ def runTest(branch,os,webdir,statusDir,now):
     with open(os.path.join(webdir,os,now + "_installer.log"), 'w') as content_file:
         content_file.write(log)
 
-
-
-threads = []
-for os in OSs:
-    instance = get_instance("Name","fogtesting-" + os)
-    snapshot = get_snapshot("Name",os + '-clean')
-    if os == "debian9":
-        threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"xvda")))
-    elif os == "centos7":
-        threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-
-complete_threads(threads)
-
 now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get initial index.html file.
 with open(indexHtml, 'r') as content_file:
     dashboard = content_file.read()
-dashboard = dashboard + "<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
+dashboard = dashboard + "\n<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
 
 for branch in branches:
     threads = []
