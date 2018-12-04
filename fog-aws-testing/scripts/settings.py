@@ -36,7 +36,7 @@ ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
 timeout = "/usr/bin/timeout"
 
-sshTimeout = 15
+sshTimeout = "15"
 fogTimeout= "20m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
 sshTime="15s" #Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
 
