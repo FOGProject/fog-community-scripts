@@ -17,7 +17,7 @@ usage() {
     echo "Usage $0 <branch>"
 	exit $errCode
 }
-output = "/root/result"
+output="/root/result"
 
 [[ -z $branch ]] && echo "1" > $output
 export PATH="$PATH:/usr/bin/core_perl"
