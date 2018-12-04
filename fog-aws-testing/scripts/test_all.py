@@ -3,14 +3,17 @@ import datetime
 from threading import Thread
 import subprocess
 from functions import *
+import time
+
+
 
 def runTest(branch,OS,webdir,statusDir,now):
     make_dir(webdir)
     make_dir(statusDir)
     
     # Create hidden file for node - for status reporting.
-    print "Creating " + str(os.path.join(statusDir,name + "." + branch))
-    with open(os.path.join(statusDir,name + "." + branch), 'w') as content_file:
+    print "Creating " + str(os.path.join(statusDir,OS + "." + branch))
+    with open(os.path.join(statusDir,OS + "." + branch), 'w') as content_file:
         content_file.write("-1") 
 
     print  "Kickin tires"
@@ -86,6 +89,10 @@ for branch in branches:
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
     complete_threads(threads)
+
+    # Wait for instances to get ready a bit.
+    time.sleep(15)
+
 
     # Reset threads.
     threads = []
