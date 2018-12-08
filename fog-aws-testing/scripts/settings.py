@@ -24,6 +24,8 @@ green = "green.png"
 orange = "orange.png"
 red = "red.png"
 
+s3bucket = "fogtesting2.theworkmans.us"
+
 domainname = "fogtesting.theworkmans.us"
 http = "http://"
 port = ""
@@ -35,6 +37,7 @@ remoteResult = "/root/result"
 ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
 timeout = "/usr/bin/timeout"
+s3cmd = "/usr/bin/s3cmd"
 
 sshTimeout = "15"
 fogTimeout= "20m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.

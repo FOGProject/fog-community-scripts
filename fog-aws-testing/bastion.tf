@@ -64,7 +64,8 @@ resource "aws_iam_role_policy" "policy" {
   "Statement": [
     {
       "Action": [
-        "ec2:*"
+        "ec2:*",
+        "s3:*"
       ],
       "Effect": "Allow",
       "Resource": "*"
@@ -85,6 +86,14 @@ resource "aws_iam_role" "role" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "ec2.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    },
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "s3.amazonaws.com"
       },
       "Effect": "Allow",
       "Sid": ""

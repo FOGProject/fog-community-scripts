@@ -134,7 +134,7 @@ def restore_snapshot_to_instance(snapshot,instance,device):
     Attach the new volume
     Start the instance
     """
-    instance.stop(Force=true)
+    instance.stop(Force=True)
     wait_until_stopped(instance)
     oldVolume = get_instance_volume(instance)
     oldVolume.detach_from_instance(Force=True)

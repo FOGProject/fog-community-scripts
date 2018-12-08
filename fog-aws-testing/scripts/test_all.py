@@ -4,7 +4,7 @@ from threading import Thread
 import subprocess
 from functions import *
 import time
-
+import sys
 
 
 def runTest(branch,OS,webdir,statusDir,now):
@@ -158,6 +158,8 @@ newDashboard = os.path.join(webdir,"index.html")
 with open(newDashboard, 'w') as content_file:
     content_file.write(dashboard)
 
+# Sync the dashboard to s3.
+subprocess.call(s3cmd + " sync " + webdir + " s3://" + s3bucket + " > /dev/null 2>&1", shell=True)
 
 
 
