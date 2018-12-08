@@ -9,6 +9,23 @@ with open(os.path.join(scriptDir,indexHtml), 'r') as content_file:
     dashboard = content_file.read()
 dashboard = dashboard + "\n<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
 
+# Table opening and columns.
+dashboard = dashboard + "\n<table>"
+dashboard = dashboard + "\n<tr>"
+dashboard = dashboard + "\n<th>OS</th>"
+dashboard = dashboard + "\n<th>Branch</th>"
+dashboard = dashboard + "\n<th>Status</th>"
+dashboard = dashboard + "\n<th>Reason</th>"
+dashboard = dashboard + "\n<th>Duration</th>"
+dashboard = dashboard + "\n<th>Output Log</th>"
+dashboard = dashboard + "\n<th>Install Log</th>"
+dashboard = dashboard + "\n<th>Apache Log</th>"
+dashboard = dashboard + "\n<th>php-fpm Log</th>"
+dashboard = dashboard + "\n</tr>"
+
+
+
+
 for branch in branches:
 
     # Restore snapshots
@@ -27,19 +44,6 @@ for branch in branches:
         threads.append(Thread(target=runTest,args=(branch,OS,webdir,statusDir,now,instance)))
 
     complete_threads(threads)
-
-    dashboard = dashboard + "\n<table>"
-    dashboard = dashboard + "\n<tr>"
-    dashboard = dashboard + "\n<th>OS</th>"
-    dashboard = dashboard + "\n<th>Branch</th>"
-    dashboard = dashboard + "\n<th>Status</th>"
-    dashboard = dashboard + "\n<th>Reason</th>"
-    dashboard = dashboard + "\n<th>Duration</th>"
-    dashboard = dashboard + "\n<th>Output Log</th>"
-    dashboard = dashboard + "\n<th>Install Log</th>"
-    dashboard = dashboard + "\n<th>Apache Log</th>"
-    dashboard = dashboard + "\n<th>php-fpm Log</th>"
-    dashboard = dashboard + "\n</tr>"
 
     # Here, need to gather the results and write an html file.
     for OS in OSs:
@@ -90,7 +94,10 @@ for branch in branches:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
         dashboard = dashboard + "\n</tr>"
-    dashboard = dashboard + "\n</table>"
+
+# Close table.
+dashboard = dashboard + "\n</table>"
+
 
 # Write out the dashboard.
 newDashboard = os.path.join(webdir,"index.html")
