@@ -131,10 +131,10 @@ for branch in branches:
         dashboard = dashboard + "\n<td>" + branch + "</td>"
 
         if exitCode in codes.keys():
-            dashboard = dashboard + "\n<td>" + codes[exitCode]["status"] + "</td>"
+            dashboard = dashboard + "\n<td><img src=\"" + codes[exitCode]["status"] + "\" alt=\"" + codes[exitCode]["status"] + "\"></td>"
             dashboard = dashboard + "\n<td>" + codes[exitCode]["reason"] + "</td>"
         else:
-            dashboard = dashboard + "\n<td>" + red + "</td>"
+            dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"" + red + "\"></td>"
             dashboard = dashboard + "\n<td>Unknown installation failure, exit code '" + exitCode + "'</td>"
 
 
