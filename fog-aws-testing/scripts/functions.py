@@ -115,19 +115,10 @@ def add_ssh_identities():
     subprocess.call("echo '' > ~/.ssh/known_hosts", shell=True)
     for address in dnsAddresses:
         # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
-        time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
+        for i in range(0,7):
+            subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
+            time.sleep(wait)
+
         time.sleep(wait)
         subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " >> ~/.ssh/known_hosts 2> /dev/null", shell=True)
 
