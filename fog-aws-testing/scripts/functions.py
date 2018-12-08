@@ -66,7 +66,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
     # print "Getting fog log file"
     # Get the fog log.
-    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_install.log"), shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log"), shell=True)
 
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
@@ -100,11 +100,11 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     log = log + "Commit=" + commit # The commit comes back with a line feed in it.
     log = log + "OS=" + OS + "\n"
     log = log + "##### Begin Log #####\n"
-    log = log + read_file(os.path.join(webdir,OS,now + "_install.log"))
+    log = log + read_file(os.path.join(webdir,OS,now + "_fog_error.log"))
 
     # print "Writing log"
     # Write the new log.
-    with open(os.path.join(webdir,OS,now + "_install.log"), 'w') as content_file:
+    with open(os.path.join(webdir,OS,now + "_fog_error.log"), 'w') as content_file:
         content_file.write(log)
 
 

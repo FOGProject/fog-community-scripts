@@ -18,7 +18,7 @@ dashboard = dashboard + "\n<th>Status</th>"
 dashboard = dashboard + "\n<th>Reason</th>"
 dashboard = dashboard + "\n<th>Duration</th>"
 dashboard = dashboard + "\n<th>Output Log</th>"
-dashboard = dashboard + "\n<th>Install Log</th>"
+dashboard = dashboard + "\n<th>Fog Error Log</th>"
 dashboard = dashboard + "\n<th>Apache Log</th>"
 dashboard = dashboard + "\n<th>php-fpm Log</th>"
 dashboard = dashboard + "\n</tr>"
@@ -77,8 +77,8 @@ for branch in branches:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
 
-        if os.path.isfile(os.path.join(webdir,OS,now + "_install.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_install.log\">Install log</td>"
+        if os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_fog_error.log\">Install log</td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
