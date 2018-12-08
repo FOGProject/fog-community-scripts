@@ -15,7 +15,7 @@ def add_ssh_identities():
     known_hosts_content = ""
     subprocess.call("echo '' > ~/.ssh/known_hosts", shell=True)
     for address in dnsAddresses:
-        subprocess.call(timeout + " " + ssh_keyscan + " -H " + address + " >> ~/.ssh/known_hosts", shell=True)
+        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " >> ~/.ssh/known_hosts", shell=True)
 
 
 def read_file(path):
