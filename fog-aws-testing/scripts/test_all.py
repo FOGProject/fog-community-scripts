@@ -6,7 +6,7 @@ import time
 import sys
 
 
-def runTest(branch,OS,webdir,statusDir,now):
+def runTest(branch,OS,webdir,statusDir,now,instance):
     make_dir(os.path.join(webdir,OS))
     make_dir(statusDir)
 
@@ -59,6 +59,10 @@ def runTest(branch,OS,webdir,statusDir,now):
     # Read the commit.
     commit = read_file(os.path.join(statusDir,OS + "." + branch + ".commit"))
 
+    # Kill the instance.
+    instance.stop(Force=True)
+
+
     # print "Rebuilding log"
     # Rebuild the log file to have information at the top of it.
     log = "Date=" + now + "\n"
@@ -100,7 +104,8 @@ for branch in branches:
     # Reset threads.
     threads = []
     for OS in OSs:
-        threads.append(Thread(target=runTest,args=(branch,OS,webdir,statusDir,now)))
+        instance = get_instance("Name","fogtesting-" + OS)
+        threads.append(Thread(target=runTest,args=(branch,OS,webdir,statusDir,now,instance)))
 
     complete_threads(threads)
 
