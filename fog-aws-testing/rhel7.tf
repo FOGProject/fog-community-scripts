@@ -9,7 +9,7 @@ resource "aws_instance" "rhel7" {
 
   root_block_device {
     volume_type = "standard"
-    volume_size = 8
+    volume_size = 10
     delete_on_termination = true
   }
 
