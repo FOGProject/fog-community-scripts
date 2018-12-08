@@ -16,7 +16,7 @@ wait = 1
 test_script = "/home/admin/fog-community-scripts/fog-aws-testing/scripts/test_instance.sh"
 
 webdir = '/tmp/webdir'
-statusDir = '/tmp'
+statusDir = '/tmp/statuses'
 
 indexHtml = '/home/admin/fog-community-scripts/fog-aws-testing/scripts/index.html'
 
