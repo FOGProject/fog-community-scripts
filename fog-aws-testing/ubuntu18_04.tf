@@ -24,7 +24,7 @@ resource "aws_instance" "ubuntu18_04" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y dist-upgrade",
+      "sudo apt-get -y upgrade",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
       "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
