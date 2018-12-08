@@ -1,7 +1,7 @@
 
 resource "aws_instance" "rhel7" {
   ami           = "${var.amis["rhel7"]}"
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
   subnet_id = "${aws_subnet.private-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
   associate_public_ip_address = false
