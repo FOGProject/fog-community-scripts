@@ -27,7 +27,6 @@ red = "red.png"
 
 s3bucket = "fogtesting2.theworkmans.us"
 
-domainname = "fogtesting2.theworkmans.us"
 http = "http://"
 port = ""
 netdir = ""

@@ -136,18 +136,18 @@ for branch in branches:
 
 
         if os.path.isfile(os.path.join(webdir,OS,now + "_install.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_install.log\">Install log</td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_install.log\">Install log</td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
         if os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_apache.log\">Apache log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_apache.log\">Apache log</a></td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
 
         if os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
