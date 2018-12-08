@@ -26,36 +26,42 @@ export PATH="$PATH:/usr/bin/core_perl"
 cd /root/git/fogproject >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "5" > $result
-
+exit $stat
 
 git reset --hard >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "2" > $result
+exit $stat
 
 
 git pull >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "3" > $result
+exit $stat
 
 
 git checkout $branch >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "4" > $result
+exit $stat
 
 
 git pull >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "2" > $result
+exit $stat
 
 
 cd bin >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "5" > $result
+exit $stat
 
 
 ./installfog.sh -y > $output 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "6" > $result
+exit $stat
 
 # Here, we completed successfully.
 printf "0" > $result
