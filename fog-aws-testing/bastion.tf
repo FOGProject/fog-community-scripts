@@ -29,7 +29,7 @@ resource "aws_instance" "bastion" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install awscli python-pip git",
+      "sudo apt-get -y install awscli python-pip git s3cmd",
       "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
