@@ -25,14 +25,35 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # Scp a script onto the remote box that we will later call.
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + os.path.join(cwd,'installBranch.sh') + " " + OS + ":/root/installBranch.sh", shell=True)
 
+    # Get starting time
+    d1 = datetime.datetime.now()
+
+
     # print "Starting installer"
     # Start the fog installer.
     subprocess.call(timeout + " " + fogTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "/root/./installBranch.sh ' + branch + '"', shell=True)
+
+    # Get ending time.
+    d2 = datetime.datetime.now()
+
+    # Calculate duration.
+    duration = d2 - d1
+    duration = str(datetime.timedelta(seconds=duration.total_seconds()))
+    # Write duration to file.
+    with open(os.path.join(statusDir,OS + "." + branch + ".duration"), 'w') as content_file:
+        content_file.write(duration)
+
 
     # print "Getting result file"
     # Get the result file.
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result"), shell=True)
     # This should send the result code of the attempt to something like /tmp/debian9.master.result
+
+
+    # print "Getting output file"
+    # Get the output file.
+    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS + now + "_output.log"), shell=True)
+
 
     # print "Getting fog log file"
     # Get the fog log.
@@ -115,6 +136,8 @@ for branch in branches:
     dashboard = dashboard + "\n<th>Branch</th>"
     dashboard = dashboard + "\n<th>Status</th>"
     dashboard = dashboard + "\n<th>Reason</th>"
+    dashboard = dashboard + "\n<th>Duration</th>"
+    dashboard = dashboard + "\n<th>Output Log</th>"
     dashboard = dashboard + "\n<th>Install Log</th>"
     dashboard = dashboard + "\n<th>Apache Log</th>"
     dashboard = dashboard + "\n<th>php-fpm Log</th>"
@@ -136,6 +159,20 @@ for branch in branches:
         else:
             dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"" + red + "\"></td>"
             dashboard = dashboard + "\n<td>Unknown installation failure, exit code '" + exitCode + "'</td>"
+
+
+        if os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".duration")):
+            duration = read_file(os.path.join(statusDir,OS + "." + branch + ".duration"))
+            dashboard = dashboard + "\n<td>" + duration + "</td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
+
+
+        if os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_output.log\">Output log</td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
 
         if os.path.isfile(os.path.join(webdir,OS,now + "_install.log")):
