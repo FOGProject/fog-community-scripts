@@ -81,7 +81,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
-    subprocess.call(timeout + " " + fogTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"', shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"', shell=True)
     subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit"), shell=True)
     # This should send just the commit that was used in the test to something like /tmp/debian9.master.commit
 
