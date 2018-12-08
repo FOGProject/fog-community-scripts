@@ -39,7 +39,7 @@ ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
 timeout = "/usr/bin/timeout"
 s3cmd = "/usr/bin/s3cmd"
-ssh-keyscan = "/usr/bin/ssh-keyscan"
+ssh_keyscan = "/usr/bin/ssh-keyscan"
 
 
 sshTimeout = "15"
