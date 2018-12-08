@@ -36,7 +36,7 @@ def runTest(branch,OS,webdir,statusDir,now):
 
     # print "Getting fog log file"
     # Get the fog log.
-    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_installer.log"), shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_install.log"), shell=True)
 
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
@@ -66,11 +66,11 @@ def runTest(branch,OS,webdir,statusDir,now):
     log = log + "Commit=" + commit + "\n"
     log = log + "OS=" + OS + "\n"
     log = log + "##### Begin Log #####\n"
-    log = log + read_file(os.path.join(webdir,OS,now + "_installer.log"))
+    log = log + read_file(os.path.join(webdir,OS,now + "_install.log"))
 
     # print "Writing log"
     # Write the new log.
-    with open(os.path.join(webdir,OS,now + "_installer.log"), 'w') as content_file:
+    with open(os.path.join(webdir,OS,now + "_install.log"), 'w') as content_file:
         content_file.write(log)
 
 now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
@@ -110,7 +110,7 @@ for branch in branches:
     dashboard = dashboard + "\n<th>Branch</th>"
     dashboard = dashboard + "\n<th>Status</th>"
     dashboard = dashboard + "\n<th>Reason</th>"
-    dashboard = dashboard + "\n<th>Fog Log</th>"
+    dashboard = dashboard + "\n<th>Install Log</th>"
     dashboard = dashboard + "\n<th>Apache Log</th>"
     dashboard = dashboard + "\n<th>PHP-FPM Log</th>"
     dashboard = dashboard + "\n</tr>"
@@ -132,8 +132,8 @@ for branch in branches:
             dashboard = dashboard + "\n<td>Unknown installation failure, exit code '" + exitCode + "'</td>"
 
 
-        if os.path.isfile(os.path.join(webdir,OS,now + "_installer.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_fog.log\">Fog log</td>"
+        if os.path.isfile(os.path.join(webdir,OS,now + "_install.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_install.log\">Install log</td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
 
