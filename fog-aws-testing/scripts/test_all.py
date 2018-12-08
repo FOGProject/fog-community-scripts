@@ -112,7 +112,7 @@ for branch in branches:
     dashboard = dashboard + "\n<th>Reason</th>"
     dashboard = dashboard + "\n<th>Install Log</th>"
     dashboard = dashboard + "\n<th>Apache Log</th>"
-    dashboard = dashboard + "\n<th>PHP-FPM Log</th>"
+    dashboard = dashboard + "\n<th>php-fpm Log</th>"
     dashboard = dashboard + "\n</tr>"
 
     # Here, need to gather the results and write an html file.
@@ -124,6 +124,7 @@ for branch in branches:
         dashboard = dashboard + "\n<tr>"
         dashboard = dashboard + "\n<td>" + OS + "</td>"
         dashboard = dashboard + "\n<td>" + branch + "</td>"
+
         if exitCode in codes.keys():
             dashboard = dashboard + "\n<td>" + codes[exitCode]["status"] + "</td>"
             dashboard = dashboard + "\n<td>" + codes[exitCode]["reason"] + "</td>"
@@ -147,9 +148,6 @@ for branch in branches:
             dashboard = dashboard + "\n<td><a href=\"" + http + domainname + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
-
-
-
 
         dashboard = dashboard + "\n</tr>"
     dashboard = dashboard + "\n</table>"
