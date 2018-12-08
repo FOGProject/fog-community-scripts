@@ -146,7 +146,7 @@ def restore_snapshot_to_instance(snapshot,instance,device):
             time.sleep(wait)
 
     oldVolume.delete()
-    newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone)
+    newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone,VolumeType='standard')
     newVolume = ec2resource.Volume(newVolume["VolumeId"])
     while True:
         newVolume.reload()
@@ -161,6 +161,9 @@ def restore_snapshot_to_instance(snapshot,instance,device):
             break
         else:
             time.sleep(wait)
+
+    instance.modify_attribute(BlockDeviceMappings=[{'Ebs': {'DeleteOnTermination': True}}]
+
     instance.start()
     wait_until_running(instance)
 
