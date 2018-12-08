@@ -40,6 +40,7 @@ resource "aws_instance" "bastion" {
       "chmod 600 ~/.aws/config",
       "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
       "git clone https://github.com/wayneworkman/fog-community-scripts.git /home/admin/fog-community-scripts",
+      "(crontab -l; echo 'newline=\"0 0 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py\"') | crontab - >/dev/null 2>&1"
     ]
   }
 
@@ -111,4 +112,30 @@ resource "aws_route53_record" "bastion-dns-record" {
   records = ["${aws_instance.bastion.public_dns}"]
 }
 
+
+
+resource "aws_security_group" "allow-bastion" {
+  name        = "from-bastion"
+  description = "Allow all communications from bastion"
+  vpc_id      = "${aws_vpc.vpc.id}"
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["${aws_instance.bastion.private_ip}/32"]
+  }
+
+  egress {
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
+    cidr_blocks     = ["0.0.0.0/0"]
+  }
+
+  tags {
+    Name = "${var.project}-allow-bastion"
+    Project = "${var.project}"
+  }
+}
 

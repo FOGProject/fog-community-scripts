@@ -137,27 +137,4 @@ resource "aws_security_group" "sg-ssh" {
 
 
 
-resource "aws_security_group" "allow-bastion" {
-  name        = "from-bastion"
-  description = "Allow all communications from bastion"
-  vpc_id      = "${aws_vpc.vpc.id}"
 
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["${aws_instance.bastion.private_ip}/32"]
-  }
-
-  egress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = "-1"
-    cidr_blocks     = ["0.0.0.0/0"]
-  }
-
-  tags {
-    Name = "${var.project}-allow-bastion"
-    Project = "${var.project}"
-  }
-}
