@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import datetime
-from threading import Thread
 from functions import *
 import time
 import sys
