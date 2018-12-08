@@ -1,5 +1,6 @@
 # The list of OSs.
 OSs = ["debian9","centos7"]
+dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud"]
 
 # The list of branches to process.
 branches = ["master"]
@@ -38,6 +39,8 @@ ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
 timeout = "/usr/bin/timeout"
 s3cmd = "/usr/bin/s3cmd"
+ssh-keyscan = "/usr/bin/ssh-keyscan"
+
 
 sshTimeout = "15"
 fogTimeout= "20m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.

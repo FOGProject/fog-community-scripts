@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import datetime
 from threading import Thread
-import subprocess
 from functions import *
 import time
 import sys
@@ -95,6 +94,8 @@ for branch in branches:
     # Wait for instances to get ready a bit.
     time.sleep(15)
 
+    # Add identities
+    add_ssh_identities()
 
     # Reset threads.
     threads = []

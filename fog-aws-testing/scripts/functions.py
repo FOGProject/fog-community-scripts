@@ -2,6 +2,7 @@ import boto3
 import time
 from settings import *
 import os 
+import subprocess
 cwd = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -9,6 +10,12 @@ cwd = os.path.dirname(os.path.realpath(__file__))
 
 ec2resource = boto3.resource('ec2')
 ec2client = boto3.client('ec2')
+
+def add_ssh_identities():
+    known_hosts_content = ""
+    subprocess.call("echo '' > ~/.ssh/known_hosts", shell=True)
+    for address in dnsAddresses:
+        subprocess.call(timeout + " " + ssh-keyscan + " -H " + address + " >> ~/.ssh/known_hosts", shell=True)
 
 
 def read_file(path):
