@@ -162,7 +162,7 @@ def restore_snapshot_to_instance(snapshot,instance,device):
         else:
             time.sleep(wait)
 
-    instance.modify_attribute(BlockDeviceMappings=[{'Ebs': {'DeleteOnTermination': True}}])
+    instance.modify_attribute(BlockDeviceMappings=[{'Ebs': {'DeleteOnTermination': True}, 'DeviceName': device}])
 
     instance.start()
     wait_until_running(instance)
