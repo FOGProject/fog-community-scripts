@@ -52,7 +52,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
     # print "Getting output file"
     # Get the output file.
-    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS + now + "_output.log"), shell=True)
+    subprocess.call(timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log"), shell=True)
 
 
     # print "Getting fog log file"
