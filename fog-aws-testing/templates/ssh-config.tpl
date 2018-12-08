@@ -18,3 +18,7 @@ Host arch
     User root
     HostName arch.fogtesting.cloud
     Port 22
+Host ubuntu18_04
+    User root
+    HostName arch.fogtesting.cloud
+    Port 22
