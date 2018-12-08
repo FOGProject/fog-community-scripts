@@ -67,7 +67,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # Rebuild the log file to have information at the top of it.
     log = "Date=" + now + "\n"
     log = log + "Branch=" + branch + "\n"
-    log = log + "Commit=" + commit + "\n"
+    log = log + "Commit=" + commit
     log = log + "OS=" + OS + "\n"
     log = log + "##### Begin Log #####\n"
     log = log + read_file(os.path.join(webdir,OS,now + "_install.log"))
