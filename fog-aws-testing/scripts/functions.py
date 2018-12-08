@@ -23,7 +23,7 @@ def add_ssh_identities():
         time.sleep(wait)
         subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " > /dev/null 2>&1", shell=True)
         time.sleep(wait)
-        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " >> ~/.ssh/known_hosts", shell=True)
+        subprocess.call(timeout + " " + sshTime + " " + ssh_keyscan + " -H " + address + " >> ~/.ssh/known_hosts 2> /dev/null", shell=True)
 
 
 def read_file(path):
