@@ -24,7 +24,7 @@ resource "aws_instance" "arch" {
   provisioner "remote-exec" {
     inline = [
       "pacman -Syu --noconfirm",
-      "pacman -S git",
+      "pacman -S --noconfirm git",
       "mkdir -p /root/git",
       "git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
       "(sleep 10 && reboot)&"
