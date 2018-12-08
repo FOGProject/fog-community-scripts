@@ -97,8 +97,6 @@ for branch in branches:
     # Add identities
     add_ssh_identities()
 
-    sys.exit()
-
     # Reset threads.
     threads = []
     for OS in OSs:
