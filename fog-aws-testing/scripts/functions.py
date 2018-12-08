@@ -139,6 +139,21 @@ def get_snapshot(name,value):
     snapshot = ec2resource.Snapshot(response["Snapshots"][0]["SnapshotId"])
     return snapshot
 
+def restore_clean_snapshots():
+    threads = []
+    for OS in OSs:
+        instance = get_instance("Name","fogtesting-" + OS)
+        snapshot = get_snapshot("Name",OS + '-clean')
+        if OS == "debian9":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"xvda")))
+        elif OS == "centos7":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "rhel7":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+
+    complete_threads(threads)
+
+
 
 def restore_snapshot_to_instance(snapshot,instance,device):
     """

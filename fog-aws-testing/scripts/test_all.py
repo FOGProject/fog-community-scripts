@@ -105,16 +105,9 @@ with open(os.path.join(scriptDir,indexHtml), 'r') as content_file:
 dashboard = dashboard + "\n<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
 
 for branch in branches:
-    threads = []
-    for OS in OSs:
-        instance = get_instance("Name","fogtesting-" + OS)
-        snapshot = get_snapshot("Name",OS + '-clean')
-        if OS == "debian9":
-            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"xvda")))
-        elif OS == "centos7":
-            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
 
-    complete_threads(threads)
+    # Restore snapshots
+    restore_clean_snapshots()
 
     # Wait for instances to get ready a bit.
     time.sleep(15)
