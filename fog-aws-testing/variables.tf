@@ -27,7 +27,7 @@ variable "amis" {
     "debian9" = "ami-08e2234d40f32eb5c"
     "centos7" = "ami-e1496384"
     "rhel7" = "ami-cfdafaaa"
-    "fedora29" = "ami-0d7a9cc499e108f74"
+    "fedora29" = "ami-0f7e779f5a384f9fc"
     "arch" = "ami-039027559d31b8c6b"
   }
 }
