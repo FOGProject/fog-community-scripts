@@ -40,7 +40,7 @@ resource "aws_instance" "bastion" {
       "chmod 600 ~/.aws/config",
       "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
       "git clone https://github.com/wayneworkman/fog-community-scripts.git /home/admin/fog-community-scripts",
-      "(crontab -l; echo 'newline=\"0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py\"') | crontab - >/dev/null 2>&1",
+      "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
       "(sleep 10 && sudo reboot)&"
     ]
   }
