@@ -21,6 +21,10 @@ variable "project" {
     default = "fogtesting"
 }
 
+
+
+# Usernames: https://alestic.com/2014/01/ec2-ssh-username/
+
 variable "amis" {
   type    = "map"
   default = {
