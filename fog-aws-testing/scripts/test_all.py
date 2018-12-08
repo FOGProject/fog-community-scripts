@@ -79,7 +79,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
 now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get initial index.html file.
-with open(indexHtml, 'r') as content_file:
+with open(os.path.join(scriptDir,indexHtml), 'r') as content_file:
     dashboard = content_file.read()
 dashboard = dashboard + "\n<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
 
@@ -161,6 +161,16 @@ for branch in branches:
 newDashboard = os.path.join(webdir,"index.html")
 with open(newDashboard, 'w') as content_file:
     content_file.write(dashboard)
+
+# Ensure the little color dots are in the web dir.
+if not os.path.isfile(os.path.join(webdir,green)):
+    subprocess.call("cp " + os.path.join(scriptDir,green) + " " + os.path.join(webdir,green), shell=True)
+
+if not os.path.isfile(os.path.join(webdir,orange)):
+    subprocess.call("cp " + os.path.join(scriptDir,orange) + " " + os.path.join(webdir,orange), shell=True)
+
+if not os.path.isfile(os.path.join(webdir,red)):
+    subprocess.call("cp " + os.path.join(scriptDir,red) + " " + os.path.join(webdir,red), shell=True)
 
 # Sync the dashboard to s3.
 subprocess.call(s3cmd + " sync " + webdir + "/ s3://" + s3bucket + " > /dev/null 2>&1", shell=True)

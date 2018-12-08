@@ -13,13 +13,12 @@ zone = theRegion + 'a'
 # For when we need to wait for something to get done while in a loop, wait this long.
 wait = 1
 
-# Script used to do all the ssh stuff with the remote host and run the test.
-test_script = "/home/admin/fog-community-scripts/fog-aws-testing/scripts/test_instance.sh"
+scriptDir = "/home/admin/fog-community-scripts/fog-aws-testing/scripts"
 
 webdir = '/tmp/webdir'
 statusDir = '/tmp/statuses'
 
-indexHtml = '/home/admin/fog-community-scripts/fog-aws-testing/scripts/index.html'
+indexHtml = 'index.html'
 
 green = "green.png"
 orange = "orange.png"
