@@ -159,7 +159,7 @@ with open(newDashboard, 'w') as content_file:
     content_file.write(dashboard)
 
 # Sync the dashboard to s3.
-subprocess.call(s3cmd + " sync " + webdir + " s3://" + s3bucket + " > /dev/null 2>&1", shell=True)
+subprocess.call(s3cmd + " sync " + webdir + "/ s3://" + s3bucket + " > /dev/null 2>&1", shell=True)
 
 
 
