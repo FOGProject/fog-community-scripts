@@ -23,7 +23,10 @@ dashboard = dashboard + "\n<th>Apache Log</th>"
 dashboard = dashboard + "\n<th>php-fpm Log</th>"
 dashboard = dashboard + "\n</tr>"
 
-
+# Remove statuses dir.
+subprocess.call("rm -rf " + statusDir, shell=True)
+# Remove web dir.
+subprocess.call("rm -rf " + webdir, shell=True)
 
 
 for branch in branches:
