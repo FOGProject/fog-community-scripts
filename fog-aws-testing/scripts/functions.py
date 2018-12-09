@@ -279,7 +279,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # Get the result file.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
     append_file(commandsLog,command)
-    subprocess.call(command), shell=True)
+    subprocess.call(command, shell=True)
     # This should send the result code of the attempt to something like /tmp/debian9.master.result
 
 
@@ -287,14 +287,14 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # Get the output file.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log"
     append_file(commandsLog,command)
-    subprocess.call(command), shell=True)
+    subprocess.call(command, shell=True)
 
 
     # print "Getting fog log file"
     # Get the fog log.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log"
     append_file(commandsLog,command)
-    subprocess.call(command), shell=True)
+    subprocess.call(command, shell=True)
 
 
     # print "Getting apache logs"
@@ -325,7 +325,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit"
     append_file(commandsLog,command)
-    subprocess.call(command), shell=True)
+    subprocess.call(command, shell=True)
     # This should send just the commit that was used in the test to something like /tmp/debian9.master.commit
 
     # Kill the instance.
