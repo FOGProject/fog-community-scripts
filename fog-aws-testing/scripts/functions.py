@@ -285,14 +285,14 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
     # print "Getting output file"
     # Get the output file.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log"
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log")
     append_file(commandsLog,command)
     subprocess.call(command, shell=True)
 
 
     # print "Getting fog log file"
     # Get the fog log.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log"
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log")
     append_file(commandsLog,command)
     subprocess.call(command, shell=True)
 
@@ -323,7 +323,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"'
     append_file(commandsLog,command)
     subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit"
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit")
     append_file(commandsLog,command)
     subprocess.call(command, shell=True)
     # This should send just the commit that was used in the test to something like /tmp/debian9.master.commit
