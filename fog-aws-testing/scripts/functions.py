@@ -233,7 +233,8 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     make_dir(os.path.join(webdir,OS))
     make_dir(statusDir)
     commandsLog = os.path.join(statusDir,OS + "." + branch + ".remote_commands")
-
+    if os.path.isfile(commandsLog):
+        os.remove(commandsLog)
     
     # Create hidden file for node - for status reporting.
     with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
