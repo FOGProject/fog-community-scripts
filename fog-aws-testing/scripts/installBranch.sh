@@ -48,7 +48,7 @@ stat=$?
 
 git pull >/dev/null 2>&1
 stat=$?
-[[ ! $stat -eq 0 ]] && printf "2" > $result
+[[ ! $stat -eq 0 ]] && printf "3" > $result
 [[ ! $stat -eq 0 ]] && exit $stat
 
 
