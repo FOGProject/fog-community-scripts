@@ -277,7 +277,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
 
     # print "Getting result file"
     # Get the result file.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result"
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
     append_file(commandsLog,command)
     subprocess.call(command), shell=True)
     # This should send the result code of the attempt to something like /tmp/debian9.master.result
