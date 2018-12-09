@@ -29,6 +29,11 @@ subprocess.call("rm -rf " + statusDir, shell=True)
 subprocess.call("rm -rf " + webdir, shell=True)
 
 
+make_dir(statusDir)
+make_dir(webdir)
+
+
+
 for branch in branches:
 
     # Restore snapshots
