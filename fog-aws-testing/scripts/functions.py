@@ -242,16 +242,16 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # print  "Kickin tires"
     # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
     command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup" > /dev/null 2>&1'
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready" > /dev/null 2>&1'
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
     # print "Scp script to remote box"
     # Scp a script onto the remote box that we will later call.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + os.path.join(cwd,'installBranch.sh') + " " + OS + ":/root/installBranch.sh"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
     # Get starting time
@@ -261,7 +261,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # print "Starting installer"
     # Start the fog installer.
     command = timeout + " " + fogTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "/root/./installBranch.sh ' + branch + '"'
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
     # Get ending time.
@@ -278,7 +278,7 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # print "Getting result file"
     # Get the result file.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     # This should send the result code of the attempt to something like /tmp/debian9.master.result
 
@@ -286,45 +286,45 @@ def runTest(branch,OS,webdir,statusDir,now,instance):
     # print "Getting output file"
     # Get the output file.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log")
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
 
     # print "Getting fog log file"
     # Get the fog log.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log")
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
 
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/httpd/error_log " + os.path.join(webdir,OS,now + "_apache.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/apache2/error.log " + os.path.join(webdir,OS,now + "_apache.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
     # print "Getting php-fpm logs"
     # Get php-fpm logs. Can be in several places...
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/error.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php*-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
     command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"'
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit")
-    append_file(commandsLog,command)
+    append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
     # This should send just the commit that was used in the test to something like /tmp/debian9.master.commit
 
