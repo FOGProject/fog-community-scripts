@@ -11,20 +11,20 @@ DEBIAN_FRONTEND=noninteractive
 
 if [[ $(command -v dnf > /dev/null 2>&1;echo $?) -eq 0 ]]; then
     dnf -y update > $output 2>&1
-    echo $? > $result
+    printf $? > $result
 elif [[ $(command -v yum > /dev/null 2>&1;echo $?) -eq 0 ]]; then
     yum -y update > $output 2>&1
-    echo $? > $result
+    printf $? > $result
 elif [[ $(command -v apt-get > /dev/null 2>&1;echo $?) -eq 0 ]]; then
     apt-get -y update > $output 2>&1
     apt-get -y upgrade > $output 2>&1
-    echo $? > $result
+    printf $? > $result
 elif [[ $(command -v pacman > /dev/null 2>&1;echo $?) -eq 0 ]]; then
     pacman -Syu --noconfirm > $output 2>&1
-    echo $? > $result
+    printf $? > $result
 else
     echo "Don't know how to update. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." > $output 2>&1
-    echo "-1" > $result
+    printf "-1" > $result
 fi
 
 
