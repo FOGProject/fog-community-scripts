@@ -2,7 +2,7 @@
 
 resource "aws_instance" "bastion" {
   ami           = "${var.amis["debian9"]}"
-  instance_type = "t3.micro"
+  instance_type = "t3.nano"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.sg-ssh.id}"]
   associate_public_ip_address = true
