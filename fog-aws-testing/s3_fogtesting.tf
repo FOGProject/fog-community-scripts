@@ -1,6 +1,7 @@
 # NOTE: Bucket name must have exact same name as the dns recored, like example.com or box.example.com
 resource "aws_s3_bucket" "fogtesting" {
   bucket = "fogtesting2.theworkmans.us"
+  region = "${var.region}"
   website {
     index_document = "index.html"
     error_document = "error.html"
