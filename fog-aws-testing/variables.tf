@@ -3,7 +3,7 @@ terraform {
   backend "s3" {
     bucket = "remote-state.theworkmans.us"
     key    = "fogtesting.rs"
-    region = "us-east-1"
+    region = "us-east-2"
   }
 }
 
