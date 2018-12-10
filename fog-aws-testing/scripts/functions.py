@@ -227,6 +227,9 @@ def restore_snapshot_to_instance(snapshot,instance,device):
 
 
 def update_os(branch,OS,now,instance):
+    # Make required directory.
+    make_dir(os.path.join(webdir,OS))
+
     # Write -1 to result file locally to indicate it didn't finish in time.
     with open(os.path.join(statusDir,OS + "." + branch + ".patch_result"), 'w') as content_file:
         content_file.write("-1")
