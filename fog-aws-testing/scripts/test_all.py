@@ -118,11 +118,11 @@ for branch in branches:
         with open(resultFile, 'r') as content_file:
             exitCode = content_file.read()
         if exitCode == "0":
-            dashboard = dashboard + "\n<td><img src=\"" + green + "\" alt=\"" + red + "\"></td>"
+            dashboard = dashboard + "\n<td><img src=\"" + green + "\" alt=\"green\"></td>"
         elif exitCode == "-1":
-            dashboard = dashboard + "\n<td><img src=\"" + orange + "\" alt=\"" + red + "\"></td>"
+            dashboard = dashboard + "\n<td><img src=\"" + orange + "\" alt=\"orange\"></td>"
         else:
-            dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"" + red + "\"></td>"
+            dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"red\"></td>"
 
 
         if os.path.isfile(os.path.join(webdir,OS,now + "_patch_output.log")):
