@@ -14,13 +14,15 @@ dashboard = dashboard + "\n<table>"
 dashboard = dashboard + "\n<tr>"
 dashboard = dashboard + "\n<th>OS</th>"
 dashboard = dashboard + "\n<th>Branch</th>"
-dashboard = dashboard + "\n<th>Status</th>"
-dashboard = dashboard + "\n<th>Reason</th>"
+dashboard = dashboard + "\n<th>FOG Status</th>"
+dashboard = dashboard + "\n<th>FOG Reason</th>"
 dashboard = dashboard + "\n<th>Duration</th>"
 dashboard = dashboard + "\n<th>Output Log</th>"
 dashboard = dashboard + "\n<th>Fog Error Log</th>"
 dashboard = dashboard + "\n<th>Apache Log</th>"
 dashboard = dashboard + "\n<th>php-fpm Log</th>"
+dashboard = dashboard + "\n<th>Patch Status</th>"
+dashboard = dashboard + "\n<th>Patch Output</th>"
 dashboard = dashboard + "\n</tr>"
 
 # Remove statuses dir.
@@ -35,6 +37,8 @@ make_dir(webdir)
 
 
 for branch in branches:
+    # Need a unique timestamp for each branch run.
+    now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 
     # Restore snapshots
     restore_clean_snapshots()
@@ -45,11 +49,19 @@ for branch in branches:
     # Add identities
     add_ssh_identities()
 
-    # Reset threads.
+    # Run updates here.
     threads = []
     for OS in OSs:
         instance = get_instance("Name","fogtesting-" + OS)
-        threads.append(Thread(target=runTest,args=(branch,OS,webdir,statusDir,now,instance)))
+        threads.append(Thread(target=update_os,args=(branch,OS,now,instance)))
+
+    complete_threads(threads)
+
+    # Run fog installation tests.
+    threads = []
+    for OS in OSs:
+        instance = get_instance("Name","fogtesting-" + OS)
+        threads.append(Thread(target=runTest,args=(branch,OS,now,instance)))
 
     complete_threads(threads)
 
@@ -100,6 +112,24 @@ for branch in branches:
             dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
         else:
             dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
+
+        resultFile = os.path.join(statusDir,OS + "." + branch + ".patch_result")
+        with open(resultFile, 'r') as content_file:
+            exitCode = content_file.read()
+        if exitCode == "0":
+            dashboard = dashboard + "\n<td><img src=\"" + green + "\" alt=\"" + red + "\"></td>"
+        elif exitCode == "-1":
+            dashboard = dashboard + "\n<td><img src=\"" + orange + "\" alt=\"" + red + "\"></td>"
+        else:
+            dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"" + red + "\"></td>"
+
+
+        if os.path.isfile(os.path.join(webdir,OS,now + "_patch_output.log")):
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_patch_output.log\">patch output</a></td>"
+        else:
+            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+
 
         dashboard = dashboard + "\n</tr>"
 

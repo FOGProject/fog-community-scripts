@@ -226,16 +226,38 @@ def restore_snapshot_to_instance(snapshot,instance,device):
     wait_until_running(instance)
 
 
+def update_os(branch,OS,now,instance):
+    # Write -1 to result file locally to indicate it didn't finish in time.
+    with open(os.path.join(statusDir,OS + "." + branch + ".patch_result"), 'w') as content_file:
+        content_file.write("-1")
+
+    # Send the update script.
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + os.path.join(cwd,'updateOS.sh') + " " + OS + ":/root/updateOS.sh"
+    subprocess.call(command, shell=True)
+
+    # Run the remote update script.
+    command = timeout + " " + patchTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "/root/./updateOS.sh"'
+    subprocess.call(command, shell=True)
+
+    # Get the patch_result
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_result " + os.path.join(statusDir,OS + "." + branch + ".patch_result")
+    subprocess.call(command, shell=True)
+
+    # Get the patch_output
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_output.log " + os.path.join(webdir,OS,now + "_patch_output.log")
+    subprocess.call(command, shell=True)
+
+    # TODO need to integrate a reboot here. Need to see the instance go down and come back up.
 
 
 
-def runTest(branch,OS,webdir,statusDir,now,instance):
+def runTest(branch,OS,now,instance):
     make_dir(os.path.join(webdir,OS))
     commandsLog = os.path.join(statusDir,OS + "." + branch + ".remote_commands")
     if os.path.isfile(commandsLog):
         os.remove(commandsLog)
     
-    # Create hidden file for node - for status reporting.
+    # Write -1 locally to indicate it didn't finish in time.
     with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
         content_file.write("-1") 
 

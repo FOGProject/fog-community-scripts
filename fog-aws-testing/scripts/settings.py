@@ -41,8 +41,9 @@ ssh_keyscan = "/usr/bin/ssh-keyscan"
 
 
 sshTimeout = "15"
-fogTimeout= "15m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
-sshTime="15s" #Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
+fogTimeout = "15m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
+patchTimeout = "15m" # Time to wait for patching. Must end with a unit of time. s for seconds, m for minutes.
+sshTime = "15s" #Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
 
 
 
