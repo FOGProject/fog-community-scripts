@@ -6,7 +6,7 @@ dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fog
 branches = ["master","dev-branch"]
 
 # The region we operate in, dictated by terraform.
-theRegion = "us-east-2"
+theRegion = "us-east-1"
 # The availibility zone, which we use just one zone.
 zone = theRegion + 'a'
 
