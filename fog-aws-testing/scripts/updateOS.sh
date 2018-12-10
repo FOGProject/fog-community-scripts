@@ -25,6 +25,6 @@ elif [[ $(command -v pacman > /dev/null 2>&1;echo $?) -eq 0 ]]; then
 else
     echo "Don't know how to update. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." > $output 2>&1
     echo "-1" > $result
-
+fi
 
 
