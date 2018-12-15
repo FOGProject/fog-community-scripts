@@ -1,12 +1,15 @@
 # The list of OSs.
-OSs = ["debian9","centos7","rhel7","fedora29","arch","ubuntu18_04"]
-dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora29.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
+# OSs = ["debian9","centos7","rhel7","fedora29","arch","ubuntu18_04"]
+OSs = ["debian9"]
+# dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora29.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
+dnsAddresses = ["debian9.fogtesting.cloud"]
 
 # The list of branches to process.
-branches = ["master","dev-branch"]
+# branches = ["master","dev-branch"]
+branches = ["master"]
 
 # The region we operate in, dictated by terraform.
-theRegion = "us-east-1"
+theRegion = "us-east-2"
 # The availibility zone, which we use just one zone.
 zone = theRegion + 'a'
 

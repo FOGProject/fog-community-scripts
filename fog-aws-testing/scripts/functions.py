@@ -94,8 +94,10 @@ def get_instance(name,value):
 
 def get_instance_volume(instance):
     # This assumes one volume.
-    volume = ec2resource.Volume(instance.block_device_mappings[0]["Ebs"]["VolumeId"])
-    return volume
+    try:
+        return ec2resource.Volume(instance.block_device_mappings[0]["Ebs"]["VolumeId"])
+    except:
+        return None
 
 
 def wait_until_stopped(instance):
@@ -194,16 +196,18 @@ def restore_snapshot_to_instance(snapshot,instance,device):
     """
     instance.stop(Force=True)
     wait_until_stopped(instance)
-    oldVolume = get_instance_volume(instance)
-    oldVolume.detach_from_instance(Force=True)
-    while True:
-        oldVolume.reload()
-        if oldVolume.state == "available":
-            break
-        else:
-            time.sleep(wait)
 
-    oldVolume.delete()
+    oldVolume = get_instance_volume(instance)
+    if oldVolume is not None:
+        oldVolume.detach_from_instance(Force=True)
+        while True:
+            oldVolume.reload()
+            if oldVolume.state == "available":
+                break
+            else:
+                time.sleep(wait)
+        oldVolume.delete()
+
     newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone,VolumeType='standard')
     newVolume = ec2resource.Volume(newVolume["VolumeId"])
     while True:
