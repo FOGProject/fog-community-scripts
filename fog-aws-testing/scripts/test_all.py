@@ -17,10 +17,10 @@ dashboard = dashboard + "\n<th>Branch</th>"
 dashboard = dashboard + "\n<th>FOG Status</th>"
 dashboard = dashboard + "\n<th>FOG Reason</th>"
 dashboard = dashboard + "\n<th>Install Duration</th>"
-dashboard = dashboard + "\n<th>Output Log</th>"
-dashboard = dashboard + "\n<th>Fog Error Log</th>"
-dashboard = dashboard + "\n<th>Apache Log</th>"
-dashboard = dashboard + "\n<th>php-fpm Log</th>"
+dashboard = dashboard + "\n<th>Install Output</th>"
+dashboard = dashboard + "\n<th>Install Error</th>"
+dashboard = dashboard + "\n<th>Apache</th>"
+dashboard = dashboard + "\n<th>php-fpm</th>"
 dashboard = dashboard + "\n<th>Patch Status</th>"
 dashboard = dashboard + "\n<th>Patch Duration</th>"
 dashboard = dashboard + "\n<th>Patch Output</th>"
@@ -89,34 +89,34 @@ for branch in branches:
             duration = read_file(os.path.join(statusDir,OS + "." + branch + ".duration"))
             dashboard = dashboard + "\n<td>" + duration + "</td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
         # fog output log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_output.log\">Output log</td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_output.log\">log</td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
         # fog error log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_fog_error.log\">Install log</td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_fog_error.log\">log</td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
         # apache log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_apache.log\">Apache log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_apache.log\">log</a></td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
         # php-fpm log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">log</a></td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
         # Patch results.
@@ -138,15 +138,15 @@ for branch in branches:
             duration = read_file(os.path.join(statusDir,OS + "." + branch + ".patch_duration"))
             dashboard = dashboard + "\n<td>" + duration + "</td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
 
         # Patch output.
         if os.path.isfile(os.path.join(webdir,OS,now + "_patch_output.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_patch_output.log\">patch output</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_patch_output.log\">log</a></td>"
         else:
-            dashboard = dashboard + "\n<td>Could not be retrieved</td>"
+            dashboard = dashboard + "\n<td>NA</td>"
 
 
         dashboard = dashboard + "\n</tr>"
