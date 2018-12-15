@@ -4,8 +4,8 @@ from functions import *
 
 
 now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
-# Get initial index.html file.
-with open(os.path.join(scriptDir,indexHtml), 'r') as content_file:
+# Get header file.
+with open(os.path.join(scriptDir,headerHtml), 'r') as content_file:
     dashboard = content_file.read()
 dashboard = dashboard + "\n<caption>Last updated: " + now + "</caption>"
 
@@ -154,6 +154,10 @@ for branch in branches:
 # Close table.
 dashboard = dashboard + "\n</table>"
 
+
+# Get the footer html.
+with open(os.path.join(scriptDir,footerHtml), 'r') as content_file:
+    dashboard = dashboard + "\n" + content_file.read()
 
 # Write out the dashboard.
 newDashboard = os.path.join(webdir,"index.html")

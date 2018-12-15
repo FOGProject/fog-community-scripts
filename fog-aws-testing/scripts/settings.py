@@ -18,7 +18,8 @@ scriptDir = "/home/admin/fog-community-scripts/fog-aws-testing/scripts"
 webdir = '/tmp/webdir'
 statusDir = '/tmp/statuses'
 
-indexHtml = 'index.html'
+headerHtml = 'header.html'
+footerHtml = 'footer.html'
 
 green = "green.png"
 orange = "orange.png"

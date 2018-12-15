@@ -1,28 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>FOG Installer Dashboard</title>
-<style>
-table {
-    width:100%;
-}
-table, th, td {
-    border: 1px solid black;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 5px;
-    text-align: left;
-}
-tr:hover{background-color:#f5f5f5}
-th {
-    background-color: #4CAF50;
-    color: white;
-}
-</style>
-</head>
-<body>
-<h1>FOG Installer Dashboard</h1><br><br>
+<br><br>
 <p>This dashboard contains test-results for the FOG Installation process. These tests are ran daily, automatically. All OSs listed below are server editions and are minimal installations. The process followed to conduct these tests are as follows, in order.</p><br>
 <ol>
     <li>A new volume is created for each OS and is attached. This new volume is created from an existing clean snapshot containing no fog installation and is perodically updated every few months with the latest patches to keep testing times low</li>
@@ -37,3 +13,5 @@ th {
     <li>The above process is repeated for each branch being tested, and for each OS being tested.</li>
 </ol>
 <br><br>
+</body>
+</html>
