@@ -23,10 +23,10 @@ To start using this project to run FOG Tests for yourself:
  - Go into the `terraform` directory.
  - Look over the `variables.tf` file and input your public hosted zone's `zone_name` and `zone_id`. Also enter in the s3 bucket name where you wish to keep Terraform's remote state files. It's the section titled `terraform { backend "s3" {
 bucket =` 
- - **SSH**:  This project assumes an SSH key is available exclusively for this project, as well as the public copy of your personal key for entering into the bastion server. 
+ - **SSH**:  This project assumes an SSH key-pair is available exclusively for this project, as well as the public copy of your personal key for entering into the bastion server. 
  - The **project** ssh public and private paths are defined inside of `ssh_keys.tf`. A copy of the private key is placed on the bastion server, and the public key is placed into `authorized_keys` for all instances in the infrastructure.
  - A copy of your personal SSH **public** key should be put in `ssh_keys.tf` as text. This enables you to use your personal SSH keys to access the bastion, and then use the project's keys to access everything else from the bastion.
- - Run `terraform apply` and inspect the plans, type `yes` if they look good.`
+ - Run `terraform apply` and inspect the plans, type `yes` if they look good.
  - Wait for all necessary infrastructure to be provisioned. This can take a long time because all OSs are fully patched in this process.
  - Once done, you should be able to ssh into the bastion. It's public DNS record can be found in Route53, but should be `fogbastion.YourDomain`.
  - From here, you should find a copy of the fog-community-scripts repository within your home directory. Navigate into the `fog-community-scripts/fog-aws-testing/scripts` directory.
