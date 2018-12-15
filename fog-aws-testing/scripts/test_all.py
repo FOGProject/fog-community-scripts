@@ -7,7 +7,7 @@ now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get initial index.html file.
 with open(os.path.join(scriptDir,indexHtml), 'r') as content_file:
     dashboard = content_file.read()
-dashboard = dashboard + "\n<caption>Clean FOG Installation Status, last updated: " + now + "</caption>"
+dashboard = dashboard + "\n<caption>Last updated: " + now + "</caption>"
 
 # Table opening and columns.
 dashboard = dashboard + "\n<table>"
