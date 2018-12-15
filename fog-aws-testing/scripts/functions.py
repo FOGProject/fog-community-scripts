@@ -258,6 +258,8 @@ def update_os(branch,OS,now,instance):
     # Calculate duration.
     duration = d2 - d1
     duration = str(datetime.timedelta(seconds=duration.total_seconds()))
+    # Remove miliseconds, we don't care that much about miliseconds and it takes up realestate on the webpage.
+    duration = duration.split('.')[0]
     # Write duration to file.
     with open(os.path.join(statusDir,OS + "." + branch + ".patch_duration"), 'w') as content_file:
         content_file.write(duration)
@@ -325,6 +327,8 @@ def runTest(branch,OS,now,instance):
     # Calculate duration.
     duration = d2 - d1
     duration = str(datetime.timedelta(seconds=duration.total_seconds()))
+    # Remove miliseconds, we don't care that much about miliseconds and it takes up realestate on the webpage.
+    duration = duration.split('.')[0]
     # Write duration to file.
     with open(os.path.join(statusDir,OS + "." + branch + ".duration"), 'w') as content_file:
         content_file.write(duration)
