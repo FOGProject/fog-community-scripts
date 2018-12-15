@@ -1,12 +1,9 @@
 # The list of OSs.
-# OSs = ["debian9","centos7","rhel7","fedora29","arch","ubuntu18_04"]
-OSs = ["debian9"]
-# dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora29.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
-dnsAddresses = ["debian9.fogtesting.cloud"]
+OSs = ["debian9","centos7","rhel7","fedora29","arch","ubuntu18_04"]
+dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora29.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
 
 # The list of branches to process.
-# branches = ["master","dev-branch"]
-branches = ["master"]
+branches = ["master","dev-branch"]
 
 # The region we operate in, dictated by terraform.
 theRegion = "us-east-2"
@@ -38,7 +35,7 @@ remoteResult = "/root/result"
 
 ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
-timeout = "/usr/bin/timeout"
+timeout = "/usr/bin/timeout --foreground"
 s3cmd = "/usr/bin/s3cmd"
 ssh_keyscan = "/usr/bin/ssh-keyscan"
 

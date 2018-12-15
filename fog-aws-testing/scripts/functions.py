@@ -242,12 +242,33 @@ def update_os(branch,OS,now,instance):
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + os.path.join(cwd,'updateOS.sh') + " " + OS + ":/root/updateOS.sh"
     subprocess.call(command, shell=True)
 
+
+    # Get starting time
+    d1 = datetime.datetime.now()
+
+
     # Run the remote update script.
     command = timeout + " " + patchTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "/root/./updateOS.sh"'
     subprocess.call(command, shell=True)
 
+
+    # Get ending time.
+    d2 = datetime.datetime.now()
+
+    # Calculate duration.
+    duration = d2 - d1
+    duration = str(datetime.timedelta(seconds=duration.total_seconds()))
+    # Write duration to file.
+    with open(os.path.join(statusDir,OS + "." + branch + ".patch_duration"), 'w') as content_file:
+        content_file.write(duration)
+
+
     # Get the patch_result
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_result " + os.path.join(statusDir,OS + "." + branch + ".patch_result")
+    subprocess.call(command, shell=True)
+
+    # Get the patch_duration
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_result " + os.path.join(statusDir,OS + "." + branch + ".patch_duration")
     subprocess.call(command, shell=True)
 
     # Get the patch_output
