@@ -94,27 +94,27 @@ for branch in branches:
 
         # fog output log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_output.log\">log</td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_output.log\">output</td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
 
         # fog error log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_fog_error.log\">log</td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_fog_error.log\">error</td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
         # apache log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_apache.log\">log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_apache.log\">apache</a></td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
 
         # php-fpm log.
         if os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_php-fpm.log\">php-fpm</a></td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
@@ -131,8 +131,6 @@ for branch in branches:
             dashboard = dashboard + "\n<td><img src=\"" + red + "\" alt=\"red\"></td>"
 
 
-
-
         # Patch duration.
         if os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".patch_duration")):
             duration = read_file(os.path.join(statusDir,OS + "." + branch + ".patch_duration"))
@@ -144,7 +142,7 @@ for branch in branches:
 
         # Patch output.
         if os.path.isfile(os.path.join(webdir,OS,now + "_patch_output.log")):
-            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_patch_output.log\">log</a></td>"
+            dashboard = dashboard + "\n<td><a href=\"" + http + s3bucket + port + netdir + "/" + OS + "/" + now + "_patch_output.log\">patch</a></td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
