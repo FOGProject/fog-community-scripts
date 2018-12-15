@@ -275,7 +275,12 @@ def update_os(branch,OS,now,instance):
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_output.log " + os.path.join(webdir,OS,now + "_patch_output.log")
     subprocess.call(command, shell=True)
 
-    # TODO need to integrate a reboot here. Need to see the instance go down and come back up.
+    # Reboot.
+    command = timeout + " " + patchTimeout + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "( sleep 5;reboot ) & " > /dev/null 2>&1'
+    subprocess.call(command, shell=True)
+
+    # Wait for the reboot to complete before proceeding.
+    time.sleep(bootTime)
 
 
 

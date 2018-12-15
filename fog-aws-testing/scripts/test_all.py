@@ -45,7 +45,7 @@ for branch in branches:
     restore_clean_snapshots()
 
     # Wait for instances to get ready a bit.
-    time.sleep(60)
+    time.sleep(bootTime)
 
     # Add identities
     add_ssh_identities()
