@@ -30,6 +30,7 @@ bucket =`
  - Wait for all necessary infrastructure to be provisioned. This can take a long time because all OSs are fully patched in this process.
  - Once done, you should be able to ssh into the bastion. It's public DNS record can be found in Route53, but should be `fogbastion.YourDomain`.
  - From here, you should find a copy of the fog-community-scripts repository within your home directory. Navigate into the `fog-community-scripts/fog-aws-testing/scripts` directory.
+ - The bastion server is pre-configured with SSH aliases for you. If the test OSs are powered up, you can simpy run `ssh debian9` and be taken straight to the debian9's root account, and can ssh to the other OSs the same way - all from the bastion.
  - From here, you should be able to run the available scripts. Permissions are inherited from an instance role created for you by Terraform.
  - You'll need to edit the `settings.py` file with the correct s3 bucket name - this is the bucket used to host test results.
  - Next, you need to create clean snapshots of all the test OSs. There's a script for this called `create_clean_snapshots.py`.
