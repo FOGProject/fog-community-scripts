@@ -6,7 +6,7 @@ cwd="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #This is a list of all storage node aliases and are space seperated. There is no limit on the number of items.
 #You will need to modify the below line for any of the scripts in this directory to work.
 #SSH cert-based authentication and SSH Aliases need setup between the fogTesting box and all below storageNodes.
-storageNodes=( Arch CentOS7 Debian8 Debian9 Fedora25 Fedora26 Fedora27Workstation Fedora28 Fedora29-Beta Ubuntu17.10 Ubuntu16 Ubuntu14 )
+storageNodes=( Arch CentOS7 Debian8 Debian9 Fedora28 Fedora29 Ubuntu18 Ubuntu17.10 Ubuntu16 Ubuntu14 )
 
 #The name of the SSH alias for the linux KVM+libvirtd host:
 hostsystem="dl580"
@@ -45,7 +45,7 @@ streakDir="/root/streaks"
 webdir="/var/www/html"   #This is the web directory to put reports and file structure into.
 permissions="www-data:www-data"   #What the web file's ownership should be.
 domainName="fogtesting.theworkmans.us"   #Your domain name.
-netdir="/"   #This is the net directory, what gets added to the domain name to get to the webdir.
+netdir=""   #This is the net directory, what gets added to the domain name to get to the webdir.
 port=""    #The port, if any. If default, leave blank.
 
 #This is how you would use your Public IP instead of a domain name:
