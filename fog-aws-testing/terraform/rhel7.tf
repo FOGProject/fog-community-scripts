@@ -32,7 +32,7 @@ resource "aws_instance" "rhel7" {
       "echo 'SELINUX=permissive' | sudo tee --append /etc/selinux/config",
       "sudo mkdir -p /root/git",
       "sudo yum -y install git",
-      "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
+      "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
       "sudo yum -y update",
       "(sleep 10 && sudo reboot)&"
     ]

@@ -22,6 +22,15 @@ variable "project" {
 }
 
 
+variable "fog-community-scripts-repo" {
+    type = "string"
+    default = "https://github.com/wayneworkman/fog-community-scripts.git"
+}
+
+variable "fog-project-repo" {
+    type = "string"
+    default = "https://github.com/FOGProject/fogproject.git"
+}
 
 # Usernames: https://alestic.com/2014/01/ec2-ssh-username/
 

@@ -31,7 +31,7 @@ resource "aws_instance" "debian9" {
       "sudo cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys",
       "sudo apt-get -y install git",
       "sudo mkdir -p /root/git",
-      "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
+      "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
       "(sleep 10 && sudo reboot)&"
     ]
   }

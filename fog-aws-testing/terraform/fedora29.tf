@@ -32,7 +32,7 @@ resource "aws_instance" "fedora29" {
       "echo 'SELINUX=permissive' | sudo tee --append /etc/selinux/config",
       "sudo mkdir -p /root/git",
       "sudo dnf -y install git",
-      "sudo git clone https://github.com/FOGProject/fogproject /root/git/fogproject",
+      "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
       "sudo dnf -y update",
       "(sleep 10 && sudo reboot)&"
     ]

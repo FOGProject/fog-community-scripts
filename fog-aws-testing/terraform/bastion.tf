@@ -18,11 +18,11 @@ resource "aws_instance" "bastion" {
   connection {
     type     = "ssh"
     user     = "admin"
-    private_key = "${file("/root/.ssh/fogtesting_private")}"
+    private_key = "${file("${var.private_key_path}")}"
   }
 
   provisioner "file" {
-    source      = "/root/.ssh/fogtesting_private"
+    source      = "${var.private_key_path}"
     destination = "/home/admin/.ssh/id_rsa"
   }
 
@@ -39,7 +39,7 @@ resource "aws_instance" "bastion" {
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
       "chmod 600 ~/.aws/config",
       "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
-      "git clone https://github.com/wayneworkman/fog-community-scripts.git /home/admin/fog-community-scripts",
+      "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
       "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
       "(sleep 10 && sudo reboot)&"
     ]
