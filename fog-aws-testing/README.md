@@ -11,6 +11,7 @@ Some things to note about this project:
  - This project requires a pre-existing public hosted zone within Route53. This is used to create DNS records and s3 bucket names, and to publish test results.
  - The testing tools are written mostly in Python 2.
  - There's some BASH in use where appropriate.
+ - This project needs it's own SSH key-pair to function, and your public SSH key for you to access the bastion server.
 
 To start using this project to run FOG Tests for yourself:
 
