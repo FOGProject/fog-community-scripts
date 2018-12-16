@@ -102,7 +102,7 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:CreateVolume",
                 "ec2:DeleteVolume",
                 "ec2:CreateSnapshot",
-                "ec2:DeleteSnapshot",
+                "ec2:DeleteSnapshot"
             ],
             "Resource": "*"
         },
