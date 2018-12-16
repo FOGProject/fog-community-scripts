@@ -129,6 +129,7 @@ def create_snapshot(volume,name_tag):
             }
         ]
     )
+    snapshot.create_tags(Tags=globalTags)
     while True:
         snapshot.reload()
         if snapshot.state == "completed":
@@ -210,6 +211,7 @@ def restore_snapshot_to_instance(snapshot,instance,device):
 
     newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone,VolumeType='standard')
     newVolume = ec2resource.Volume(newVolume["VolumeId"])
+    newVolume.create_tags(Tags=instance.tags)
     while True:
         newVolume.reload()
         if newVolume.state == "available":

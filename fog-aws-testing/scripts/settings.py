@@ -10,6 +10,15 @@ theRegion = "us-east-2"
 # The availibility zone, which we use just one zone.
 zone = theRegion + 'a'
 
+# Tags that get applied to all volumes and all snapshots that the scripts create.
+globalTag = [
+    {
+        'Key': 'project',
+        'Value': 'fogtesting'
+    }
+]
+
+
 # For when we need to wait for something to get done while in a loop, wait this long.
 wait = 1
 
