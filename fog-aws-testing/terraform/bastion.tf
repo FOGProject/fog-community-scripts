@@ -65,7 +65,7 @@ resource "aws_iam_role_policy" "policy" {
     "Version": "2012-10-17",
     "Statement": [
         {
-            "Sid": "s3perms",
+            "Sid": "s3Perms",
             "Effect": "Allow",
             "Action": [
                 "s3:PutObject",
@@ -78,7 +78,7 @@ resource "aws_iam_role_policy" "policy" {
             ]
         },
         {
-            "Sid": "ec2readperms",
+            "Sid": "ec2ReadPerms",
             "Effect": "Allow",
             "Action": [
                 "ec2:DescribeInstances",
@@ -86,10 +86,6 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:DescribeVolumes",
                 "ec2:DescribeVolumeStatus",
                 "ec2:DescribeKeyPairs",
-                "ec2:CreateVolume",
-                "ec2:DeleteVolume",
-                "ec2:CreateSnapshot",
-                "ec2:DeleteSnapshot",
                 "ec2:DescribeSnapshotAttribute",
                 "ec2:DescribeVolumeAttribute",
                 "ec2:DescribeInstanceAttribute",
@@ -100,7 +96,18 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": "*"
         },
         {
-            "Sid": "ec2modifyperms",
+            "Sid": "ec2VolumeAndSnapshotPerms",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:DeleteVolume",
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnapshot",
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ec2ModifyPerms",
             "Effect": "Allow",
             "Action": [
                 "ec2:ModifyInstanceAttribute",
