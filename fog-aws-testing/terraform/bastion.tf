@@ -62,17 +62,74 @@ resource "aws_iam_role_policy" "policy" {
 
   policy = <<EOF
 {
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": [
-        "ec2:*",
-        "s3:*"
-      ],
-      "Effect": "Allow",
-      "Resource": "*"
-    }
-  ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "s3Perms",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:ListBucket",
+                "s3:PutObjectAcl"
+            ],
+            "Resource": [
+                "${aws_s3_bucket.fogtesting.arn}",
+                "${aws_s3_bucket.fogtesting.arn}/*"
+            ]
+        },
+        {
+            "Sid": "ec2ReadPerms",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:DescribeInstances",
+                "ec2:DescribeSnapshots",
+                "ec2:DescribeVolumes",
+                "ec2:DescribeVolumeStatus",
+                "ec2:DescribeKeyPairs",
+                "ec2:DescribeSnapshotAttribute",
+                "ec2:DescribeVolumeAttribute",
+                "ec2:DescribeInstanceAttribute",
+                "ec2:DescribeInstanceStatus",
+                "ec2:DescribeVolumesModifications",
+                "ec2:DescribeTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ec2VolumeAndSnapshotPerms",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateVolume",
+                "ec2:DeleteVolume",
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnapshot"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ec2ModifyPerms",
+            "Effect": "Allow",
+            "Action": [
+                "ec2:ModifyInstanceAttribute",
+                "ec2:DetachVolume",
+                "ec2:AttachVolume",
+                "ec2:StartInstances",
+                "ec2:CreateTags",
+                "ec2:RunInstances",
+                "ec2:StopInstances"
+            ],
+            "Resource": [
+                "${aws_instance.arch.arn}",
+                "${aws_instance.centos7.arn}",
+                "${aws_instance.rhel7.arn}",
+                "${aws_instance.fedora29.arn}",
+                "${aws_instance.debian9.arn}",
+                "${aws_instance.ubuntu18_04.arn}",
+                "arn:aws:ec2:*::snapshot/*",
+                "arn:aws:ec2:*:*:volume/*"
+            ]
+        }
+    ]
 }
 EOF
 }
