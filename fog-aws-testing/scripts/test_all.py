@@ -7,7 +7,7 @@ now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get header file.
 with open(os.path.join(scriptDir,headerHtml), 'r') as content_file:
     dashboard = content_file.read()
-dashboard = dashboard + "\n<caption>Last updated: " + now + "</caption>"
+dashboard = dashboard + "\n<caption>Last updated: " + now + "</caption><br>"
 
 # Table opening and columns.
 dashboard = dashboard + "\n<table>"
