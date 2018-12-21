@@ -271,9 +271,6 @@ def update_os(branch,OS,now,instance):
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_result " + os.path.join(statusDir,OS + "." + branch + ".patch_result")
     subprocess.call(command, shell=True)
 
-    # Get the patch_duration
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_result " + os.path.join(statusDir,OS + "." + branch + ".patch_duration")
-    subprocess.call(command, shell=True)
 
     # Get the patch_output
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/patch_output.log " + os.path.join(webdir,OS,now + "_patch_output.log")
