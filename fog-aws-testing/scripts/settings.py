@@ -3,7 +3,7 @@ OSs = ["debian9","centos7","rhel7","fedora29","arch","ubuntu18_04"]
 dnsAddresses = ["debian9.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora29.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
 
 # The list of branches to process.
-branches = ["master","dev-branch"]
+branches = ["master","dev-branch","working-1.6"]
 
 # The region we operate in, dictated by terraform.
 theRegion = "us-east-2"
@@ -34,7 +34,7 @@ green = "green.png"
 orange = "orange.png"
 red = "red.png"
 
-s3bucket = "fogtesting2.theworkmans.us"
+s3bucket = "fogtesting.theworkmans.us"
 
 http = "http://"
 port = ""

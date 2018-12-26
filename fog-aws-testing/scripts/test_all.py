@@ -7,7 +7,7 @@ now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%p")
 # Get header file.
 with open(os.path.join(scriptDir,headerHtml), 'r') as content_file:
     dashboard = content_file.read()
-dashboard = dashboard + "\n<caption>Last updated: " + now + "</caption><br>"
+dashboard = dashboard + "\n<p>Last updated: " + now + " UTC</p><br>"
 
 # Table opening and columns.
 dashboard = dashboard + "\n<table>"
@@ -86,8 +86,8 @@ for branch in branches:
 
         # Fog install duration.
         if os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".duration")):
-            duration = read_file(os.path.join(statusDir,OS + "." + branch + ".duration"))
-            dashboard = dashboard + "\n<td>" + duration + "</td>"
+            fog_duration = read_file(os.path.join(statusDir,OS + "." + branch + ".duration"))
+            dashboard = dashboard + "\n<td>" + fog_duration + "</td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 
@@ -133,8 +133,8 @@ for branch in branches:
 
         # Patch duration.
         if os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".patch_duration")):
-            duration = read_file(os.path.join(statusDir,OS + "." + branch + ".patch_duration"))
-            dashboard = dashboard + "\n<td>" + duration + "</td>"
+            patch_duration = read_file(os.path.join(statusDir,OS + "." + branch + ".patch_duration"))
+            dashboard = dashboard + "\n<td>" + patch_duration + "</td>"
         else:
             dashboard = dashboard + "\n<td>NA</td>"
 

@@ -96,9 +96,10 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": "*"
         },
         {
-            "Sid": "ec2VolumeAndSnapshotPerms",
+            "Sid": "ec2SpecialPerms",
             "Effect": "Allow",
             "Action": [
+                "ec2:ModifyInstanceAttribute",
                 "ec2:CreateVolume",
                 "ec2:DeleteVolume",
                 "ec2:CreateSnapshot",
@@ -110,7 +111,6 @@ resource "aws_iam_role_policy" "policy" {
             "Sid": "ec2ModifyPerms",
             "Effect": "Allow",
             "Action": [
-                "ec2:ModifyInstanceAttribute",
                 "ec2:DetachVolume",
                 "ec2:AttachVolume",
                 "ec2:StartInstances",
