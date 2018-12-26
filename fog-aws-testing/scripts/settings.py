@@ -11,7 +11,7 @@ theRegion = "us-east-2"
 zone = theRegion + 'a'
 
 # Tags that get applied to all volumes and all snapshots that the scripts create.
-globalTag = [
+globalTags = [
     {
         'Key': 'project',
         'Value': 'fogtesting'
