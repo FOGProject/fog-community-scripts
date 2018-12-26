@@ -34,7 +34,7 @@ green = "green.png"
 orange = "orange.png"
 red = "red.png"
 
-s3bucket = "fogtesting2.theworkmans.us"
+s3bucket = "fogtesting.theworkmans.us"
 
 http = "http://"
 port = ""

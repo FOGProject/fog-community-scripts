@@ -1,6 +1,6 @@
 # NOTE: Bucket name must have exact same name as the dns recored, like example.com or box.example.com
 resource "aws_s3_bucket" "fogtesting" {
-  bucket = "${var.project}2.theworkmans.us"
+  bucket = "${var.project}.theworkmans.us"
   region = "${var.region}"
   website {
     index_document = "index.html"
@@ -14,7 +14,7 @@ resource "aws_s3_bucket" "fogtesting" {
         "Effect":"Allow",
 	  "Principal": "*",
       "Action":["s3:GetObject"],
-      "Resource":["arn:aws:s3:::${var.project}2.theworkmans.us/*"
+      "Resource":["arn:aws:s3:::${var.project}.theworkmans.us/*"
       ]
     }
   ]
@@ -25,7 +25,7 @@ POLICY
 # NOTE: the higher-level zone_id is the owned zone_id. The alias zone_ID is the s3 bucket's zone_id.
 resource "aws_route53_record" "fogtesting-dns-record" {
   zone_id = "ZXXW1GUP5E4A0"
-  name    = "${var.project}2.theworkmans.us"
+  name    = "${var.project}.theworkmans.us"
   type    = "A"
   alias {
     name                   = "${aws_s3_bucket.fogtesting.website_domain}"
