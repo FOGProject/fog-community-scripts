@@ -23,6 +23,7 @@ resource "aws_instance" "arch" {
   }
   provisioner "remote-exec" {
     inline = [
+      "pacman -Sy archlinux-keyring --noconfirm",
       "pacman -Syu --noconfirm",
       "pacman -S --noconfirm git",
       "mkdir -p /root/git",
