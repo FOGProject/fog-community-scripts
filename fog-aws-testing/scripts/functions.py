@@ -375,6 +375,10 @@ def runTest(branch,OS,now,instance):
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php*-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/php-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
