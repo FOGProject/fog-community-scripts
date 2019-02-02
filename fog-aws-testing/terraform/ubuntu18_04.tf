@@ -23,6 +23,7 @@ resource "aws_instance" "ubuntu18_04" {
   }
   provisioner "remote-exec" {
     inline = [
+      "sudo apt-get -y remove unattended-upgrades",
       "sudo apt-get update",
       "sudo apt-get -y upgrade",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
