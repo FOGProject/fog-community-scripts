@@ -41,7 +41,7 @@ resource "aws_instance" "bastion" {
       "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
       "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
       "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
-      "(sleep 10 && sudo reboot)&"
+      "(sleep 10 && reboot)&"
     ]
   }
 
