@@ -42,7 +42,7 @@ variable "amis" {
     "rhel7" = "ami-cfdafaaa" # https://access.redhat.com/articles/3135091
     "fedora29" = "ami-0f7e779f5a384f9fc" # https://alt.fedoraproject.org/cloud/
     "arch" = "ami-039027559d31b8c6b" # https://www.uplinklabs.net/projects/arch-linux-on-ec2/
-    "ubuntu18_04" = "ami-0cf8cc36b8c81c6de" # https://cloud-images.ubuntu.com/locator/ec2/
+    "ubuntu18_04" = "ami-02e1499f8253f416f" # https://cloud-images.ubuntu.com/locator/ec2/
   }
 }
 
