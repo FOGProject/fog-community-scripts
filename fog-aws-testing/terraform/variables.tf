@@ -1,9 +1,9 @@
 # Backends cannot use interpolation.
 terraform {
   backend "s3" {
-    bucket = "remote-state.theworkmans.us"
+    bucket = "us-east-1-remote-state.theworkmans.us"
     key    = "fogtesting.rs"
-    region = "us-east-2"
+    region = "us-east-1"
   }
 }
 
@@ -13,7 +13,7 @@ provider "aws" {
 
 variable "region" {
     type = "string"
-    default = "us-east-2"
+    default = "us-east-1"
 }
 
 variable "project" {
@@ -37,12 +37,12 @@ variable "fog-project-repo" {
 variable "amis" {
   type    = "map"
   default = {
-    "debian9" = "ami-08e2234d40f32eb5c" # https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
-    "centos7" = "ami-e1496384" # https://wiki.centos.org/Cloud/AWS
-    "rhel7" = "ami-cfdafaaa" # https://access.redhat.com/articles/3135091
-    "fedora29" = "ami-0f7e779f5a384f9fc" # https://alt.fedoraproject.org/cloud/
-    "arch" = "ami-039027559d31b8c6b" # https://www.uplinklabs.net/projects/arch-linux-on-ec2/
-    "ubuntu18_04" = "ami-02e1499f8253f416f" # https://cloud-images.ubuntu.com/locator/ec2/
+    "debian9" = "ami-0f9e7e8867f55fd8e" # https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
+    "centos7" = "ami-4bf3d731" # https://wiki.centos.org/Cloud/AWS
+    "rhel7" = "ami-c998b6b2" # https://access.redhat.com/articles/3135091
+    "fedora29" = "ami-0ca275747dcc62c18" # https://alt.fedoraproject.org/cloud/
+    "arch" = "ami-099a97582fc329220" # https://www.uplinklabs.net/projects/arch-linux-on-ec2/
+    "ubuntu18_04" = "ami-07025b83b4379007e" # https://cloud-images.ubuntu.com/locator/ec2/
   }
 }
 
