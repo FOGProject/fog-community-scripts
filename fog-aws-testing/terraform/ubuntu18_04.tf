@@ -1,6 +1,6 @@
 
 resource "aws_instance" "ubuntu18_04" {
-  ami           = "${var.amis["ubuntu18_04"]}"
+  ami           = "${data.aws_ami.ubuntu18.id}"
   instance_type = "t3.micro"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
