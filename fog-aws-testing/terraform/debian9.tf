@@ -1,6 +1,6 @@
 
 resource "aws_instance" "debian9" {
-  ami           = "${var.amis["debian9"]}"
+  ami           = "${data.aws_ami.debian9.id}"
   instance_type = "t3.micro"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]

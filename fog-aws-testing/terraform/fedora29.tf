@@ -1,6 +1,6 @@
 
 resource "aws_instance" "fedora29" {
-  ami           = "${var.amis["fedora29"]}"
+  ami           = "${data.aws_ami.fedora29.id}"
   instance_type = "t3.micro"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]

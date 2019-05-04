@@ -1,7 +1,7 @@
 
 
 resource "aws_instance" "bastion" {
-  ami           = "${var.amis["debian9"]}"
+  ami           = "${data.aws_ami.debian9.id}"
   instance_type = "t3.nano"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.sg-ssh.id}"]
