@@ -90,6 +90,15 @@ data "aws_ami" "fedora29" {
   }
 }
 
+data "aws_ami" "fedora30" {
+  most_recent = true
+  owners = ["125523088429"]
+  filter {
+    name   = "name"
+    values = ["Fedora-Cloud-Base-30-*.x86_64-hvm-*-gp2*"]
+  }
+}
+
 data "aws_ami" "arch" {
   most_recent = true
   owners = ["093273469852"]
