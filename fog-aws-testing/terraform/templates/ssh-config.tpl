@@ -14,6 +14,10 @@ Host fedora29
     User root
     HostName fedora29.fogtesting.cloud
     Port 22
+Host fedora30
+    User root
+    HostName fedora30.fogtesting.cloud
+    Port 22
 Host arch
     User root
     HostName arch.fogtesting.cloud
