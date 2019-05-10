@@ -178,10 +178,16 @@ def restore_clean_snapshots():
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "fedora29":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "fedora30":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "arch":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "ubuntu18_04":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        else:
+            # Here, just exit because it's better to know something is wrong early than to dig to figure it out why later.
+            print "Don't know how to handle OS: '" + str(OS) + "', exiting."
+            sys.exit(1)
 
     complete_threads(threads)
 

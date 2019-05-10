@@ -25,6 +25,7 @@ resource "aws_instance" "debian9" {
       "sudo apt-get update",
       "sudo apt-get -y dist-upgrade",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
+      "sudo echo '' >> /etc/ssh/sshd_config",
       "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
       "sudo cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys",
