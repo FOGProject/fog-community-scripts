@@ -24,6 +24,7 @@ resource "aws_instance" "rhel7" {
     inline = [
       "sudo setenforce 0",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
+      "echo '' | sudo tee --append /etc/ssh/sshd_config",
       "echo 'PermitRootLogin prohibit-password' | sudo tee --append /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
       "sudo cp /home/ec2-user/.ssh/authorized_keys /root/.ssh/authorized_keys",

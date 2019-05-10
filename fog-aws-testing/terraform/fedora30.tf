@@ -24,6 +24,7 @@ resource "aws_instance" "fedora30" {
     inline = [
       "sudo setenforce 0",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
+      "echo '' | sudo tee --append /etc/ssh/sshd_config",
       "echo 'PermitRootLogin prohibit-password' | sudo tee --append /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
       "sudo cp /home/fedora/.ssh/authorized_keys /root/.ssh/authorized_keys",
