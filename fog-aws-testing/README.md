@@ -37,4 +37,15 @@ bucket =`
  - From here, tests will run regularly via a cron-job.
  - You can manually run tests with the `test_all.py` script.
 
+## Adding another OS to the tests.
+
+- Fork the project, and work within your fork.
+- Create a terraform `data` component to select the latest available AMI from the official AMI owner and add it [here](./terraform/variables.tf). Use matching, wildcards, and filters to appropriately match accurately every time.
+- Add the new OS to the python settings file [here](./scripts/settings.py) for both the `OSs` list and the `dnsAddresses` list. Follow the existing syntax for adding.  
+- Create a new instance resource in it's own file. There are a couple of these already that you can copy/paste and change parameters in. Follow the existing syntax for naming, which is all lowercase, no spaces. For Ubuntu since the minor version is important, seperate it like 18_04 for 18.04. The userdata section should be updated according to the OS's procedures. Generally, allowing root login must be allowed, passwords should be prohibited. The authorized key that is uploaded to the default user's home directory needs put into root's .ssh directory, in `authorized_keys`.  Make a directory called /root/git and clone fogproject into there. Update the OS entirely, and then reboot at the end. Use the existing OSs in the repo as a guide, most major Linux distros have been worked out already.
+- Add permissions for the new instance for the bastion [here](./terraform/bastion.tf), follow existing syntax.
+- Add new OS to the ssh config [here](./terraform/templates/ssh-config.tpl).
+- Inside of [here](./scripts/functions.py), in the `restore_clean_snapshots()` definition, add an elif for the new OS that specifies how to mount the root volume.
+- Commit your changes to your fork, be sure to include any new files. Push your changes to your fork. Then create a pull request using your fork.
+
 
