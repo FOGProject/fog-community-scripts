@@ -122,7 +122,6 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.arch.arn}",
                 "${aws_instance.centos7.arn}",
                 "${aws_instance.rhel7.arn}",
-                "${aws_instance.fedora29.arn}",
                 "${aws_instance.fedora30.arn}",
                 "${aws_instance.debian9.arn}",
                 "${aws_instance.ubuntu18_04.arn}",

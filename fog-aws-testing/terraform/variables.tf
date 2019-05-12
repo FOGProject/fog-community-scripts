@@ -81,15 +81,6 @@ data "aws_ami" "rhel7" {
   }
 }
 
-data "aws_ami" "fedora29" {
-  most_recent = true
-  owners = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-29-*.x86_64-hvm-*-gp2*"]
-  }
-}
-
 data "aws_ami" "fedora30" {
   most_recent = true
   owners = ["125523088429"]
