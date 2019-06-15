@@ -37,7 +37,7 @@ resource "aws_instance" "fedora30" {
       "(sleep 10 && sudo reboot)&"
     ]
   }
-  tags {
+  tags = {
     Name = "${var.project}-fedora30"
     Project = "${var.project}"
     OS = "fedora30"

@@ -37,7 +37,7 @@ resource "aws_instance" "centos7" {
       "(sleep 10 && sudo reboot)&"
     ]
   }
-  tags {
+  tags = {
     Name = "${var.project}-centos7"
     Project = "${var.project}"
     OS = "centos7"
