@@ -35,7 +35,7 @@ resource "aws_instance" "debian9" {
       "(sleep 10 && sudo reboot)&"
     ]
   }
-  tags {
+  tags = {
     Name = "${var.project}-debian9"
     Project = "${var.project}"
     OS = "debian9"

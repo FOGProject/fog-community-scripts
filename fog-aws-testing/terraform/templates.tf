@@ -5,7 +5,7 @@ data "template_file" "ssh-config" {
 
 data "template_file" "aws-config" {
   template = "${file("templates/aws-config.tpl")}"
-  vars {
+  vars = {
     region = "${var.region}"
   }
 }

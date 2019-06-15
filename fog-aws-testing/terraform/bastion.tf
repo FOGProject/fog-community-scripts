@@ -16,6 +16,7 @@ resource "aws_instance" "bastion" {
   }
 
   connection {
+    host = "${aws_instance.bastion.public_ip}"
     type     = "ssh"
     user     = "admin"
     private_key = "${file("${var.private_key_path}")}"
@@ -45,7 +46,7 @@ resource "aws_instance" "bastion" {
     ]
   }
 
-  tags {
+  tags = {
     Name = "${var.project}-bastion"
     Project = "${var.project}"
   }
@@ -191,7 +192,7 @@ resource "aws_security_group" "allow-bastion" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
 
-  tags {
+  tags = {
     Name = "${var.project}-allow-bastion"
     Project = "${var.project}"
   }

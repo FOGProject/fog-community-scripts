@@ -30,7 +30,7 @@ resource "aws_instance" "arch" {
       "(sleep 10 && reboot)&"
     ]
   }
-  tags {
+  tags = {
     Name = "${var.project}-arch"
     Project = "${var.project}"
     OS = "arch"

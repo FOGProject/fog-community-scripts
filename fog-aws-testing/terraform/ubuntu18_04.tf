@@ -36,7 +36,7 @@ resource "aws_instance" "ubuntu18_04" {
       "(sleep 10 && sudo reboot)&"
     ]
   }
-  tags {
+  tags = {
     Name = "${var.project}-ubuntu18_04"
     Project = "${var.project}"
     OS = "ubuntu18_04"
