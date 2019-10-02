@@ -44,7 +44,8 @@ variable "zone_name" {
 } 
 
 # Manual lookup of AMIs from official provider websites.
-# debian https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
+# debian9 https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
+# debian10 https://wiki.debian.org/Cloud/AmazonEC2Image/Buster
 # centos https://wiki.centos.org/Cloud/AWS
 # rhel7 https://access.redhat.com/articles/3135091
 # fedora https://alt.fedoraproject.org/cloud/
@@ -60,6 +61,15 @@ data "aws_ami" "debian9" {
   filter {
     name   = "name"
     values = ["debian-stretch-hvm-x86_64-gp2-*"]
+  }
+}
+
+data "aws_ami" "debian10" {
+  most_recent = true
+  owners = ["136693071363"]
+  filter {
+    name   = "name"
+    values = ["debian-10-amd64-*"]
   }
 }
 
