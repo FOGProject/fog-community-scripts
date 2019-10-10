@@ -76,7 +76,8 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": [
                 "${aws_s3_bucket.fogtesting.arn}",
                 "${aws_s3_bucket.fogtesting.arn}/*"
-            ]
+            ],
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2ReadPerms",
@@ -94,7 +95,8 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:DescribeVolumesModifications",
                 "ec2:DescribeTags"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2SpecialPerms",
@@ -106,7 +108,8 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:CreateSnapshot",
                 "ec2:DeleteSnapshot"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2ModifyPerms",
@@ -128,7 +131,8 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.ubuntu18_04.arn}",
                 "arn:aws:ec2:*::snapshot/*",
                 "arn:aws:ec2:*:*:volume/*"
-            ]
+            ],
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         }
     ]
 }
