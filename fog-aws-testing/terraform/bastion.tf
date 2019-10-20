@@ -30,7 +30,7 @@ resource "aws_instance" "bastion" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install awscli python-pip git s3cmd",
+      "sudo apt-get -y install awscli groff python-pip git vim",
       "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
@@ -39,7 +39,7 @@ resource "aws_instance" "bastion" {
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
       "chmod 600 ~/.aws/config",
-      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
+      "sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim",
       "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
       "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
       "(sleep 10 && reboot)&"

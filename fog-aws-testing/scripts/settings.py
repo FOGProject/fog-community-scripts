@@ -46,7 +46,7 @@ remoteResult = "/root/result"
 ssh = "/usr/bin/ssh"
 scp = "/usr/bin/scp"
 timeout = "/usr/bin/timeout --foreground"
-s3cmd = "/usr/bin/s3cmd"
+aws = "/usr/bin/aws"
 ssh_keyscan = "/usr/bin/ssh-keyscan"
 
 
