@@ -1,6 +1,6 @@
 
-resource "aws_instance" "debian9" {
-  ami           = "${data.aws_ami.debian9.id}"
+resource "aws_instance" "debian10" {
+  ami           = "${data.aws_ami.debian10.id}"
   instance_type = "t3.micro"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
@@ -14,7 +14,7 @@ resource "aws_instance" "debian9" {
   connection {
     type     = "ssh"
     user     = "admin"
-    host     = "${aws_instance.debian9.private_ip}"
+    host     = "${aws_instance.debian10.private_ip}"
     private_key = "${file("/root/.ssh/fogtesting_private")}"
     bastion_host = "${aws_instance.bastion.public_ip}"
     bastion_user = "admin"
@@ -36,18 +36,18 @@ resource "aws_instance" "debian9" {
     ]
   }
   tags = {
-    Name = "${var.project}-debian9"
+    Name = "${var.project}-debian10"
     Project = "${var.project}"
-    OS = "debian9"
+    OS = "debian10"
   }
 }
 
-resource "aws_route53_record" "debian9-dns-record" {
+resource "aws_route53_record" "debian10-dns-record" {
   zone_id = "${aws_route53_zone.private-zone.zone_id}"
-  name    = "debian9.fogtesting.cloud"
+  name    = "debian10.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = ["${aws_instance.debian9.private_dns}"]
+  records = ["${aws_instance.debian10.private_dns}"]
 }
 
 

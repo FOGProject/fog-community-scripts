@@ -1,7 +1,7 @@
 
 
 resource "aws_instance" "bastion" {
-  ami           = "${data.aws_ami.debian9.id}"
+  ami           = "${data.aws_ami.debian10.id}"
   instance_type = "t3.nano"
   subnet_id = "${aws_subnet.public-subnet.id}"
   vpc_security_group_ids = ["${aws_security_group.sg-ssh.id}"]
@@ -30,7 +30,7 @@ resource "aws_instance" "bastion" {
   provisioner "remote-exec" {
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install awscli python-pip git s3cmd",
+      "sudo apt-get -y install awscli groff python-pip git vim",
       "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
@@ -39,7 +39,7 @@ resource "aws_instance" "bastion" {
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
       "chmod 600 ~/.aws/config",
-      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim80/defaults.vim",
+      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim",
       "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
       "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
       "(sleep 10 && reboot)&"
@@ -76,7 +76,8 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": [
                 "${aws_s3_bucket.fogtesting.arn}",
                 "${aws_s3_bucket.fogtesting.arn}/*"
-            ]
+            ],
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2ReadPerms",
@@ -94,7 +95,8 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:DescribeVolumesModifications",
                 "ec2:DescribeTags"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2SpecialPerms",
@@ -106,7 +108,8 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:CreateSnapshot",
                 "ec2:DeleteSnapshot"
             ],
-            "Resource": "*"
+            "Resource": "*",
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         },
         {
             "Sid": "ec2ModifyPerms",
@@ -124,11 +127,12 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.centos7.arn}",
                 "${aws_instance.rhel7.arn}",
                 "${aws_instance.fedora30.arn}",
-                "${aws_instance.debian9.arn}",
+                "${aws_instance.debian10.arn}",
                 "${aws_instance.ubuntu18_04.arn}",
                 "arn:aws:ec2:*::snapshot/*",
                 "arn:aws:ec2:*:*:volume/*"
-            ]
+            ],
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
         }
     ]
 }

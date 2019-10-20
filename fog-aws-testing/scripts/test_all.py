@@ -172,8 +172,13 @@ if not os.path.isfile(os.path.join(webdir,orange)):
 if not os.path.isfile(os.path.join(webdir,red)):
     subprocess.call("cp " + os.path.join(scriptDir,red) + " " + os.path.join(webdir,red), shell=True)
 
-# Sync the dashboard to s3.
-subprocess.call(s3cmd + " sync " + webdir + "/ s3://" + s3bucket + " > /dev/null 2>&1", shell=True)
+# Empty the bucket:
+subprocess.call(aws + " s3 rm  s3://" + s3bucket + " --recursive > /dev/null 2>&1", shell=True)
+
+# Copy contents to the s3 dashboard
+subprocess.call(aws + " s3 cp " + webdir + "/ s3://" + s3bucket + " --recursive > /dev/null 2>&1", shell=True)
+
+
 
 
 
