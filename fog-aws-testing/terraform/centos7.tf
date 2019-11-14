@@ -1,24 +1,23 @@
-
 resource "aws_instance" "centos7" {
-  ami = "${data.aws_ami.centos7.id}"
-  instance_type = "t2.micro"
-  subnet_id = "${aws_subnet.public-subnet.id}"
-  vpc_security_group_ids = ["${aws_security_group.allow-bastion.id}"]
+  ami                         = data.aws_ami.centos7.id
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.public-subnet.id
+  vpc_security_group_ids      = [aws_security_group.allow-bastion.id]
   associate_public_ip_address = true
-  key_name = "${aws_key_pair.ssh-key.key_name}"
+  key_name                    = aws_key_pair.ssh-key.key_name
   root_block_device {
-    volume_type = "standard"
-    volume_size = 8
+    volume_type           = "standard"
+    volume_size           = 8
     delete_on_termination = true
   }
   connection {
-    type     = "ssh"
-    user     = "centos"
-    host     = "${aws_instance.centos7.private_ip}"
-    private_key = "${file("/root/.ssh/fogtesting_private")}"
-    bastion_host = "${aws_instance.bastion.public_ip}"
-    bastion_user = "admin"
-    bastion_private_key = "${file("/root/.ssh/fogtesting_private")}"
+    type                = "ssh"
+    user                = "centos"
+    host                = aws_instance.centos7.private_ip
+    private_key         = file("/root/.ssh/fogtesting_private")
+    bastion_host        = aws_instance.bastion.public_ip
+    bastion_user        = "admin"
+    bastion_private_key = file("/root/.ssh/fogtesting_private")
   }
   provisioner "remote-exec" {
     inline = [
@@ -34,24 +33,21 @@ resource "aws_instance" "centos7" {
       "sudo yum -y install git",
       "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
       "sudo yum -y update",
-      "(sleep 10 && sudo reboot)&"
+      "(sleep 10 && sudo reboot)&",
     ]
   }
   tags = {
-    Name = "${var.project}-centos7"
-    Project = "${var.project}"
-    OS = "centos7"
+    Name    = "${var.project}-centos7"
+    Project = var.project
+    OS      = "centos7"
   }
 }
 
 resource "aws_route53_record" "centos7-dns-record" {
-  zone_id = "${aws_route53_zone.private-zone.zone_id}"
+  zone_id = aws_route53_zone.private-zone.zone_id
   name    = "centos7.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = ["${aws_instance.centos7.private_dns}"]
+  records = [aws_instance.centos7.private_dns]
 }
-
-
-
 
