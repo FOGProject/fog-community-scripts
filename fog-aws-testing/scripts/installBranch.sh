@@ -28,7 +28,7 @@ stat=$?
 [[ ! $stat -eq 0 ]] && printf "5" > $result
 [[ ! $stat -eq 0 ]] && exit $stat
 
-git reset --hard >/dev/null 2>&1
+git reset --hard >/dev/null 2>&1 && git clean -fdx >/dev/null 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "2" > $result
 [[ ! $stat -eq 0 ]] && exit $stat
