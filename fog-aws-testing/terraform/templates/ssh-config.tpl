@@ -14,10 +14,6 @@ Host fedora30
     User root
     HostName fedora30.fogtesting.cloud
     Port 22
-Host arch
-    User root
-    HostName arch.fogtesting.cloud
-    Port 22
 Host ubuntu18_04
     User root
     HostName ubuntu18_04.fogtesting.cloud

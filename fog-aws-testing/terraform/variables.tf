@@ -97,14 +97,14 @@ data "aws_ami" "fedora30" {
   }
 }
 
-data "aws_ami" "arch" {
-  most_recent = true
-  owners      = ["093273469852"]
-  filter {
-    name   = "name"
-    values = ["arch-linux-lts-hvm-*.x86_64-ebs"]
-  }
-}
+#data "aws_ami" "arch" {
+#  most_recent = true
+#  owners      = ["093273469852"]
+#  filter {
+#    name   = "name"
+#    values = ["arch-linux-lts-hvm-*.x86_64-ebs"]
+#  }
+#}
 
 data "aws_ami" "ubuntu18" {
   most_recent = true

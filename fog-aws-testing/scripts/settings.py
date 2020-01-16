@@ -1,6 +1,6 @@
 # The list of OSs.
-OSs = ["debian10","centos7","rhel7","fedora30","arch","ubuntu18_04"]
-dnsAddresses = ["debian10.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora30.fogtesting.cloud","arch.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
+OSs = ["debian10","centos7","rhel7","fedora30","ubuntu18_04"]
+dnsAddresses = ["debian10.fogtesting.cloud","centos7.fogtesting.cloud","rhel7.fogtesting.cloud","fedora30.fogtesting.cloud","ubuntu18_04.fogtesting.cloud"]
 
 # The list of branches to process.
 branches = ["master","dev-branch","working-1.6"]

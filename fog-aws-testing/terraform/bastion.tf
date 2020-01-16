@@ -121,7 +121,6 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:StopInstances"
             ],
             "Resource": [
-                "${aws_instance.arch.arn}",
                 "${aws_instance.centos7.arn}",
                 "${aws_instance.rhel7.arn}",
                 "${aws_instance.fedora30.arn}",
