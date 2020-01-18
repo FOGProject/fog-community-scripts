@@ -15,12 +15,13 @@ branch=$1
 usage() {
     local errCode=$1
     echo "Usage $0 <branch>"
-	exit $errCode
+    exit $errCode
 }
 result="/root/result"
 output="/root/output"
 
 [[ -z $branch ]] && printf "1" > $result
+[[ -z $branch ]] && exit 1
 export PATH="$PATH:/usr/bin/core_perl"
 
 cd /root/git/fogproject >/dev/null 2>&1
