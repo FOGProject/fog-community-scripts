@@ -52,6 +52,10 @@ stat=$?
 [[ ! $stat -eq 0 ]] && printf "3" > $result
 [[ ! $stat -eq 0 ]] && exit $stat
 
+# temporary patching the installer files to test pre-release for 1.5.8
+if [[ "$branch" == "dev-branch" ]]; then
+    sed -i "s#'FOG_VERSION', '1\.5\.7\.[0-9][0-9]*'#'FOG_VERSION', '1.5.8'#g" packages/web/lib/fog/system.class.php
+fi
 
 cd bin >/dev/null 2>&1
 stat=$?
