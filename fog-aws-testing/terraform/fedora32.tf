@@ -1,5 +1,5 @@
-resource "aws_instance" "fedora30" {
-  ami                         = data.aws_ami.fedora30.id
+resource "aws_instance" "fedora32" {
+  ami                         = data.aws_ami.fedora32.id
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.allow-bastion.id]
@@ -13,7 +13,7 @@ resource "aws_instance" "fedora30" {
   connection {
     type                = "ssh"
     user                = "fedora"
-    host                = aws_instance.fedora30.private_ip
+    host                = aws_instance.fedora32.private_ip
     private_key         = file("/root/.ssh/fogtesting_private")
     bastion_host        = aws_instance.bastion.public_ip
     bastion_user        = "admin"
@@ -37,17 +37,17 @@ resource "aws_instance" "fedora30" {
     ]
   }
   tags = {
-    Name    = "${var.project}-fedora30"
+    Name    = "${var.project}-fedora32"
     Project = var.project
-    OS      = "fedora30"
+    OS      = "fedora32"
   }
 }
 
-resource "aws_route53_record" "fedora30-dns-record" {
+resource "aws_route53_record" "fedora32-dns-record" {
   zone_id = aws_route53_zone.private-zone.zone_id
-  name    = "fedora30.fogtesting.cloud"
+  name    = "fedora32.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.fedora30.private_dns]
+  records = [aws_instance.fedora32.private_dns]
 }
 

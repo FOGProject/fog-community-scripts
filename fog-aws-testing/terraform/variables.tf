@@ -23,7 +23,8 @@ variable "project" {
 
 variable "fog-community-scripts-repo" {
   type    = string
-  default = "https://github.com/FOGProject/fog-community-scripts.git"
+#  default = "https://github.com/FOGProject/fog-community-scripts.git"
+  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For my testing.
 }
 
 variable "fog-project-repo" {
@@ -88,14 +89,15 @@ data "aws_ami" "rhel7" {
   }
 }
 
-data "aws_ami" "fedora30" {
+data "aws_ami" "fedora32" {
   most_recent = true
   owners      = ["125523088429"]
   filter {
     name   = "name"
-    values = ["Fedora-Cloud-Base-30-*.x86_64-hvm-*-gp2*"]
+    values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
   }
 }
+
 
 #data "aws_ami" "arch" {
 #  most_recent = true
