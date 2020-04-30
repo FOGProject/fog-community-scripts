@@ -46,7 +46,7 @@ variable "zone_name" {
 # debian9 https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
 # debian10 https://wiki.debian.org/Cloud/AmazonEC2Image/Buster
 # centos https://wiki.centos.org/Cloud/AWS
-# rhel7 https://access.redhat.com/articles/3135091
+# rhel https://access.redhat.com/articles/3135121
 # fedora https://alt.fedoraproject.org/cloud/
 # arch https://www.uplinklabs.net/projects/arch-linux-on-ec2/
 # ubuntu https://cloud-images.ubuntu.com/locator/ec2/
