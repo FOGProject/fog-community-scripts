@@ -123,6 +123,7 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": [
                 "${aws_instance.centos7.arn}",
                 "${aws_instance.rhel7.arn}",
+                "${aws_instance.rhel8.arn}",
                 "${aws_instance.fedora32.arn}",
                 "${aws_instance.debian10.arn}",
                 "${aws_instance.ubuntu18_04.arn}",

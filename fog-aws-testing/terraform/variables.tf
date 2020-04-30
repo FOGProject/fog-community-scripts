@@ -89,6 +89,15 @@ data "aws_ami" "rhel7" {
   }
 }
 
+data "aws_ami" "rhel8" {
+  most_recent = true
+  owners      = ["309956199498"]
+  filter {
+    name   = "name"
+    values = ["309956199498/RHEL-8.*_HVM-*-x86_64-0-Hourly*-GP2"]
+  }
+}
+
 data "aws_ami" "fedora32" {
   most_recent = true
   owners      = ["125523088429"]
