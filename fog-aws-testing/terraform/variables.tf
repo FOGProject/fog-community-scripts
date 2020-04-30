@@ -94,7 +94,7 @@ data "aws_ami" "rhel8" {
   owners      = ["309956199498"]
   filter {
     name   = "name"
-    values = ["309956199498/RHEL-8.*_HVM-*-x86_64-0-Hourly*-GP2"]
+    values = ["RHEL-8.*_HVM-*-x86_64-0-Hourly2-GP2"]
   }
 }
 
