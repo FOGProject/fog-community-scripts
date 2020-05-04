@@ -10,9 +10,13 @@ Host rhel7
     User root
     HostName rhel7.fogtesting.cloud
     Port 22
-Host fedora30
+Host rhel8
     User root
-    HostName fedora30.fogtesting.cloud
+    HostName rhel8.fogtesting.cloud
+    Port 22
+Host fedora32
+    User root
+    HostName fedora32.fogtesting.cloud
     Port 22
 Host ubuntu18_04
     User root

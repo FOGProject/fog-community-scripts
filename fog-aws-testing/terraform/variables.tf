@@ -24,6 +24,7 @@ variable "project" {
 variable "fog-community-scripts-repo" {
   type    = string
   default = "https://github.com/FOGProject/fog-community-scripts.git"
+#  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
 }
 
 variable "fog-project-repo" {
@@ -45,7 +46,7 @@ variable "zone_name" {
 # debian9 https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
 # debian10 https://wiki.debian.org/Cloud/AmazonEC2Image/Buster
 # centos https://wiki.centos.org/Cloud/AWS
-# rhel7 https://access.redhat.com/articles/3135091
+# rhel https://access.redhat.com/articles/3135121
 # fedora https://alt.fedoraproject.org/cloud/
 # arch https://www.uplinklabs.net/projects/arch-linux-on-ec2/
 # ubuntu https://cloud-images.ubuntu.com/locator/ec2/
@@ -88,14 +89,24 @@ data "aws_ami" "rhel7" {
   }
 }
 
-data "aws_ami" "fedora30" {
+data "aws_ami" "rhel8" {
+  most_recent = true
+  owners      = ["309956199498"]
+  filter {
+    name   = "name"
+    values = ["RHEL-8.*_HVM-*-x86_64-0-Hourly2-GP2"]
+  }
+}
+
+data "aws_ami" "fedora32" {
   most_recent = true
   owners      = ["125523088429"]
   filter {
     name   = "name"
-    values = ["Fedora-Cloud-Base-30-*.x86_64-hvm-*-gp2*"]
+    values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
   }
 }
+
 
 #data "aws_ami" "arch" {
 #  most_recent = true
