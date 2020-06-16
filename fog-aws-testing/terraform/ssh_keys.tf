@@ -2,7 +2,7 @@
 # We specify the path to it because it is not included in the repository.
 resource "aws_key_pair" "ssh-key" {
   key_name   = "fogtesting"
-  public_key = file("/root/.ssh/fogtesting_public")
+  public_key = file("~/.ssh/fogtesting_public")
 }
 
 # This is the private key for the above public key.
