@@ -14,10 +14,10 @@ resource "aws_instance" "debian10" {
     type                = "ssh"
     user                = "admin"
     host                = aws_instance.debian10.private_ip
-    private_key         = file("/root/.ssh/fogtesting_private")
+    private_key         = file("~/.ssh/fogtesting_private")
     bastion_host        = aws_instance.bastion.public_ip
     bastion_user        = "admin"
-    bastion_private_key = file("/root/.ssh/fogtesting_private")
+    bastion_private_key = file("~/.ssh/fogtesting_private")
   }
   provisioner "remote-exec" {
     inline = [
