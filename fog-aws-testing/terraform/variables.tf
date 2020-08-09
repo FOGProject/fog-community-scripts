@@ -7,19 +7,23 @@ terraform {
   }
 }
 
+
 provider "aws" {
   region = var.region
 }
+
 
 variable "region" {
   type    = string
   default = "us-east-1"
 }
 
+
 variable "project" {
   type    = string
   default = "fogtesting"
 }
+
 
 variable "fog-community-scripts-repo" {
   type    = string
@@ -27,20 +31,24 @@ variable "fog-community-scripts-repo" {
   default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
 }
 
+
 variable "fog-project-repo" {
   type    = string
   default = "https://github.com/FOGProject/fogproject.git"
 }
+
 
 variable "zone_id" {
   type    = string
   default = "ZXXW1GUP5E4A0"
 }
 
+
 variable "zone_name" {
   type    = string
   default = "theworkmans.us"
 }
+
 
 # Manual lookup of AMIs from official provider websites.
 # debian9 https://wiki.debian.org/Cloud/AmazonEC2Image/Stretch
@@ -48,10 +56,10 @@ variable "zone_name" {
 # centos https://wiki.centos.org/Cloud/AWS
 # rhel https://access.redhat.com/articles/3135121
 # fedora https://alt.fedoraproject.org/cloud/
-# arch https://www.uplinklabs.net/projects/arch-linux-on-ec2/
 # ubuntu https://cloud-images.ubuntu.com/locator/ec2/
 
 # Usernames: https://alestic.com/2014/01/ec2-ssh-username/
+
 
 data "aws_ami" "debian9" {
   most_recent = true
@@ -62,6 +70,7 @@ data "aws_ami" "debian9" {
   }
 }
 
+
 data "aws_ami" "debian10" {
   most_recent = true
   owners      = ["136693071363"]
@@ -70,6 +79,7 @@ data "aws_ami" "debian10" {
     values = ["debian-10-amd64-*"]
   }
 }
+
 
 data "aws_ami" "centos7" {
   most_recent = true
@@ -80,6 +90,7 @@ data "aws_ami" "centos7" {
   }
 }
 
+
 data "aws_ami" "centos8" {
   most_recent = true
   owners      = ["125523088429"]
@@ -88,6 +99,7 @@ data "aws_ami" "centos8" {
     values = ["CentOS 8.* x86_64"]
   }
 }
+
 
 data "aws_ami" "rhel7" {
   most_recent = true
@@ -98,6 +110,7 @@ data "aws_ami" "rhel7" {
   }
 }
 
+
 data "aws_ami" "rhel8" {
   most_recent = true
   owners      = ["309956199498"]
@@ -106,6 +119,7 @@ data "aws_ami" "rhel8" {
     values = ["RHEL-8.*_HVM-*-x86_64-0-Hourly2-GP2"]
   }
 }
+
 
 data "aws_ami" "fedora32" {
   most_recent = true
@@ -116,15 +130,6 @@ data "aws_ami" "fedora32" {
   }
 }
 
-
-#data "aws_ami" "arch" {
-#  most_recent = true
-#  owners      = ["093273469852"]
-#  filter {
-#    name   = "name"
-#    values = ["arch-linux-lts-hvm-*.x86_64-ebs"]
-#  }
-#}
 
 data "aws_ami" "ubuntu18" {
   most_recent = true
