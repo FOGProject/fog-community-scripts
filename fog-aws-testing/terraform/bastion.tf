@@ -32,7 +32,7 @@ resource "aws_instance" "bastion" {
       "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
-      "echo '${var.waynes-key}' >> /home/admin/.ssh/authorized_keys",
+      "echo '${var.your-public-key}' >> /home/admin/.ssh/authorized_keys",
       "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
