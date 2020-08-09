@@ -12,11 +12,4 @@ variable "private_key_path" {
   default = "~/.ssh/fogtesting_private"
 }
 
-# This is your personal SSH public key.
-# This is ADDED to /home/admin/.ssh/authorized_users in addition to the above public key.
-# This is so you can use your personal ssh key to get into the bastion itself, and then use the project key for all other OSs which is already loaded onto the bastion.
-variable "your-public-key" {
-  type    = string
-  default = "~/.ssh/id_rsa.pub"
-}
 
