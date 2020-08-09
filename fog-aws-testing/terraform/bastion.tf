@@ -128,6 +128,7 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.fedora32.arn}",
                 "${aws_instance.debian10.arn}",
                 "${aws_instance.ubuntu18_04.arn}",
+                "${aws_instance.ubuntu20_04.arn}",
                 "arn:aws:ec2:*::snapshot/*",
                 "arn:aws:ec2:*:*:volume/*"
             ],

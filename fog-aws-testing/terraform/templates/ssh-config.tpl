@@ -26,3 +26,7 @@ Host ubuntu18_04
     User root
     HostName ubuntu18_04.fogtesting.cloud
     Port 22
+Host ubuntu20_04
+    User root
+    HostName ubuntu20_04.fogtesting.cloud
+    Port 22
