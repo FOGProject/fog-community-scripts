@@ -172,7 +172,7 @@ def restore_clean_snapshots():
         snapshot = get_snapshot("Name",OS + '-clean')
         if OS == "debian10":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/xvda")))
-        elif OS == "centos7":
+        elif OS == "centos7" or OS == "centos8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))

@@ -6,6 +6,10 @@ Host centos7
     User root
     HostName centos7.fogtesting.cloud
     Port 22
+Host centos8
+    User root
+    HostName centos8.fogtesting.cloud
+    Port 22
 Host rhel7
     User root
     HostName rhel7.fogtesting.cloud

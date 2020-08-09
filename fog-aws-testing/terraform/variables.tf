@@ -80,6 +80,15 @@ data "aws_ami" "centos7" {
   }
 }
 
+data "aws_ami" "centos8" {
+  most_recent = true
+  owners      = ["125523088429"]
+  filter {
+    name   = "name"
+    values = ["CentOS 8.* x86_64"]
+  }
+}
+
 data "aws_ami" "rhel7" {
   most_recent = true
   owners      = ["309956199498"]
