@@ -297,14 +297,20 @@ def runTest(branch,OS,now,instance):
     with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
         content_file.write("-1") 
 
-    # print  "Kickin tires"
     # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
-    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup" > /dev/null 2>&1'
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup1" > /dev/null 2>&1'
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready" > /dev/null 2>&1'
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup2" > /dev/null 2>&1'
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup3" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup4" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+
 
     # print "Scp script to remote box"
     # Scp a script onto the remote box that we will later call.
@@ -333,6 +339,21 @@ def runTest(branch,OS,now,instance):
     # Write duration to file.
     with open(os.path.join(statusDir,OS + "." + branch + ".duration"), 'w') as content_file:
         content_file.write(duration)
+
+
+    # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup1" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup2" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup3" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup4" > /dev/null 2>&1'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
 
 
     # print "Getting result file"
@@ -365,6 +386,7 @@ def runTest(branch,OS,now,instance):
     command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/apache2/error.log " + os.path.join(webdir,OS,now + "_apache.log") + " > /dev/null 2>&1"
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
+
 
     # print "Getting php-fpm logs"
     # Get php-fpm logs. Can be in several places...

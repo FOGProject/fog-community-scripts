@@ -50,11 +50,11 @@ aws = "/usr/bin/aws"
 ssh_keyscan = "/usr/bin/ssh-keyscan"
 
 
-sshTimeout = "15"
-fogTimeout = "15m" #Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
+sshTimeout = "15" # used wiht the ssh ConnectTimeout option.
+fogTimeout = "15m" # Time to wait for FOG installation to complete. Must end with a unit of time. s for seconds, m for minutes.
 patchTimeout = "15m" # Time to wait for patching. Must end with a unit of time. s for seconds, m for minutes.
-sshTime = "15s" #Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
-bootTime = 90 # The time waited after an instance is brought up before commands are sent, and the time given for an instance to reboot.
+sshTime = "15s" # Time to wait for small SSH commands to complete. Must end with a unit of time. s for seconds, m for minutes.
+bootTime = 240 # The time waited after an instance is brought up before commands are sent, and the time given for an instance to reboot.
 
 
 
