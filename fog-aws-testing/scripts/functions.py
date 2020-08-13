@@ -383,7 +383,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting fog log file"
     # Get the fog log.
     attempt_count = 0
-    while not os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log"))
+    while not os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
         subprocess.call(command, shell=True)
