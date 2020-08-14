@@ -36,6 +36,9 @@ make_dir(statusDir)
 make_dir(webdir)
 
 
+if len(sys.argv) > 1:
+    branches = [sys.argv[1]]
+
 
 for branch in branches:
     # Need a unique timestamp for each branch run.
