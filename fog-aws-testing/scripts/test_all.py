@@ -26,10 +26,9 @@ dashboard = dashboard + "\n<th>Patch Duration</th>"
 dashboard = dashboard + "\n<th>Patch Output</th>"
 dashboard = dashboard + "\n</tr>"
 
-# Remove statuses dir.
-subprocess.call("rm -rf " + statusDir, shell=True)
-# Remove web dir.
-subprocess.call("rm -rf " + webdir, shell=True)
+
+delete_dir(statusDir)
+delete_dir(webdir)
 
 
 make_dir(statusDir)

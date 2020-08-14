@@ -6,6 +6,9 @@ from settings import *
 import os 
 from threading import Thread
 import subprocess
+import shutil
+
+
 cwd = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -57,6 +60,9 @@ def overwrite_file(path,content):
         print "Exception: " + str(e)
 
 
+def delete_dir(directory):
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
 
 
 def make_dir(directory):
@@ -359,6 +365,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting result file"
     # Get the result file.
     attempt_count = 0
+    os.remove(os.path.join(statusDir,OS + "." + branch + ".result"))
     while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".result")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
@@ -371,6 +378,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting output file"
     # Get the output file.
     attempt_count = 0
+    os.remove(os.path.join(webdir,OS,now + "_output.log"))
     while not os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
@@ -383,6 +391,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting fog log file"
     # Get the fog log.
     attempt_count = 0
+    os.remove(os.path.join(webdir,OS,now + "_fog_error.log"))
     while not os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
@@ -394,6 +403,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
     attempt_count = 0
+    os.remove(os.path.join(webdir,OS,now + "_apache.log"))
     while not os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/httpd/error_log " + os.path.join(webdir,OS,now + "_apache.log") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
@@ -409,6 +419,7 @@ def runTest(branch,OS,now,instance):
     # print "Getting php-fpm logs"
     # Get php-fpm logs. Can be in several places...
     attempt_count = 0
+    os.remove(os.path.join(webdir,OS,now + "_php-fpm.log"))
     while not os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " >> " + commandsLog
         append_file(commandsLog,command + "\n")
@@ -429,6 +440,7 @@ def runTest(branch,OS,now,instance):
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
+    os.remove(os.path.join(statusDir,OS + "." + branch + ".commit"))
     while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".commit")):
         command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit" >> ' + commandsLog
         append_file(commandsLog,command + "\n")
