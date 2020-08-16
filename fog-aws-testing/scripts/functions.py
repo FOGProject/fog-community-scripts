@@ -378,7 +378,10 @@ def runTest(branch,OS,now,instance):
     # print "Getting output file"
     # Get the output file.
     attempt_count = 0
-    os.remove(os.path.join(webdir,OS,now + "_output.log"))
+    try:
+        os.remove(os.path.join(webdir,OS,now + "_output.log"))
+    except:
+        pass
     while not os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log")
         append_file(commandsLog,command + "\n")
@@ -391,7 +394,10 @@ def runTest(branch,OS,now,instance):
     # print "Getting fog log file"
     # Get the fog log.
     attempt_count = 0
-    os.remove(os.path.join(webdir,OS,now + "_fog_error.log"))
+    try:
+        os.remove(os.path.join(webdir,OS,now + "_fog_error.log"))
+    except:
+        pass
     while not os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log")
         append_file(commandsLog,command + "\n")
@@ -403,7 +409,10 @@ def runTest(branch,OS,now,instance):
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
     attempt_count = 0
-    os.remove(os.path.join(webdir,OS,now + "_apache.log"))
+    try:
+        os.remove(os.path.join(webdir,OS,now + "_apache.log"))
+    except:
+        pass
     while not os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/httpd/error_log " + os.path.join(webdir,OS,now + "_apache.log")
         append_file(commandsLog,command + "\n")
@@ -419,7 +428,10 @@ def runTest(branch,OS,now,instance):
     # print "Getting php-fpm logs"
     # Get php-fpm logs. Can be in several places...
     attempt_count = 0
-    os.remove(os.path.join(webdir,OS,now + "_php-fpm.log"))
+    try:
+        os.remove(os.path.join(webdir,OS,now + "_php-fpm.log"))
+    except:
+        pass
     while not os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log")
         append_file(commandsLog,command + "\n")
@@ -440,7 +452,10 @@ def runTest(branch,OS,now,instance):
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
-    os.remove(os.path.join(statusDir,OS + "." + branch + ".commit"))
+    try:
+        os.remove(os.path.join(statusDir,OS + "." + branch + ".commit"))
+    except:
+        pass
     while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".commit")):
         command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"'
         append_file(commandsLog,command + "\n")
