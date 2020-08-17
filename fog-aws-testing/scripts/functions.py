@@ -365,7 +365,6 @@ def runTest(branch,OS,now,instance):
     # print "Getting result file"
     # Get the result file.
     attempt_count = 0
-    os.remove(os.path.join(statusDir,OS + "." + branch + ".result"))
     while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".result")):
         command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
         append_file(commandsLog,command + "\n")
