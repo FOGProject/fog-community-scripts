@@ -298,10 +298,6 @@ def runTest(branch,OS,now,instance):
     commandsLog = os.path.join(statusDir,OS + "." + branch + ".remote_commands")
     if os.path.isfile(commandsLog):
         os.remove(commandsLog)
-    
-    # Write -1 locally to indicate it didn't finish in time.
-    with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
-        content_file.write("-1") 
 
     # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
     command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup1"'
@@ -372,6 +368,11 @@ def runTest(branch,OS,now,instance):
         attempt_count = attempt_count + 1
         if attempt_count > 3:
             break
+
+    if not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".result")):
+        # Could not retrieve the result file, so write -1.
+        with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
+            content_file.write("-1")
 
 
     # print "Getting output file"

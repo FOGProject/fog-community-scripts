@@ -60,7 +60,7 @@ bootTime = 240 # The time waited after an instance is brought up before commands
 
 codes = {
     "-1":{
-        "reason":"Installer did not complete within alotted time.",
+        "reason":"Results were not definitive.",
         "status":orange
     },
     "0":{
