@@ -6,6 +6,9 @@ from settings import *
 import os 
 from threading import Thread
 import subprocess
+import shutil
+
+
 cwd = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -57,6 +60,9 @@ def overwrite_file(path,content):
         print "Exception: " + str(e)
 
 
+def delete_dir(directory):
+    if os.path.exists(directory):
+        shutil.rmtree(directory)
 
 
 def make_dir(directory):
@@ -172,15 +178,13 @@ def restore_clean_snapshots():
         snapshot = get_snapshot("Name",OS + '-clean')
         if OS == "debian10":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/xvda")))
-        elif OS == "centos7":
+        elif OS == "centos7" or OS == "centos8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "fedora32":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "arch":
-            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "ubuntu18_04":
+        elif OS == "ubuntu18_04" or OS == "ubuntu20_04":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         else:
             # Here, just exit because it's better to know something is wrong early than to dig to figure it out why later.
@@ -294,19 +298,21 @@ def runTest(branch,OS,now,instance):
     commandsLog = os.path.join(statusDir,OS + "." + branch + ".remote_commands")
     if os.path.isfile(commandsLog):
         os.remove(commandsLog)
-    
-    # Write -1 locally to indicate it didn't finish in time.
-    with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
-        content_file.write("-1") 
 
-    # print  "Kickin tires"
     # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
-    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup" > /dev/null 2>&1'
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup1"'
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo get ready" > /dev/null 2>&1'
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup2"'
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup3"'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup4"'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+
 
     # print "Scp script to remote box"
     # Scp a script onto the remote box that we will later call.
@@ -337,62 +343,110 @@ def runTest(branch,OS,now,instance):
         content_file.write(duration)
 
 
-    # print "Getting result file"
-    # Get the result file.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
+    # Kick the tires a bit, this helps the remote host to 'wake up', and for a network path to be learned by involved routers.
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup1"'
     append_file(commandsLog,command + "\n")
     subprocess.call(command, shell=True)
-    # This should send the result code of the attempt to something like /tmp/debian9.master.result
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup2"'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup3"'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "echo wakeup4"'
+    append_file(commandsLog,command + "\n")
+    subprocess.call(command, shell=True)
+
+
+    # print "Getting result file"
+    # Get the result file.
+    attempt_count = 0
+    while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".result")):
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/result " + os.path.join(statusDir,OS + "." + branch + ".result")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
+
+    if not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".result")):
+        # Could not retrieve the result file, so write -1.
+        with open(os.path.join(statusDir,OS + "." + branch + ".result"), 'w') as content_file:
+            content_file.write("-1")
 
 
     # print "Getting output file"
     # Get the output file.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log")
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
+    attempt_count = 0
+    while not os.path.isfile(os.path.join(webdir,OS,now + "_output.log")):
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/output " + os.path.join(webdir,OS,now + "_output.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
 
 
     # print "Getting fog log file"
     # Get the fog log.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log")
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-
+    attempt_count = 0
+    while not os.path.isfile(os.path.join(webdir,OS,now + "_fog_error.log")):
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/git/fogproject/bin/error_logs/fog_error* " + os.path.join(webdir,OS,now + "_fog_error.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
 
     # print "Getting apache logs"
     # Get the apache error logs. Can be in only two places.
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/httpd/error_log " + os.path.join(webdir,OS,now + "_apache.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/apache2/error.log " + os.path.join(webdir,OS,now + "_apache.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
+    attempt_count = 0
+    while not os.path.isfile(os.path.join(webdir,OS,now + "_apache.log")):
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/httpd/error_log " + os.path.join(webdir,OS,now + "_apache.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/apache2/error.log " + os.path.join(webdir,OS,now + "_apache.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
+
 
     # print "Getting php-fpm logs"
     # Get php-fpm logs. Can be in several places...
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/error.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php*-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/php-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log") + " > /dev/null 2>&1"
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
+    attempt_count = 0
+    while not os.path.isfile(os.path.join(webdir,OS,now + "_php-fpm.log")):
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/www-error.log " + os.path.join(webdir,OS,now + "_php-fpm.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/error.log " + os.path.join(webdir,OS,now + "_php-fpm.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php*-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/var/log/php-fpm/php-fpm.log " + os.path.join(webdir,OS,now + "_php-fpm.log")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
 
 
     # print "Getting commit"
     # Get the commit the remote node was using, just as a sainity check.
-    command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"'
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit")
-    append_file(commandsLog,command + "\n")
-    subprocess.call(command, shell=True)
-    # This should send just the commit that was used in the test to something like /tmp/debian9.master.commit
+    while not os.path.isfile(os.path.join(statusDir,OS + "." + branch + ".commit")):
+        command = timeout + " " + sshTime + " " + ssh + " -o ConnectTimeout=" + sshTimeout + " " + OS + ' "cd /root/git/fogproject;git rev-parse HEAD > /root/commit"'
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        command = timeout + " " + sshTime + " " + scp + " -o ConnectTimeout=" + sshTimeout + " " + OS + ":/root/commit " + os.path.join(statusDir,OS + "." + branch + ".commit")
+        append_file(commandsLog,command + "\n")
+        subprocess.call(command, shell=True)
+        attempt_count = attempt_count + 1
+        if attempt_count > 3:
+            break
+
 
     # Kill the instance.
     instance.stop(Force=True)

@@ -19,12 +19,8 @@ elif [[ $(command -v apt-get > /dev/null 2>&1;echo $?) -eq 0 ]]; then
     apt-get -y update > $output 2>&1
     apt-get -y upgrade >> $output 2>&1
     printf $? > $result
-elif [[ $(command -v pacman > /dev/null 2>&1;echo $?) -eq 0 ]]; then
-    pacman -Sy archlinux-keyring --noconfirm > $output 2>&1
-    pacman -Syu --noconfirm >> $output 2>&1
-    printf $? > $result
 else
-    echo "Don't know how to update. Seems like it won't accept DNF, YUM, APT-GET, or PACMAN." > $output 2>&1
+    echo "Don't know how to update. Seems like it won't accept DNF, YUM, or APT-GET." > $output 2>&1
     printf "-1" > $result
 fi
 

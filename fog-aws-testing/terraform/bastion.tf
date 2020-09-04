@@ -32,7 +32,6 @@ resource "aws_instance" "bastion" {
       "sudo pip install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
-      "echo '${var.waynes-key}' >> /home/admin/.ssh/authorized_keys",
       "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
       "mkdir -p ~/.aws",
       "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
@@ -122,11 +121,13 @@ resource "aws_iam_role_policy" "policy" {
             ],
             "Resource": [
                 "${aws_instance.centos7.arn}",
+                "${aws_instance.centos8.arn}",
                 "${aws_instance.rhel7.arn}",
                 "${aws_instance.rhel8.arn}",
                 "${aws_instance.fedora32.arn}",
                 "${aws_instance.debian10.arn}",
                 "${aws_instance.ubuntu18_04.arn}",
+                "${aws_instance.ubuntu20_04.arn}",
                 "arn:aws:ec2:*::snapshot/*",
                 "arn:aws:ec2:*:*:volume/*"
             ],
