@@ -4,6 +4,7 @@
 # Arguments:
 #  $1 The branch to checkout/pull from.
 branch=$1
+install_timeout=$2
 # writes error code to /root/result
 #  Error 1 = Failed to call script properly.
 #  Error 2 = Failed to reset git.
@@ -11,6 +12,7 @@ branch=$1
 #  Error 4 = Failed to checkout git.
 #  Error 5 = Failed to change directory.
 #  Error 6 = Installation failed.
+#  Error 7 = Installation didn't complete in time.
 #  All else "success".
 usage() {
     local errCode=$1
@@ -58,7 +60,10 @@ stat=$?
 [[ ! $stat -eq 0 ]] && printf "5" > $result
 [[ ! $stat -eq 0 ]] && exit $stat
 
-
+# Here, echo 7 to result file while we wait for installer to complete.
+# If the installer does not complete in time, orchestrator will retrieve 7, indicating the same.
+# If we complete in-time, this is overwritten.
+printf "7" > $result
 ./installfog.sh -y > $output 2>&1
 stat=$?
 [[ ! $stat -eq 0 ]] && printf "6" > $result

@@ -90,11 +90,11 @@ codes = {
     "6":{
         "reason":"Installation failed.",
         "status":red
+    },
+    "7":{
+        "reason":"Installation didn't complete within " + str(fogTimeout),
+        "status":red
     }
 }
-
-
-
-
 
 
