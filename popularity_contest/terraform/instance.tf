@@ -25,6 +25,17 @@ resource "aws_instance" "instance" {
 }
 
 
+resource "aws_eip" "eip" {
+  vpc = true
+  instance = aws_instance.instance.id
+  associate_with_private_ip = aws_instance.instance.private_ip
+  tags = {
+    Name = var.name
+    Project = var.name
+  }
+}
+
+
 resource "aws_security_group" "sg" {
   name = var.name
   description = var.name
