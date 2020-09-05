@@ -132,7 +132,7 @@ resource "aws_iam_role_policy" "policy" {
             "Resource": [
                 "*"
             ],
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.instance.public_ip}/32"}}
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_eip.eip.public_ip}/32"}}
         }
     ]
 }
