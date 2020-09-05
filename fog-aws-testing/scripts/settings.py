@@ -60,7 +60,7 @@ bootTime = 90 # The time waited after an instance is brought up before commands 
 
 codes = {
     "-1":{
-        "reason":"Results were not definitive.",
+        "reason":"Results were inconclusive.",
         "status":orange
     },
     "0":{
