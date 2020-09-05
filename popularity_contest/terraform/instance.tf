@@ -95,7 +95,7 @@ resource "aws_route53_record" "record" {
   name    = "${var.name}.${data.terraform_remote_state.base.outputs.zone_name}"
   type    = "A"
   ttl     = "300"
-  records = [aws_instance.instance.private_ip]
+  records = [aws_instance.instance.public_ip]
 }
 
 
