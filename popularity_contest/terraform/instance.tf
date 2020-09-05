@@ -92,7 +92,7 @@ resource "aws_security_group" "sg" {
 
 resource "aws_route53_record" "record" {
   zone_id = data.terraform_remote_state.base.outputs.zone_id
-  name    = "{var.name}.${data.terraform_remote_state.base.outputs.zone_name}"
+  name    = "${var.name}.${data.terraform_remote_state.base.outputs.zone_name}"
   type    = "A"
   ttl     = "300"
   records = [aws_instance.instance.private_ip]
