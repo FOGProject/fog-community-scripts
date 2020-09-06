@@ -12,11 +12,11 @@ def post_records():
 
     record = request.get_json()
 
-    os_name = record.get("os_name", "")
-    os_version = record.get("os_version", "")
-    fog_version = record.get("fog_version", "")
+    os_name = escape(str(record.get("os_name", "")))
+    os_version = escape(str(record.get("os_version", "")))
+    fog_version = escape(str(record.get("fog_version", "")))
 
-    sql = "INSERT INTO popularity (os_name,os_version,fog_version) VALUES (" + escape(str(os_name)) + "," + escape(str(os_version)) + "," + escape(str(fog_version)) + ");"
+    sql = "INSERT INTO popularity (os_name,os_version,fog_version) VALUES ('" + os_name + "','" + os_version + "','" + fog_version + "');"
 
     query(theSql=sql)
 
