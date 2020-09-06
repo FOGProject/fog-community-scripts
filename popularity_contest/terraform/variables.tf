@@ -5,10 +5,17 @@ variable "name" {
 }
 
 
-variable "my_public_ip_cidr" {
-  type = string
-  default = "75.60.134.203/32"
+data "http" "public_ip" {
+  # This is to get the public IP of the system executing this TF, rather than hardcoding it in the code-base.
+  # The public IP is used in the security group for locking-down port 22 for SSH.
+  url = "https://ipinfo.io/json"
+  # Backup:
+  #url = "https://ifconfig.co/json"
+  request_headers = {
+    Accept = "application/json"
+  }
 }
+
 
 variable "instance_type" {
   type = string
@@ -23,3 +30,5 @@ data "aws_ami" "debian10" {
     values = ["debian-10-amd64-*"]
   }
 }
+
+

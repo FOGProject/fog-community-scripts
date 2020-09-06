@@ -57,13 +57,13 @@ resource "aws_security_group" "sg" {
     from_port = 22
     to_port = 22
     protocol = "tcp"
-    cidr_blocks = [var.my_public_ip_cidr]
+    cidr_blocks = ["${lookup(jsondecode(data.http.public_ip.body), "ip")}/32"]
   }
   ingress {
     from_port = 3306
     to_port = 3306
     protocol = "tcp"
-    cidr_blocks = [var.my_public_ip_cidr]
+    cidr_blocks = ["${lookup(jsondecode(data.http.public_ip.body), "ip")}/32"]
   }
   egress {
     from_port = 53
