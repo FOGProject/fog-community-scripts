@@ -15,7 +15,7 @@ def post_records():
     if "os_name" in record.keys():
         os_name = record["os_name"]
     if "os_version" in record.keys():
-        os_version = record["os_keys"]
+        os_version = record["os_version"]
     if "fog_version" in record.keys():
         fog_version = record["fog_version"]
 
