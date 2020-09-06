@@ -1,9 +1,4 @@
 {
-    "JWT_HEADER_TYPE":"",
-    "JWT_HEADER_NAME":"jwt",
-    "JWT_SECRET_KEY": "Very long secret would go here",
-    "JWT_OLD_SECRET_KEY": "Last used secret would go here",
-    "JWT_ACCESS_TOKEN_EXPIRES":30,
     "MYSQL_HOST": "127.0.0.1",
     "MYSQL_USER": "username-here",
     "MYSQL_PASSWORD": "password-here",
