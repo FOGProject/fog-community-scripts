@@ -12,9 +12,9 @@ def post_records():
 
     record = request.get_json()
 
-    os_name = escape(str(record.get("os_name", "")))
-    os_version = escape(str(record.get("os_version", "")))
-    fog_version = escape(str(record.get("fog_version", "")))
+    os_name = db.escape_string(record.get("os_name", "")).decode("utf-8")
+    os_version = db.escape_string(record.get("os_version", "")).decode("utf-8")
+    fog_version = db.escape_string(record.get("fog_version", "")).decode("utf-8")
 
     sql = "INSERT INTO popularity (os_name,os_version,fog_version) VALUES ('" + os_name + "','" + os_version + "','" + fog_version + "');"
 
