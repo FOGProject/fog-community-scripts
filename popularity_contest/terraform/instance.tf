@@ -7,6 +7,7 @@ resource "aws_instance" "instance" {
   associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.profile.name
   key_name = "waynes"
+  user_data = file("userdata.sh")
   root_block_device {
     volume_type = "standard"
     volume_size = 20
@@ -34,15 +35,6 @@ resource "aws_eip" "eip" {
     Project = var.name
   }
 }
-
-data "http" "github_meta" {
-  # This is to get GitHub's git public cidr list for use with security group to restrict outbound ssh.
-  url = "https://api.github.com/meta"
-  request_headers = {
-    Accept = "application/json"
-  }
-}
-
 
 
 resource "aws_security_group" "sg" {
@@ -102,12 +94,6 @@ resource "aws_security_group" "sg" {
     to_port = 123
     protocol = "udp"
     cidr_blocks = ["169.254.169.123/32"]
-  }
-  egress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = lookup(jsondecode(data.http.github_meta.body), "git")
   }
   tags = {
     Name = var.name
