@@ -3,9 +3,9 @@ CREATE DATABASE IF NOT EXISTS popularity;
 USE popularity;
 
 CREATE TABLE IF NOT EXISTS popularity(
-    id BIGINT NOT NULL UNIQUE, AUTO_INCREMENT,
+    id BIGINT AUTO_INCREMENT,
     fog_version VARCHAR(255) NULL,
-    os_distro VARCHAR(255) NULL,
+    os_name VARCHAR(255) NULL,
     os_version VARCHAR(255) NULL,
     creation_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     PRIMARY KEY (id),
