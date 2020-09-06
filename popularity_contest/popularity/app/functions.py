@@ -1,7 +1,6 @@
 from app import app
 import json
 import MySQLdb as mysql
-from MySQLdb import escape_string as escape
 from flask import jsonify, request
 import datetime
 
