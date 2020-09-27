@@ -1,18 +1,18 @@
 variable "entries_name" {
   type = string
-  default = "fog-popularity-entries"
+  default = "fog-analytics-entries"
   description = "Name used for resources, must be URL naming compliant"
 }
 
 variable "results_name" {
   type = string
-  default = "fog-popularity-results"
+  default = "fog-analytics-results"
   description = "Name used for result resources, must be URL naming compliant"
 }
 
 variable "project" {
   type = string
-  default = "fog-popularity"
+  default = "fog-analytics"
   description = "Project name"
 }
 

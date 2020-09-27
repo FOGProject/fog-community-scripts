@@ -5,7 +5,7 @@ apt-get -y dist-upgrade
 
 apt-get -y install git
 git clone https://github.com/wayneworkman/fog-community-scripts.git
-cd fog-community-scripts/popularity_contest/popularity
+cd fog-community-scripts/fog_analytics/analytics
 
 # install server software.
 bash setup.sh

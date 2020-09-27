@@ -2,7 +2,7 @@
 terraform {
   backend "s3" {
     bucket = "remote-state.theworkmans.us"
-    key    = "fogpopularity.rs"
+    key    = "foganalytics.rs"
     region = "us-east-2"
   }
 }

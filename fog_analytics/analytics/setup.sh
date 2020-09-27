@@ -7,19 +7,19 @@ apt-get -y remove python
 apt-get -y install apache2 libapache2-mod-wsgi-py3 python3-pip mariadb-server mariadb-client default-libmysqlclient-dev python3-mysqldb
 
 ## If a settings file exists, back it up.
-if [[ -f /opt/popularity/settings.json ]]; then
+if [[ -f /opt/analytics/settings.json ]]; then
     [[ -f /home/settings.json ]] && rm -f /home/settings.json
-    cp /opt/popularity/settings.json /home/settings.json
+    cp /opt/analytics/settings.json /home/settings.json
 fi
 
-cp -r ../popularity /opt
-cd /opt/popularity
+cp -r ../analytics /opt
+cd /opt/analytics
 rm -rf .git
 
 ## If we have a backed up settings file, put it back.
 if [[ -f /home/settings.json ]]; then
-    rm -f /opt/popularity/settings.json
-    mv /home/settings.json /opt/popularity/settings.json
+    rm -f /opt/analytics/settings.json
+    mv /home/settings.json /opt/analytics/settings.json
 fi
 
 pip3 install virtualenv 
@@ -41,14 +41,14 @@ systemctl enable mariadb
 systemctl restart mariadb
 systemctl restart apache2
 
-# If we already have a database called popularity, exit.
-string=$(mysql -u root -e 'show databases' | grep 'popularity')
-if [[ $string == *"popularity"* ]]; then
+# If we already have a database called analytics, exit.
+string=$(mysql -u root -e 'show databases' | grep 'analytics')
+if [[ $string == *"analytics"* ]]; then
     exit
 fi
 
 # Uncomment this to drop database & start over.
-#mysql -u root -e "drop database popularity"
+#mysql -u root -e "drop database analytics"
 
 # Setup database.
 mysql -u root < db.sql

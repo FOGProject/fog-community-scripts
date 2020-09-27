@@ -2,8 +2,6 @@
     "MYSQL_HOST": "127.0.0.1",
     "MYSQL_USER": "username-here",
     "MYSQL_PASSWORD": "password-here",
-    "MYSQL_DB": "popularity",
+    "MYSQL_DB": "analytics",
     "MYSQL_PORT": 3306,
-    "DOMAIN_ADDRESS":"fog-popularity-contest.theworkmans.us",
-    "DOMAIN_HTTP":"http"
 }

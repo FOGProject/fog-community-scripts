@@ -1,8 +1,8 @@
-CREATE DATABASE IF NOT EXISTS popularity;
+CREATE DATABASE IF NOT EXISTS analytics;
 
-USE popularity;
+USE analytics;
 
-CREATE TABLE IF NOT EXISTS popularity(
+CREATE TABLE IF NOT EXISTS analytics(
     id BIGINT AUTO_INCREMENT,
     fog_version VARCHAR(255) NULL,
     os_name VARCHAR(255) NULL,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS popularity(
 
 
 CREATE USER IF NOT EXISTS 'username-here'@'localhost' IDENTIFIED BY 'password-here';
-GRANT ALL PRIVILEGES ON popularity.* TO 'username-here'@'localhost' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
-#GRANT ALL PRIVILEGES ON popularity.* TO 'username-here'@'%' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON analytics.* TO 'username-here'@'localhost' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
+#GRANT ALL PRIVILEGES ON analytics.* TO 'username-here'@'%' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 
