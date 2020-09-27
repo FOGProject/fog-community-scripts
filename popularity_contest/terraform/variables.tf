@@ -1,7 +1,19 @@
-variable "name" {
+variable "entries_name" {
   type = string
-  default = "fog-popularity-contest"
+  default = "fog-popularity-entries"
   description = "Name used for resources, must be URL naming compliant"
+}
+
+variable "results_name" {
+  type = string
+  default = "fog-popularity-results"
+  description = "Name used for result resources, must be URL naming compliant"
+}
+
+variable "project" {
+  type = string
+  default = "fog-popularity"
+  description = "Project name"
 }
 
 

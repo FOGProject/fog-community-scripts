@@ -19,8 +19,8 @@ resource "aws_s3_bucket" "fogtesting" {
   ]
 }
 POLICY
-
 }
+
 
 # NOTE: the higher-level zone_id is the owned zone_id. The alias zone_ID is the s3 bucket's zone_id.
 resource "aws_route53_record" "fogtesting-dns-record" {
@@ -33,4 +33,5 @@ resource "aws_route53_record" "fogtesting-dns-record" {
     evaluate_target_health = false
   }
 }
+
 

@@ -15,8 +15,10 @@ resource "aws_instance" "instance" {
     encrypted = true
   }
   tags = {
-    Name = var.name
-    Project = var.name
+    Name = var.entries_name
+    Project = var.project
+    keep-instance-running = "true"
+    Snapshot = "true"
   }
   lifecycle {
     ignore_changes = [
@@ -31,15 +33,15 @@ resource "aws_eip" "eip" {
   instance = aws_instance.instance.id
   associate_with_private_ip = aws_instance.instance.private_ip
   tags = {
-    Name = var.name
-    Project = var.name
+    Name = var.entries_name
+    Project = var.project
   }
 }
 
 
 resource "aws_security_group" "sg" {
-  name = var.name
-  description = var.name
+  name = var.entries_name
+  description = var.entries_name
   vpc_id = data.terraform_remote_state.base.outputs.vpc_id
   ingress {
     from_port = 443
@@ -96,15 +98,15 @@ resource "aws_security_group" "sg" {
     cidr_blocks = ["169.254.169.123/32"]
   }
   tags = {
-    Name = var.name
-    Project = var.name
+    Name = var.entries_name
+    Project = var.project
   }
 }
 
 
 resource "aws_route53_record" "record" {
   zone_id = data.terraform_remote_state.base.outputs.zone_id
-  name    = "${var.name}.${data.terraform_remote_state.base.outputs.zone_name}"
+  name    = "${var.entries_name}.${data.terraform_remote_state.base.outputs.zone_name}"
   type    = "A"
   ttl     = "300"
   records = [aws_eip.eip.public_ip]
@@ -112,28 +114,67 @@ resource "aws_route53_record" "record" {
 
 
 resource "aws_iam_instance_profile" "profile" {
-  name = var.name
+  name = var.entries_name
   role = aws_iam_role.role.name
 }
 
 
 resource "aws_iam_role_policy" "policy" {
-  name = var.name
+  name = var.entries_name
   role = aws_iam_role.role.id
   policy = <<EOF
 {
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version":"2012-10-17",
+    "Statement":[
         {
-            "Sid": "a",
-            "Effect": "Deny",
-            "Action": [
-                "*"
+            "Sid":"a",
+            "Effect":"Allow",
+            "Action":[
+                "s3:Get*",
+                "s3:PutAnalyticsConfiguration",
+                "s3:DeleteAccessPoint",
+                "s3:ReplicateObject",
+                "s3:DeleteBucketWebsite",
+                "s3:PutLifecycleConfiguration",
+                "s3:DeleteObject",
+                "s3:PutReplicationConfiguration",
+                "s3:PutObjectLegalHold",
+                "s3:PutBucketCORS",
+                "s3:ListMultipartUploadParts",
+                "s3:PutObject",
+                "s3:PutBucketNotification",
+                "s3:DescribeJob",
+                "s3:PutBucketLogging",
+                "s3:PutBucketObjectLockConfiguration",
+                "s3:CreateAccessPoint",
+                "s3:PutAccelerateConfiguration",
+                "s3:DeleteObjectVersion",
+                "s3:ListBucketVersions",
+                "s3:RestoreObject",
+                "s3:ListBucket",
+                "s3:PutEncryptionConfiguration",
+                "s3:AbortMultipartUpload",
+                "s3:UpdateJobPriority",
+                "s3:DeleteBucket",
+                "s3:PutBucketVersioning",
+                "s3:ListBucketMultipartUploads",
+                "s3:PutMetricsConfiguration",
+                "s3:UpdateJobStatus",
+                "s3:PutInventoryConfiguration",
+                "s3:PutBucketWebsite",
+                "s3:PutBucketRequestPayment",
+                "s3:PutObjectRetention",
+                "s3:ReplicateDelete"
             ],
-            "Resource": [
-                "*"
+            "Resource":[
+                "${aws_s3_bucket.results_bucket.arn}",
+                "${aws_s3_bucket.results_bucket.arn}/*"
             ],
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_eip.eip.public_ip}/32"}}
+            "Condition":{
+                "IpAddress":{
+                    "aws:SourceIp":"${aws_eip.eip.public_ip}/32"
+                }
+            }
         }
     ]
 }
@@ -141,7 +182,7 @@ EOF
 }
 
 resource "aws_iam_role" "role" {
-  name = var.name
+  name = var.entries_name
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
