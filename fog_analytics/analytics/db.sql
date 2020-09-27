@@ -2,7 +2,7 @@ CREATE DATABASE IF NOT EXISTS analytics;
 
 USE analytics;
 
-CREATE TABLE IF NOT EXISTS analytics(
+CREATE TABLE IF NOT EXISTS versions_out_there(
     id BIGINT AUTO_INCREMENT,
     fog_version VARCHAR(255) NULL,
     os_name VARCHAR(255) NULL,

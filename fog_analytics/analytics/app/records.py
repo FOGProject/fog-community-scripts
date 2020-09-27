@@ -16,7 +16,7 @@ def post_records():
     os_version = db.escape_string(record.get("os_version", "")).decode("utf-8")
     fog_version = db.escape_string(record.get("fog_version", "")).decode("utf-8")
 
-    sql = "INSERT INTO analytics (os_name,os_version,fog_version) VALUES ('" + os_name + "','" + os_version + "','" + fog_version + "');"
+    sql = "INSERT INTO versions_out_there (os_name,os_version,fog_version) VALUES ('" + os_name + "','" + os_version + "','" + fog_version + "');"
 
     query(theSql=sql)
 
