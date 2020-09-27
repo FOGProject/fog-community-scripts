@@ -3,5 +3,5 @@
     "MYSQL_USER": "username-here",
     "MYSQL_PASSWORD": "password-here",
     "MYSQL_DB": "analytics",
-    "MYSQL_PORT": 3306,
+    "MYSQL_PORT": 3306
 }
