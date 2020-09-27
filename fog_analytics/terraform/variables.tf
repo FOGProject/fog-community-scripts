@@ -1,3 +1,9 @@
+variable "letsencrypt_email" {
+  type = string
+  default = "wayne.workman2012@gmail.com"
+}
+
+
 variable "entries_name" {
   type = string
   default = "fog-analytics-entries"

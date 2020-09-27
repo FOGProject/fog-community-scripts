@@ -7,7 +7,6 @@ resource "aws_instance" "instance" {
   associate_public_ip_address = true
   iam_instance_profile = aws_iam_instance_profile.profile.name
   key_name = "waynes"
-  user_data = file("userdata.sh")
   root_block_device {
     volume_type = "standard"
     volume_size = 20
@@ -25,6 +24,27 @@ resource "aws_instance" "instance" {
         ami,
     ]
   }
+  user_data = <<END_OF_USERDATA
+#!/bin/bash
+
+apt-get update
+apt-get -y dist-upgrade
+
+apt-get -y install git
+git clone https://github.com/wayneworkman/fog-community-scripts.git
+cd fog-community-scripts/fog_analytics/analytics
+
+# install server software.
+bash setup.sh
+
+# Setup HTTPS using certbot silently.
+apt-get -y install certbot python-certbot-apache
+certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${var.aws_route53_record.entries_record.fqdn} -m ${var.letsencrypt_email}
+
+
+# Schedule a reboot in 10 seconds after this script as exited.
+(sleep 10 && sudo reboot)&
+END_OF_USERDATA
 }
 
 
@@ -104,7 +124,7 @@ resource "aws_security_group" "sg" {
 }
 
 
-resource "aws_route53_record" "record" {
+resource "aws_route53_record" "entries_record" {
   zone_id = data.terraform_remote_state.base.outputs.zone_id
   name    = "${var.entries_name}.${data.terraform_remote_state.base.outputs.zone_name}"
   type    = "A"
