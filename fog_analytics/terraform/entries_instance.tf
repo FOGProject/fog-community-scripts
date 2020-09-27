@@ -39,7 +39,7 @@ bash setup.sh
 
 # Setup HTTPS using certbot silently.
 apt-get -y install certbot python-certbot-apache
-certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${var.aws_route53_record.entries_record.fqdn} -m ${var.letsencrypt_email}
+certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${aws_route53_record.entries_record.fqdn} -m ${var.letsencrypt_email}
 
 
 # Schedule a reboot in 10 seconds after this script as exited.
