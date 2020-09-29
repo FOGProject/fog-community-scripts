@@ -5,7 +5,7 @@ from flask import jsonify, request
 import datetime
 
 
-settingsFilePath = '/opt/analytics/settings.json'
+settingsFilePath = '/opt/external_reporting/settings.json'
 with open(settingsFilePath, 'r') as settings_file:
     settings = json.loads(settings_file.read())
 for key in settings.keys():

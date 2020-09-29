@@ -7,21 +7,21 @@ apt-get -y install apache2 libapache2-mod-wsgi-py3 python3-pip mariadb-server ma
 
 
 ## If a settings file exists, back it up.
-if [[ -f /opt/analytics/settings.json ]]; then
+if [[ -f /opt/external_reporting/settings.json ]]; then
     [[ -f /home/settings.json ]] && rm -f /home/settings.json
-    cp /opt/analytics/settings.json /home/settings.json
+    cp /opt/external_reporting/settings.json /home/settings.json
 fi
 
 
-cp -r ../analytics /opt
-cd /opt/analytics
+cp -r ../external_reporting /opt
+cd /opt/external_reporting
 rm -rf .git
 
 
 ## If we have a backed up settings file, put it back.
 if [[ -f /home/settings.json ]]; then
-    rm -f /opt/analytics/settings.json
-    mv /home/settings.json /opt/analytics/settings.json
+    rm -f /opt/external_reporting/settings.json
+    mv /home/settings.json /opt/external_reporting/settings.json
 fi
 
 
@@ -44,15 +44,15 @@ systemctl restart mariadb
 systemctl restart apache2
 
 
-# If we already have a database called analytics, exit.
-string=$(mysql -u root -e 'show databases' | grep 'analytics')
-if [[ $string == *"analytics"* ]]; then
+# If we already have a database called external_reporting, exit.
+string=$(mysql -u root -e 'show databases' | grep 'external_reporting')
+if [[ $string == *"external_reporting"* ]]; then
     exit
 fi
 
 
 # Uncomment this to drop database & start over.
-#mysql -u root -e "drop database analytics"
+#mysql -u root -e "drop database external_reporting"
 
 
 # Setup database.

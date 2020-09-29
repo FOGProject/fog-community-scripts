@@ -2,6 +2,6 @@
     "MYSQL_HOST": "127.0.0.1",
     "MYSQL_USER": "username-here",
     "MYSQL_PASSWORD": "password-here",
-    "MYSQL_DB": "analytics",
+    "MYSQL_DB": "external_reporting",
     "MYSQL_PORT": 3306
 }

@@ -6,19 +6,19 @@ variable "letsencrypt_email" {
 
 variable "entries_name" {
   type = string
-  default = "fog-analytics-entries"
+  default = "fog-external-reporting-entries"
   description = "Name used for resources, must be URL naming compliant"
 }
 
 variable "results_name" {
   type = string
-  default = "fog-analytics-results"
+  default = "fog-external-reporting-results"
   description = "Name used for result resources, must be URL naming compliant"
 }
 
 variable "project" {
   type = string
-  default = "fog-analytics"
+  default = "fog-external-reporting"
   description = "Project name"
 }
 

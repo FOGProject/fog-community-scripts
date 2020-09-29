@@ -26,22 +26,16 @@ resource "aws_instance" "instance" {
   }
   user_data = <<END_OF_USERDATA
 #!/bin/bash
-
 apt-get update
 apt-get -y dist-upgrade
-
 apt-get -y install git
 git clone https://github.com/wayneworkman/fog-community-scripts.git
-cd fog-community-scripts/fog_analytics/analytics
-
+cd fog-community-scripts/external_reporting/installer
 # install server software.
 bash setup.sh
-
 # Setup HTTPS using certbot silently.
 apt-get -y install certbot python-certbot-apache
 certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${var.entries_name}.${data.terraform_remote_state.base.outputs.zone_name} -m ${var.letsencrypt_email}
-
-
 # Schedule a reboot in 10 seconds after this script as exited.
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA

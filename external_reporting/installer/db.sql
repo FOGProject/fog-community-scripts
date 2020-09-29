@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS analytics;
+CREATE DATABASE IF NOT EXISTS external_reporting;
 
-USE analytics;
+USE external_reporting;
 
 CREATE TABLE IF NOT EXISTS versions_out_there(
     id BIGINT AUTO_INCREMENT,
@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS versions_out_there(
 
 
 CREATE USER IF NOT EXISTS 'username-here'@'localhost' IDENTIFIED BY 'password-here';
-GRANT ALL PRIVILEGES ON analytics.* TO 'username-here'@'localhost' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
-#GRANT ALL PRIVILEGES ON analytics.* TO 'username-here'@'%' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON external_reporting.* TO 'username-here'@'localhost' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
+#GRANT ALL PRIVILEGES ON external_reporting.* TO 'username-here'@'%' IDENTIFIED BY 'password-here' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 
