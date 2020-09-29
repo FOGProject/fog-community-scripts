@@ -30,7 +30,7 @@ apt-get update
 apt-get -y dist-upgrade
 apt-get -y install git
 git clone https://github.com/wayneworkman/fog-community-scripts.git
-cd fog-community-scripts/external_reporting/installer
+cd fog-community-scripts/external_reporting/external_reporting
 # install server software.
 bash setup.sh
 # Setup HTTPS using certbot silently.
