@@ -36,6 +36,9 @@ bash setup.sh
 # Setup HTTPS using certbot silently.
 apt-get -y install certbot python-certbot-apache
 certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${var.entries_name}.${data.terraform_remote_state.base.outputs.zone_name} -m ${var.letsencrypt_email}
+# Cleanup stuff we don't need anymore.
+apt-get -y autoclean
+apt-get -y autoremove
 # Schedule a reboot in 10 seconds after this script as exited.
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
