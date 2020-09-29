@@ -35,6 +35,7 @@ variable "fog-community-scripts-repo" {
 variable "fog-project-repo" {
   type    = string
   default = "https://github.com/FOGProject/fogproject.git"
+#  default = "https://github.com/wayneworkman/fogproject.git" # For wayne's development branch.
 }
 
 
