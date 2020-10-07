@@ -64,7 +64,7 @@ os.system(compress_command)
 
 
 # Upload database to "latest" filename as well as archived directory with a date.
-s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "archive/" + formatted_time + "/db.tar.gz)
+s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "archive/" + formatted_time + "/db.tar.gz")
 
 
 
