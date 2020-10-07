@@ -55,20 +55,18 @@ formatted_time = now.strftime(format)
 
 # Dump the database
 dump_file = "/tmp/db.sql"
-dump_command = "mysqldump -u " + settings["MYSQL_USER"] + " -p " + settings["MYSQL_PASSWORD"] + " -P " + str(settings["MYSQL_PORT"]) + " " + settings["MYSQL_DB"] + " > " + dump_file
+dump_command = "mysqldump -u " + settings["MYSQL_USER"] + " -p" + settings["MYSQL_PASSWORD"] + " -P " + str(settings["MYSQL_PORT"]) + " " + settings["MYSQL_DB"] + " > " + dump_file
 os.system(dump_command)
 
 
 # Compress the file.
-compressed_file = "/tmp/" + os.path.basename(dump_command) + ".tar.gz"
-compress_command = "tar -czf " + compressed_file + " " + dump_file
+compressed_file = "/tmp/db.tar.gz"
+compress_command = "tar -czf " + compressed_file + " " + dump_file + " > /dev/null 2>&1"
+os.system(compress_command)
 
 
 # Upload database to "latest" filename as well as archived directory with a date.
 s3_client.upload_file(compressed_file, settings["s3_bucket_name"], "archive/" + formatted_time + "/" + os.path.basename(compressed_file))
-
-
-
 
 
 

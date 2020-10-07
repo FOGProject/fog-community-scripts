@@ -59,3 +59,12 @@ fi
 mysql -u root < db.sql
 
 
+# Setup CRON job to do web tasks.
+cat > /etc/cron.d/do_web_tasks <<END_OF_CRON_FILE
+SHELL=/bin/bash
+PATH=${PATH}
+0 * * * * root /opt/external_reporting/do_web_tasks.py >> /var/log/do_web_tasks.log 2>&1
+END_OF_CRON_FILE
+
+
+
