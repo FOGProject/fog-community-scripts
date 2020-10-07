@@ -3,5 +3,6 @@
     "MYSQL_USER": "username-here",
     "MYSQL_PASSWORD": "password-here",
     "MYSQL_DB": "external_reporting",
-    "MYSQL_PORT": 3306
+    "MYSQL_PORT": 3306,
+    "s3_bucket_name": "S3_BUCKET_NAME_HERE"
 }

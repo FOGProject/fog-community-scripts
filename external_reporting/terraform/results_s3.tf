@@ -58,4 +58,3 @@ resource "aws_route53_record" "results_record" {
   }
 }
 
-
