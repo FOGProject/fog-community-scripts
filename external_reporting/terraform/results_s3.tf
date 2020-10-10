@@ -13,8 +13,11 @@ resource "aws_s3_bucket" "results_bucket" {
       "autoclean" = "true"
     }
     transition {
-      days          = 30
+      days          = 2
       storage_class = "STANDARD_IA"
+    }
+    expiration {
+      days = 365
     }
   }
   server_side_encryption_configuration {
