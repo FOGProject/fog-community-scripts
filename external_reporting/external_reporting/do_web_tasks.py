@@ -46,24 +46,20 @@ with open(settingsFilePath, 'r') as settings_file:
 db = mysql.connect(host=settings['MYSQL_HOST'],user=settings['MYSQL_USER'],passwd=settings['MYSQL_PASSWORD'], db=settings['MYSQL_DB'], port=settings['MYSQL_PORT'])
 
 """
-# Get IDs from last 7 days.
-select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;
-
-# Get unique OS names from last 7 days.
-select distinct os_name from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY);
-
-
 # Number of fog systems running in the last 7 days.
 select count(id) from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;
 
 
-# select specific os count in last 7 days.
-select count(os_name) from versions_out_there where os_name = 'ubuntu' and id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY);
+# OS names & counts from last 7 days.
+select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC limit 20;
 
 
-# Get counts of distinct fog versions from the last 7 days.
-select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version;
+# OS Names, Versions, and Counts in last 7 days.
+SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;
 
+
+# fog versions & counts from the last 7 days.
+select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;
 """
 
 # Create s3 client.
@@ -76,7 +72,7 @@ formatted_time = now.strftime(format)
 
 
 
-# Build a graph showing the number of fog versions out there.
+# fog versions & counts from the last 7 days.
 sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;"
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
@@ -87,12 +83,57 @@ pyplot.xticks(y_pos, keys)
 pyplot.xticks(rotation=-90)
 pyplot.ylabel('FOG Versions')
 pyplot.title('Top 20 FOG Versions in use')
-pyplot.tick_params(axis='x', pad=-100)
+pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
 fig = pyplot.gcf()
 fig.set_size_inches(18.5, 6)
-fig.savefig('/tmp/test.png', dpi=100)
-s3_client.upload_file("/tmp/test.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/test.png", ExtraArgs={'ContentType': "image/png"})
-s3_client.upload_file("/tmp/test.png", settings["s3_bucket_name"], "test.png", ExtraArgs={'ContentType': "image/png"})
+fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100)
+s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+
+
+
+
+# OS Names, Versions, and Counts in last 7 days.
+sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;"
+results = query(theSql=sql,json=True)
+keys = [i["os_name"] + " " + i["os_version"] for i in results]
+values = [i["count"] for i in results]
+y_pos = np.arange(len(keys))
+pyplot.bar(y_pos, values, align='center', alpha=0.5)
+pyplot.xticks(y_pos, keys)
+pyplot.xticks(rotation=-90)
+pyplot.ylabel('FOG Versions')
+pyplot.title('Top 20 FOG Versions in use')
+pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
+fig = pyplot.gcf()
+fig.set_size_inches(18.5, 6)
+fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100)
+s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+
+
+
+
+# OS names & counts from last 7 days.
+sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC limit 20;"
+results = query(theSql=sql,json=True)
+keys = [i["os_name"] for i in results]
+values = [i["count"] for i in results]
+y_pos = np.arange(len(keys))
+pyplot.bar(y_pos, values, align='center', alpha=0.5)
+pyplot.xticks(y_pos, keys)
+pyplot.xticks(rotation=-90)
+pyplot.ylabel('FOG Versions')
+pyplot.title('Top 20 FOG Versions in use')
+pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
+fig = pyplot.gcf()
+fig.set_size_inches(18.5, 6)
+fig.savefig('/tmp/os_names_and_counts.png', dpi=100)
+s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+
+
+
 
 
 
