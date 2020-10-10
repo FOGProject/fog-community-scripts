@@ -63,8 +63,15 @@ compress_command = "tar -czf /tmp/db.tar.gz -C /tmp db.sql > /dev/null 2>&1"
 os.system(compress_command)
 
 
-# Upload database to "latest" filename as well as archived directory with a date.
+# Upload database to base and archived.
 s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "archive/" + formatted_time + "/db.tar.gz")
+s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "db.tar.gz")
+
+
+# Upload the index.html file to base and archived..
+s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html")
+s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "index.html")
+
 
 
 
