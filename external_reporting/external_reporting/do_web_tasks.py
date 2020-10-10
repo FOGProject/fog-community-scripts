@@ -48,18 +48,6 @@ db = mysql.connect(host=settings['MYSQL_HOST'],user=settings['MYSQL_USER'],passw
 """
 # Number of fog systems running in the last 7 days.
 select count(id) from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;
-
-
-# OS names & counts from last 7 days.
-select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC limit 20;
-
-
-# OS Names, Versions, and Counts in last 7 days.
-SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;
-
-
-# fog versions & counts from the last 7 days.
-select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;
 """
 
 # Create s3 client.
@@ -78,14 +66,14 @@ results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values, align='center', alpha=0.5)
+pyplot.bar(y_pos, values)
 pyplot.xticks(y_pos, keys)
 pyplot.xticks(rotation=-90)
-pyplot.ylabel('FOG Versions')
+pyplot.ylabel('Count')
 pyplot.title('Top 20 FOG Versions in use')
 pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
 fig = pyplot.gcf()
-fig.set_size_inches(18.5, 6)
+fig.set_size_inches(12, 5)
 fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
@@ -99,14 +87,14 @@ results = query(theSql=sql,json=True)
 keys = [i["os_name"] + " " + i["os_version"] for i in results]
 values = [i["count"] for i in results]
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values, align='center', alpha=0.5)
+pyplot.bar(y_pos, values)
 pyplot.xticks(y_pos, keys)
 pyplot.xticks(rotation=-90)
-pyplot.ylabel('FOG Versions')
+pyplot.ylabel('Count')
 pyplot.title('Top 20 OS Versions in use')
 pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
 fig = pyplot.gcf()
-fig.set_size_inches(18.5, 6)
+fig.set_size_inches(12, 5)
 fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
@@ -115,19 +103,19 @@ s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_buck
 
 
 # OS names & counts from last 7 days.
-sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC limit 20;"
+sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC;"
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] for i in results]
 values = [i["count"] for i in results]
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values, align='center', alpha=0.5)
+pyplot.bar(y_pos, values)
 pyplot.xticks(y_pos, keys)
 pyplot.xticks(rotation=-90)
-pyplot.ylabel('FOG Versions')
+pyplot.ylabel('Count')
 pyplot.title('Top 20 OSs in use')
 pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
 fig = pyplot.gcf()
-fig.set_size_inches(18.5, 6)
+fig.set_size_inches(12, 5)
 fig.savefig('/tmp/os_names_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
