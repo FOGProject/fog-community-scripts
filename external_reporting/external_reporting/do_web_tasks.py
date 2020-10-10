@@ -77,23 +77,20 @@ formatted_time = now.strftime(format)
 
 
 # Build a graph showing the number of fog versions out there.
-sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version;"
-
+sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;"
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
-
 y_pos = np.arange(len(keys))
 pyplot.bar(y_pos, values, align='center', alpha=0.5)
 pyplot.xticks(y_pos, keys)
 pyplot.xticks(rotation=-90)
 pyplot.ylabel('FOG Versions')
-pyplot.title('FOG Version Usage Counts in last 7 days')
+pyplot.title('Top 20 FOG Versions in use')
+pyplot.tick_params(axis='x', pad=-100)
 fig = pyplot.gcf()
-fig.set_size_inches(18.5, 10.5)
+fig.set_size_inches(18.5, 6)
 fig.savefig('/tmp/test.png', dpi=100)
-
-# Upload graph to s3.
 s3_client.upload_file("/tmp/test.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/test.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/test.png", settings["s3_bucket_name"], "test.png", ExtraArgs={'ContentType': "image/png"})
 
