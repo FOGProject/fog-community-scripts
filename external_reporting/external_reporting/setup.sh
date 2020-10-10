@@ -30,7 +30,7 @@ pip3 install virtualenv
 
 virtualenv flask
 # Note: Currently using mysql, but wanting to evaluate the mariadb module.
-flask/bin/pip install flask mysql mariadb boto3
+flask/bin/pip install flask mysql mariadb boto3 numpy matplotlib
 
 
 # Do not overwrite this file if it exists because Let's Encrypt makes changes to it that need to stay.

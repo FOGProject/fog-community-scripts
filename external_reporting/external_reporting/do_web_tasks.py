@@ -43,6 +43,16 @@ with open(settingsFilePath, 'r') as settings_file:
 db = mysql.connect(host=settings['MYSQL_HOST'],user=settings['MYSQL_USER'],passwd=settings['MYSQL_PASSWORD'], db=settings['MYSQL_DB'], port=settings['MYSQL_PORT'])
 
 
+# Produce bar graphs.
+
+
+
+
+
+
+
+
+
 # Create s3 client.
 s3_client = client('s3')
 
