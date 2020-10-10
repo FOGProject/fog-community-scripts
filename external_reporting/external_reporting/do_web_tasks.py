@@ -1,5 +1,6 @@
 #!/opt/external_reporting/flask/bin/python
 
+
 import json
 import MySQLdb as mysql
 from boto3 import client
@@ -45,18 +46,20 @@ with open(settingsFilePath, 'r') as settings_file:
 # Connect to database.
 db = mysql.connect(host=settings['MYSQL_HOST'],user=settings['MYSQL_USER'],passwd=settings['MYSQL_PASSWORD'], db=settings['MYSQL_DB'], port=settings['MYSQL_PORT'])
 
-"""
-# Number of fog systems running in the last 7 days.
-select count(id) from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;
-"""
 
 # Create s3 client.
 s3_client = client('s3')
+
 
 # Get the date & time in a format useful for timestamps.
 now = datetime.now()
 format = "%Y-%m-%d_%H-%M-%S"
 formatted_time = now.strftime(format)
+
+
+# Get number of fog systems in last 7 days.
+sql = "select count(id) from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;"
+number_of_fog_systems = query(theSql=sql,single=True)
 
 
 
@@ -122,10 +125,6 @@ s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"]
 
 
 
-
-
-
-
 # Dump the database
 dump_command = "mysqldump -u " + settings["MYSQL_USER"] + " -p" + settings["MYSQL_PASSWORD"] + " -P " + str(settings["MYSQL_PORT"]) + " " + settings["MYSQL_DB"] + " > /tmp/db.sql"
 os.system(dump_command)
@@ -141,10 +140,20 @@ s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "archive/" +
 s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "db.tar.gz")
 
 
-# Upload the index.html file to base and archived..
-s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html", ExtraArgs={'ContentType': "text/html"})
-s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "index.html", ExtraArgs={'ContentType': "text/html"})
+# Copy index.html to temp and replace the timestamp and count.
+the_command = "cp /opt/external_reporting/index.html /tmp/index.html"
+os.system(the_command)
+the_command = "sed -i 's/TIMESTAMP_HERE/" + formatted_time + "/g' /tmp/index.html"
+os.system(the_command)
+the_command = "sed -i 's/NUMBER_OF_REPORTING_SYSTEMS/" + str(number_of_fog_systems) + "/g' /tmp/index.html"
+os.system(the_command)
 
+
+
+
+# Upload the index.html file to base and archived..
+s3_client.upload_file("/tmp/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html", ExtraArgs={'ContentType': "text/html"})
+s3_client.upload_file("/tmp/index.html", settings["s3_bucket_name"], "index.html", ExtraArgs={'ContentType': "text/html"})
 
 
 
