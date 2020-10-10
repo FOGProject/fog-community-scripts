@@ -13,8 +13,18 @@ resource "aws_s3_bucket" "results_bucket" {
       "autoclean" = "true"
     }
     transition {
-      days          = 90
+      days          = 30
       storage_class = "STANDARD_IA"
+    }
+    expiration {
+      days = 365
+    }
+  }
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm  = "aws:kms"
+      }
     }
   }
   tags = {
@@ -49,5 +59,4 @@ resource "aws_route53_record" "results_record" {
     evaluate_target_health = false
   }
 }
-
 

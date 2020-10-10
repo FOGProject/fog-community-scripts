@@ -21,7 +21,7 @@ resource "aws_instance" "instance" {
   }
   lifecycle {
     ignore_changes = [
-        ami,
+        ami, user_data
     ]
   }
   user_data = <<END_OF_USERDATA
@@ -33,6 +33,8 @@ git clone https://github.com/wayneworkman/fog-community-scripts.git
 cd fog-community-scripts/external_reporting/external_reporting
 # install server software.
 bash setup.sh
+# Replace s3 arn in settings file.
+sed -i 's/S3_BUCKET_NAME_HERE/${aws_s3_bucket.results_bucket.id}/' /opt/external_reporting/settings.json
 # Setup HTTPS using certbot silently.
 apt-get -y install certbot python-certbot-apache
 certbot --no-eff-email --redirect --agree-tos -w /var/www/html -d ${var.entries_name}.${data.terraform_remote_state.base.outputs.zone_name} -m ${var.letsencrypt_email}
@@ -75,12 +77,6 @@ resource "aws_security_group" "sg" {
   ingress {
     from_port = 22
     to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["${lookup(jsondecode(data.http.public_ip.body), "ip")}/32"]
-  }
-  ingress {
-    from_port = 3306
-    to_port = 3306
     protocol = "tcp"
     cidr_blocks = ["${lookup(jsondecode(data.http.public_ip.body), "ip")}/32"]
   }
