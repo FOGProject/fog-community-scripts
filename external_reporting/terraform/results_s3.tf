@@ -13,7 +13,7 @@ resource "aws_s3_bucket" "results_bucket" {
       "autoclean" = "true"
     }
     transition {
-      days          = 2
+      days          = 30
       storage_class = "STANDARD_IA"
     }
     expiration {
@@ -23,7 +23,6 @@ resource "aws_s3_bucket" "results_bucket" {
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.mykey.arn
         sse_algorithm  = "aws:kms"
       }
     }

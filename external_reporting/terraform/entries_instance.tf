@@ -21,7 +21,7 @@ resource "aws_instance" "instance" {
   }
   lifecycle {
     ignore_changes = [
-        ami,
+        ami, user_data
     ]
   }
   user_data = <<END_OF_USERDATA
