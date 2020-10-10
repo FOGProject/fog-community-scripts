@@ -62,6 +62,9 @@ os.system(dump_command)
 compress_command = "tar -czf /tmp/db.tar.gz -C /tmp db.sql > /dev/null 2>&1"
 os.system(compress_command)
 
+# Set s3 extra args for index.html
+index_args = {'ContentType': "text/html"}
+
 
 # Upload database to base and archived.
 s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "archive/" + formatted_time + "/db.tar.gz")
@@ -69,8 +72,8 @@ s3_client.upload_file("/tmp/db.tar.gz", settings["s3_bucket_name"], "db.tar.gz")
 
 
 # Upload the index.html file to base and archived..
-s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html")
-s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "index.html")
+s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html", ExtraArgs=index_args)
+s3_client.upload_file("/opt/external_reporting/index.html", settings["s3_bucket_name"], "index.html", ExtraArgs=index_args)
 
 
 
