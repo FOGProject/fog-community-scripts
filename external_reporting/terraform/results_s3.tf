@@ -20,13 +20,6 @@ resource "aws_s3_bucket" "results_bucket" {
       days = 365
     }
   }
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm  = "aws:kms"
-      }
-    }
-  }
   tags = {
     Name = "${var.results_name}.${data.terraform_remote_state.base.outputs.zone_name}"
     Project = var.project
