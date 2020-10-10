@@ -80,8 +80,7 @@ fig.set_size_inches(12, 5)
 fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
-
-
+pyplot.clf()
 
 
 # OS Names, Versions, and Counts in last 7 days.
@@ -101,6 +100,7 @@ fig.set_size_inches(12, 5)
 fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+pyplot.clf()
 
 
 
@@ -122,6 +122,7 @@ fig.set_size_inches(12, 5)
 fig.savefig('/tmp/os_names_and_counts.png', dpi=100)
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+pyplot.clf()
 
 
 
