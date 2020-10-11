@@ -68,16 +68,18 @@ sql = "select distinct fog_version, count(*) as count from versions_out_there wh
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
+keys.reverse()
+values.reverse()
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values)
-pyplot.xticks(y_pos, keys)
-pyplot.xticks(rotation=-90)
-pyplot.ylabel('Count')
+pyplot.barh(y_pos, values)
+pyplot.yticks(y_pos, keys)
+pyplot.xlabel('Count')
 pyplot.title('Top 20 FOG Versions in use')
-pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
+ax = pyplot.gca()
+ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
-fig.set_size_inches(12, 5)
-fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100)
+fig.set_size_inches(15, 10)
+fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100, bbox_inches='tight')
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
@@ -88,16 +90,18 @@ sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] + " " + i["os_version"] for i in results]
 values = [i["count"] for i in results]
+keys.reverse()
+values.reverse()
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values)
-pyplot.xticks(y_pos, keys)
-pyplot.xticks(rotation=-90)
-pyplot.ylabel('Count')
+pyplot.barh(y_pos, values)
+pyplot.yticks(y_pos, keys)
+pyplot.xlabel('Count')
 pyplot.title('Top 20 OS Versions in use')
-pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
+ax = pyplot.gca()
+ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
-fig.set_size_inches(12, 5)
-fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100)
+fig.set_size_inches(15, 10)
+fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100, bbox_inches='tight')
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
@@ -110,16 +114,18 @@ sql = "select distinct os_name, count(*) as count from versions_out_there where 
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] for i in results]
 values = [i["count"] for i in results]
+keys.reverse()
+values.reverse()
 y_pos = np.arange(len(keys))
-pyplot.bar(y_pos, values)
-pyplot.xticks(y_pos, keys)
-pyplot.xticks(rotation=-90)
-pyplot.ylabel('Count')
-pyplot.title('Top 20 OSs in use')
-pyplot.tick_params(axis='x', pad=-100) # This puts the tick labels onto the bars.
+pyplot.barh(y_pos, values)
+pyplot.yticks(y_pos, keys)
+pyplot.xlabel('Count')
+pyplot.title('Top OSs in use')
+ax = pyplot.gca()
+ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
-fig.set_size_inches(12, 5)
-fig.savefig('/tmp/os_names_and_counts.png', dpi=100)
+fig.set_size_inches(15, 10)
+fig.savefig('/tmp/os_names_and_counts.png', dpi=100, bbox_inches='tight')
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
