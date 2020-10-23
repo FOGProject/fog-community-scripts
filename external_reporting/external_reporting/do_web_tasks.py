@@ -58,13 +58,13 @@ formatted_time = now.strftime(format)
 
 
 # Get number of fog systems in last 7 days.
-sql = "select count(id) from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY;"
+sql = "select count(id) from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY;"
 number_of_fog_systems = query(theSql=sql,single=True)
 
 
 
 # fog versions & counts from the last 7 days.
-sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;"
+sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;"
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
@@ -86,7 +86,7 @@ pyplot.clf()
 
 
 # OS Names, Versions, and Counts in last 7 days.
-sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;"
+sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;"
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] + " " + i["os_version"] for i in results]
 values = [i["count"] for i in results]
@@ -110,7 +110,7 @@ pyplot.clf()
 
 
 # OS names & counts from last 7 days.
-sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= DATE(NOW()) - INTERVAL 7 DAY) group by os_name ORDER BY count DESC;"
+sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by os_name ORDER BY count DESC;"
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] for i in results]
 values = [i["count"] for i in results]
