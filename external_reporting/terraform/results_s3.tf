@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_acm_certificate" "results_cert" {
   domain_name = "${var.results_name}.${data.terraform_remote_state.base.outputs.zone_name}"
-  subject_alternative_names = ["stats.fogproject.org"]
+#  subject_alternative_names = ["stats.fogproject.org"]
   validation_method = "DNS"
   provider = aws.virginia
 }
@@ -118,7 +118,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Some comment"
   default_root_object = "index.html"
 
-  aliases = ["${var.results_name}.${data.terraform_remote_state.base.outputs.zone_name}","stats.fogproject.org"]
+#  aliases = ["${var.results_name}.${data.terraform_remote_state.base.outputs.zone_name}","stats.fogproject.org"]
+  aliases = ["${var.results_name}.${data.terraform_remote_state.base.outputs.zone_name}"]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
