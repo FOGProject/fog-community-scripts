@@ -20,6 +20,7 @@ resource "aws_instance" "debian10" {
     bastion_private_key = file("~/.ssh/fogtesting_private")
   }
   provisioner "remote-exec" {
+    on_failure = continue
     inline = [
       "sudo apt-get update",
       "sudo apt-get -y dist-upgrade",

@@ -20,6 +20,7 @@ resource "aws_instance" "rhel7" {
     bastion_private_key = file("~/.ssh/fogtesting_private")
   }
   provisioner "remote-exec" {
+    on_failure = continue
     inline = [
       "sudo setenforce 0",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
