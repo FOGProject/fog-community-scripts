@@ -22,7 +22,15 @@ Host fedora32
     User root
     HostName fedora32.fogtesting.cloud
     Port 22
-Host ubuntu18_04
+Host fedora33
+    User root
+    HostName fedora33.fogtesting.cloud
+    Port 22
+Host ubuntu16_04
+    User root
+    HostName ubuntu16_04.fogtesting.cloud
+    Port 22
+HHost ubuntu18_04
     User root
     HostName ubuntu18_04.fogtesting.cloud
     Port 22

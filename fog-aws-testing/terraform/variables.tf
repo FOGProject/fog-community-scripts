@@ -132,6 +132,34 @@ data "aws_ami" "fedora32" {
 }
 
 
+data "aws_ami" "fedora33" {
+  most_recent = true
+  owners      = ["125523088429"]
+  filter {
+    name   = "name"
+    values = ["Fedora-Cloud-Base-33-*.x86_64-hvm-us-east-1-gp2-0"]
+  }
+}
+
+
+data "aws_ami" "ubuntu16" {
+  most_recent = true
+  owners      = ["099720109477"]
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+}
+
+
 data "aws_ami" "ubuntu18" {
   most_recent = true
   owners      = ["099720109477"]
