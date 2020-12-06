@@ -11,7 +11,7 @@ variable "make_instances" {
 terraform {
   backend "s3" {
     bucket = "us-east-1-remote-state.theworkmans.us"
-    key    = "fogtesting.rs"
+    key    = "fogtesting_new.rs"
     region = "us-east-1"
   }
 }
