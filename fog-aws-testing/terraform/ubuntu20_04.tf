@@ -1,8 +1,9 @@
 resource "aws_instance" "ubuntu20_04" {
+  count                       = var.make_instances
   ami                         = data.aws_ami.ubuntu20.id
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.public-subnet.id
-  vpc_security_group_ids      = [aws_security_group.allow-bastion.id]
+  vpc_security_group_ids      = [aws_security_group.allow-bastion[0].id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ssh-key.key_name
   root_block_device {
@@ -13,9 +14,9 @@ resource "aws_instance" "ubuntu20_04" {
   connection {
     type                = "ssh"
     user                = "ubuntu"
-    host                = aws_instance.ubuntu20_04.private_ip
+    host                = aws_instance.ubuntu20_04[0].private_ip
     private_key         = file("~/.ssh/fogtesting_private")
-    bastion_host        = aws_instance.bastion.public_ip
+    bastion_host        = aws_instance.bastion[0].public_ip
     bastion_user        = "admin"
     bastion_private_key = file("~/.ssh/fogtesting_private")
   }
@@ -44,10 +45,11 @@ resource "aws_instance" "ubuntu20_04" {
 }
 
 resource "aws_route53_record" "ubuntu20_04-dns-record" {
+  count   = var.make_instances
   zone_id = aws_route53_zone.private-zone.zone_id
   name    = "ubuntu20_04.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.ubuntu20_04.private_dns]
+  records = [aws_instance.ubuntu20_04[0].private_dns]
 }
 

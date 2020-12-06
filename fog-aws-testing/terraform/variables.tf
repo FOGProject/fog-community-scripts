@@ -1,3 +1,12 @@
+variable "make_instances" {
+  type = number
+  default = 0
+  description = "Allows destroying & recreating just the instances. Accepts 1 or 0."
+}
+
+
+
+
 # Backends cannot use interpolation.
 terraform {
   backend "s3" {
