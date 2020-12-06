@@ -26,7 +26,7 @@ resource "aws_instance" "bastion" {
   }
 
   provisioner "remote-exec" {
-    on_failure = continue
+    #on_failure = continue
     inline = [
       "sudo apt-get update",
       "sudo apt-get -y install awscli groff python-pip git vim",

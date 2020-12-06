@@ -20,7 +20,7 @@ resource "aws_instance" "ubuntu20_04" {
     bastion_private_key = file("~/.ssh/fogtesting_private")
   }
   provisioner "remote-exec" {
-    on_failure = continue
+    #on_failure = continue
     inline = [
       "sudo apt-get -y remove unattended-upgrades",
       "sudo apt-get update",
