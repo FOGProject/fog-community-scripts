@@ -3,7 +3,8 @@ OSs = ["debian10","centos7","centos8","rhel7","rhel8","fedora32","fedora33","ubu
 dnsAddresses = ["debian10.fogtesting.cloud","centos7.fogtesting.cloud","centos8.fogtesting.cloud","rhel7.fogtesting.cloud","rhel8.fogtesting.cloud","fedora32.fogtesting.cloud","fedora33.fogtesting.cloud","ubuntu16_04.fogtesting.cloud","ubuntu18_04.fogtesting.cloud","ubuntu20_04.fogtesting.cloud"]
 
 # The list of branches to process.
-branches = ["master","dev-branch","working-1.6"]
+#branches = ["master","dev-branch","working-1.6"]
+branches = ["master","dev-branch"]
 
 # The region we operate in, dictated by terraform.
 theRegion = "us-east-1"
