@@ -146,7 +146,7 @@ data "aws_ami" "fedora33" {
   owners      = ["125523088429"]
   filter {
     name   = "name"
-    values = ["Fedora-Cloud-Base-33-*.x86_64-hvm-us-east-1-gp2-0"]
+    values = ["Fedora-Cloud-Base-33-1.2.x86_64-hvm-us-east-1-gp2-0"]
   }
 }
 
