@@ -43,11 +43,11 @@ psrfix() {
 trunkUpdate() {
     local testvar=$1
     local cwd=$(pwd)
-	[[ $testvar == 'full' || -z $testvar ]] && testvar=""
-	cd /root/fogproject
-	dots "Updating GIT Directory"
-	/usr/bin/git checkout $testvar >/dev/null 2>&1
-	/usr/bin/git pull >/dev/null 2>&1
+        [[ $testvar == 'full' || -z $testvar ]] && testvar=""
+        cd /root/fogproject
+        dots "Updating GIT Directory"
+        /usr/bin/git checkout $testvar >/dev/null 2>&1
+        /usr/bin/git pull >/dev/null 2>&1
     errorStat "$?"
 }
 
@@ -58,8 +58,27 @@ versionUpdate() {
     local testvar=$1
     [[ $testvar == full ]] && channel="Stable"
     dots "Updating Version in File"
+    local gitbranch=$(git branch | awk '/*/ {print $2}')
     local gitcom=$(git rev-list --tags --no-walk --max-count=1)
-    [[ -z $trunkver ]] && trunkversion="$(git describe --tags $gitcom).$(git rev-list ${gitcom}..HEAD --count)" || trunkversion=${trunkver}
+    local gitcount=$(git rev-list ${gitcom}..HEAD --count)
+    local branchon=$(echo ${gitbranch} | awk -F'-' '{print $1}')
+    local branchend=$(echo ${gitbranch} | awk -F'-' '{print $2}')
+    local verbegin=""
+    case $branchon in
+        dev)
+            verbegin="$(git describe --tags ${gitcom})."
+            channel="Beta"
+            ;;
+        working)
+            verbegin="${branchend}.0-alpha."
+            channel="Alpha"
+            ;;
+        master)
+            [[ -z $trunkver ]] && trunkver="$(git describe --tags ${gitcom})"
+            channel="Stable"
+            ;;
+    esac
+    [[ -z $trunkver ]] && trunkversion="${verbegin}${gitcount}" || trunkversion=${trunkver}
     sed -i "s/define('FOG_VERSION'.*);/define('FOG_VERSION', '$trunkversion');/g" /var/www/fog/lib/fog/system.class.php >/dev/null 2>&1
     [[ -z $channel ]] && channel="Alpha"
     sed -i "s/define('FOG_CHANNEL'.*);/define('FOG_CHANNEL', '$channel');/g" /var/www/fog/lib/fog/system.class.php >/dev/null 2>&1
@@ -76,14 +95,14 @@ copyFilesToTrunk() {
     rsync -a --no-links -heP --exclude maintenance --delete /var/www/fog/ $path >/dev/null 2>&1
     errorStat $?
     dots "Cleaning up"
-	rm -rf /root/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
-	rm -rf /root/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
-	rm -rf /root/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
-	rm -rf /root/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
-	find /root/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
-	[[ $testvar == 'full' ]] && \
-		sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' /root/fogproject/bin/installfog.sh || \
-		sed -i 's/^fullrelease=.*$/fullrelease="0"/g' /root/fogproject/bin/installfog.sh
+        rm -rf /root/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
+        rm -rf /root/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
+        rm -rf /root/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
+        rm -rf /root/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
+        find /root/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
+        [[ $testvar == 'full' ]] && \
+                sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' /root/fogproject/bin/installfog.sh || \
+                sed -i 's/^fullrelease=.*$/fullrelease="0"/g' /root/fogproject/bin/installfog.sh
     errorStat $?
 }
 
