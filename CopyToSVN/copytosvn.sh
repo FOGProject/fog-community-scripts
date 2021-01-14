@@ -43,11 +43,11 @@ psrfix() {
 trunkUpdate() {
     local testvar=$1
     local cwd=$(pwd)
-        [[ $testvar == 'full' || -z $testvar ]] && testvar=""
-        cd /root/fogproject
-        dots "Updating GIT Directory"
-        /usr/bin/git checkout $testvar >/dev/null 2>&1
-        /usr/bin/git pull >/dev/null 2>&1
+    [[ $testvar == 'full' || -z $testvar ]] && testvar=""
+    cd /root/fogproject
+    dots "Updating GIT Directory"
+    /usr/bin/git checkout $testvar >/dev/null 2>&1
+    /usr/bin/git pull >/dev/null 2>&1
     errorStat "$?"
 }
 
@@ -95,14 +95,14 @@ copyFilesToTrunk() {
     rsync -a --no-links -heP --exclude maintenance --delete /var/www/fog/ $path >/dev/null 2>&1
     errorStat $?
     dots "Cleaning up"
-        rm -rf /root/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
-        rm -rf /root/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
-        rm -rf /root/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
-        rm -rf /root/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
-        find /root/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
-        [[ $testvar == 'full' ]] && \
-                sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' /root/fogproject/bin/installfog.sh || \
-                sed -i 's/^fullrelease=.*$/fullrelease="0"/g' /root/fogproject/bin/installfog.sh
+    rm -rf /root/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
+    rm -rf /root/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
+    rm -rf /root/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
+    rm -rf /root/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
+    find /root/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
+    [[ $testvar == 'full' ]] && \
+        sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' /root/fogproject/bin/installfog.sh || \
+        sed -i 's/^fullrelease=.*$/fullrelease="0"/g' /root/fogproject/bin/installfog.sh
     errorStat $?
 }
 
