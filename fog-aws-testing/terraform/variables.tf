@@ -1,8 +1,17 @@
+variable "make_instances" {
+  type = number
+  default = 1
+  description = "Allows destroying & recreating just the instances. Accepts 1 or 0."
+}
+
+
+
+
 # Backends cannot use interpolation.
 terraform {
   backend "s3" {
     bucket = "us-east-1-remote-state.theworkmans.us"
-    key    = "fogtesting.rs"
+    key    = "fogtesting_new.rs"
     region = "us-east-1"
   }
 }
@@ -128,6 +137,34 @@ data "aws_ami" "fedora32" {
   filter {
     name   = "name"
     values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
+  }
+}
+
+
+data "aws_ami" "fedora33" {
+  most_recent = true
+  owners      = ["125523088429"]
+  filter {
+    name   = "name"
+    values = ["Fedora-Cloud-Base-33-1.2.x86_64-hvm-us-east-1-gp2-0"]
+  }
+}
+
+
+data "aws_ami" "ubuntu16" {
+  most_recent = true
+  owners      = ["099720109477"]
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
   }
 }
 

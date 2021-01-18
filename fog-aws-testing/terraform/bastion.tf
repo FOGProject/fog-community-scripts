@@ -1,11 +1,12 @@
 resource "aws_instance" "bastion" {
+  count                       = var.make_instances
   ami                         = data.aws_ami.debian10.id
   instance_type               = "t3.nano"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.sg-ssh.id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ssh-key.key_name
-  iam_instance_profile        = aws_iam_instance_profile.profile.name
+  iam_instance_profile        = aws_iam_instance_profile.profile[0].name
 
   root_block_device {
     volume_type           = "standard"
@@ -14,7 +15,7 @@ resource "aws_instance" "bastion" {
   }
 
   connection {
-    host        = aws_instance.bastion.public_ip
+    host        = aws_instance.bastion[0].public_ip
     type        = "ssh"
     user        = "admin"
     private_key = file(var.private_key_path)
@@ -26,6 +27,7 @@ resource "aws_instance" "bastion" {
   }
 
   provisioner "remote-exec" {
+    #on_failure = continue
     inline = [
       "sudo apt-get update",
       "sudo apt-get -y install awscli groff python-pip git vim",
@@ -50,13 +52,15 @@ resource "aws_instance" "bastion" {
 }
 
 resource "aws_iam_instance_profile" "profile" {
+  count = var.make_instances
   name = "bastion_profile"
-  role = aws_iam_role.role.name
+  role = aws_iam_role.role[0].name
 }
 
 resource "aws_iam_role_policy" "policy" {
+  count = var.make_instances
   name = "bastion_policy"
-  role = aws_iam_role.role.id
+  role = aws_iam_role.role[0].id
 
   policy = <<EOF
 {
@@ -74,7 +78,7 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_s3_bucket.fogtesting.arn}",
                 "${aws_s3_bucket.fogtesting.arn}/*"
             ],
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         },
         {
             "Sid": "ec2ReadPerms",
@@ -93,7 +97,7 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:DescribeTags"
             ],
             "Resource": "*",
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         },
         {
             "Sid": "ec2SpecialPerms",
@@ -106,7 +110,7 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:DeleteSnapshot"
             ],
             "Resource": "*",
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         },
         {
             "Sid": "ec2ModifyPerms",
@@ -120,18 +124,19 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:StopInstances"
             ],
             "Resource": [
-                "${aws_instance.centos7.arn}",
-                "${aws_instance.centos8.arn}",
-                "${aws_instance.rhel7.arn}",
-                "${aws_instance.rhel8.arn}",
-                "${aws_instance.fedora32.arn}",
-                "${aws_instance.debian10.arn}",
-                "${aws_instance.ubuntu18_04.arn}",
-                "${aws_instance.ubuntu20_04.arn}",
+                "${aws_instance.centos7[0].arn}",
+                "${aws_instance.centos8[0].arn}",
+                "${aws_instance.rhel7[0].arn}",
+                "${aws_instance.rhel8[0].arn}",
+                "${aws_instance.fedora32[0].arn}",
+                "${aws_instance.debian10[0].arn}",
+                "${aws_instance.ubuntu16_04[0].arn}",
+                "${aws_instance.ubuntu18_04[0].arn}",
+                "${aws_instance.ubuntu20_04[0].arn}",
                 "arn:aws:ec2:*::snapshot/*",
                 "arn:aws:ec2:*:*:volume/*"
             ],
-            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion.public_ip}/32"}}
+            "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         }
     ]
 }
@@ -140,8 +145,8 @@ EOF
 }
 
 resource "aws_iam_role" "role" {
+  count = var.make_instances
   name = "bastion_role"
-
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -165,18 +170,19 @@ resource "aws_iam_role" "role" {
   ]
 }
 EOF
-
 }
 
 resource "aws_route53_record" "bastion-dns-record" {
+  count   = var.make_instances
   zone_id = var.zone_id
   name    = "fogbastion.${var.zone_name}"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.bastion.public_dns]
+  records = [aws_instance.bastion[0].public_dns]
 }
 
 resource "aws_security_group" "allow-bastion" {
+  count       = var.make_instances
   name        = "from-bastion"
   description = "Allow all communications from bastion"
   vpc_id      = aws_vpc.vpc.id
@@ -185,7 +191,7 @@ resource "aws_security_group" "allow-bastion" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["${aws_instance.bastion.private_ip}/32"]
+    cidr_blocks = ["${aws_instance.bastion[0].private_ip}/32"]
   }
 
   egress {

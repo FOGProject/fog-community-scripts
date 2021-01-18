@@ -182,9 +182,9 @@ def restore_clean_snapshots():
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "fedora32":
+        elif OS == "fedora32" or OS == "fedora33":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "ubuntu18_04" or OS == "ubuntu20_04":
+        elif OS == "ubuntu18_04" or OS == "ubuntu20_04" or OS == "ubuntu16_04":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         else:
             # Here, just exit because it's better to know something is wrong early than to dig to figure it out why later.

@@ -1,6 +1,6 @@
-resource "aws_instance" "debian10" {
+resource "aws_instance" "ubuntu16_04" {
   count                       = var.make_instances
-  ami                         = data.aws_ami.debian10.id
+  ami                         = data.aws_ami.ubuntu16.id
   instance_type               = "t3.micro"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.allow-bastion[0].id]
@@ -13,8 +13,8 @@ resource "aws_instance" "debian10" {
   }
   connection {
     type                = "ssh"
-    user                = "admin"
-    host                = aws_instance.debian10[0].private_ip
+    user                = "ubuntu"
+    host                = aws_instance.ubuntu16_04[0].private_ip
     private_key         = file("~/.ssh/fogtesting_private")
     bastion_host        = aws_instance.bastion[0].public_ip
     bastion_user        = "admin"
@@ -23,13 +23,14 @@ resource "aws_instance" "debian10" {
   provisioner "remote-exec" {
     #on_failure = continue
     inline = [
+      "sudo apt-get -y remove unattended-upgrades",
       "sudo apt-get update",
-      "sudo apt-get -y dist-upgrade",
+      "sudo apt-get -y upgrade",
       "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
       "sudo echo '' >> /etc/ssh/sshd_config",
       "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
-      "sudo cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys",
+      "sudo cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys",
       "sudo apt-get -y install git",
       "sudo mkdir -p /root/git",
       "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
@@ -37,18 +38,18 @@ resource "aws_instance" "debian10" {
     ]
   }
   tags = {
-    Name    = "${var.project}-debian10"
+    Name    = "${var.project}-ubuntu16_04"
     Project = var.project
-    OS      = "debian10"
+    OS      = "ubuntu16_04"
   }
 }
 
-resource "aws_route53_record" "debian10-dns-record" {
+resource "aws_route53_record" "ubuntu16_04-dns-record" {
   count   = var.make_instances
   zone_id = aws_route53_zone.private-zone.zone_id
-  name    = "debian10.fogtesting.cloud"
+  name    = "ubuntu16_04.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.debian10[0].private_dns]
+  records = [aws_instance.ubuntu16_04[0].private_dns]
 }
 
