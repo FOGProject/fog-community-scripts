@@ -1,7 +1,7 @@
 #!/opt/external_reporting/flask/bin/python
 
 
-import json
+from json import loads, dumps
 import MySQLdb as mysql
 from boto3 import client
 import os
@@ -9,6 +9,16 @@ from datetime import datetime
 from matplotlib import pyplot, figure
 import numpy as np
 from sys import exit
+
+
+def write_json(JSON,file,indent=True):
+    if indent:
+        string = dumps(JSON, indent=4)
+    else:
+        string = dumps(JSON)
+    fh = open(file,'w')
+    fh.write(string)
+    fh.close()
 
 
 def query(theSql=None,json=False,single=False,getID=False):
@@ -40,7 +50,7 @@ def query(theSql=None,json=False,single=False,getID=False):
 # Load settings.
 settingsFilePath = '/opt/external_reporting/settings.json'
 with open(settingsFilePath, 'r') as settings_file:
-    settings = json.loads(settings_file.read())
+    settings = loads(settings_file.read())
 
 
 # Connect to database.
@@ -57,9 +67,18 @@ format = "%Y-%m-%d_%H-%M-%S"
 formatted_time = now.strftime(format)
 
 
+
+# Initialize a JSON object that will contain all the data.
+data = {}
+
+
+
+
+
 # Get number of fog systems in last 7 days.
 sql = "select count(id) from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY;"
 number_of_fog_systems = query(theSql=sql,single=True)
+data["number_of_fog_systems"] = number_of_fog_systems
 
 
 
@@ -68,6 +87,9 @@ sql = "select distinct fog_version, count(*) as count from versions_out_there wh
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
+data["fog_versions_and_counts"] = {}
+for key,value in zip(keys,values):
+    data["fog_versions_and_counts"][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
@@ -90,6 +112,9 @@ sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] + " " + i["os_version"] for i in results]
 values = [i["count"] for i in results]
+data["os_names_versions_and_counts"] = {}
+for key,value in zip(keys,values):
+    data["os_names_versions_and_counts"][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
@@ -114,6 +139,9 @@ sql = "select distinct os_name, count(*) as count from versions_out_there where 
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] for i in results]
 values = [i["count"] for i in results]
+data["os_names_and_counts"] = {}
+for key,value in zip(keys,values):
+    data["os_names_and_counts"][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
@@ -130,6 +158,10 @@ s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"]
 s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
 
+
+# Write JSON data to file and upload to S3
+write_json(data,"/tmp/external_reporting.json")
+s3_client.upload_file("/tmp/external_reporting.json", settings["s3_bucket_name"], "external_reporting.json")
 
 
 # Dump the database
@@ -161,7 +193,5 @@ os.system(the_command)
 # Upload the index.html file to base and archived..
 s3_client.upload_file("/tmp/index.html", settings["s3_bucket_name"], "archive/" + formatted_time + "/index.html", ExtraArgs={'ContentType': "text/html"})
 s3_client.upload_file("/tmp/index.html", settings["s3_bucket_name"], "index.html", ExtraArgs={'ContentType': "text/html"})
-
-
 
 
