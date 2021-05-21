@@ -49,3 +49,9 @@ bucket =`
 - Commit your changes to your fork, be sure to include any new files. Push your changes to your fork. Then create a pull request using your fork.
 
 
+## Partially removing an OS from the tests.
+
+- Fork the project, and work within your fork.
+- Rename the OS's .tf file to have `.out` on the end. Example: `git mv ubuntu60_04.tf ubuntu16_04.tf.out`
+- Remove the IAM references to the OS inside `terraform/bastion.tf`
+- Remove the DNS and OS references inside `scripts/settings.py` at the top of the file.
