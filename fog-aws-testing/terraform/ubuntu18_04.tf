@@ -10,6 +10,22 @@ resource "aws_instance" "ubuntu18_04" {
     volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-ubuntu18_04"
+      Project = var.project
+      OS      = "ubuntu18_04"
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-ubuntu18_04"
+    Project = var.project
+    OS      = "ubuntu18_04"
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   user_data = <<END_OF_USERDATA
@@ -27,12 +43,6 @@ mkdir -p /root/git
 git clone ${var.fog-project-repo} /root/git/fogproject
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-ubuntu18_04"
-    Project = var.project
-    OS      = "ubuntu18_04"
-  }
 }
 
 resource "aws_route53_record" "ubuntu18_04-dns-record" {

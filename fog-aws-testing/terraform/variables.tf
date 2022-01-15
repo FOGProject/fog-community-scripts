@@ -67,6 +67,8 @@ variable "zone_name" {
 # rhel https://access.redhat.com/articles/3135121
 # fedora https://alt.fedoraproject.org/cloud/
 # ubuntu https://cloud-images.ubuntu.com/locator/ec2/
+# RockyLinux https://rockylinux.org/cloud-images/
+# AlmaLinux https://wiki.almalinux.org/cloud/AWS.html#aws-marketplace
 
 # Usernames:
 # https://alestic.com/2014/01/ec2-ssh-username/
@@ -123,12 +125,22 @@ data "aws_ami" "centos8" {
   }
 }
 
-data "aws_ami" "almalinux8" {
+data "aws_ami" "alma8" {
   most_recent = true
   owners      = ["764336703387"]
   filter {
     name   = "name"
     values = ["AlmaLinux OS 8.* x86_64"]
+  }
+}
+
+
+data "aws_ami" "rocky8" {
+  most_recent = true
+  owners      = ["792107900819"]
+  filter {
+    name   = "name"
+    values = ["Rocky-8-ec2*x86_64"]
   }
 }
 
@@ -154,25 +166,6 @@ data "aws_ami" "rhel8" {
 }
 
 
-data "aws_ami" "fedora32" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
-  }
-}
-
-
-data "aws_ami" "fedora33" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-33*.x86_64-hvm-us-east-1-gp2-0"]
-  }
-}
-
 data "aws_ami" "fedora35" {
   most_recent = true
   owners      = ["125523088429"]
@@ -182,7 +175,6 @@ data "aws_ami" "fedora35" {
   }
 }
 
-z
 
 data "aws_ami" "ubuntu16" {
   most_recent = true

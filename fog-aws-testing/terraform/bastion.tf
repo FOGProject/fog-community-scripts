@@ -12,6 +12,20 @@ resource "aws_instance" "bastion" {
     volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-bastion"
+      Project = var.project
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-bastion"
+    Project = var.project
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   connection {
@@ -51,11 +65,6 @@ my_awesome_cron_file
 
 (sleep 10 && reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-bastion"
-    Project = var.project
-  }
 }
 
 resource "aws_iam_instance_profile" "profile" {
@@ -82,8 +91,8 @@ resource "aws_iam_role_policy" "policy" {
                 "s3:PutObjectAcl"
             ],
             "Resource": [
-                "${aws_s3_bucket.fogtesting.arn}",
-                "${aws_s3_bucket.fogtesting.arn}/*"
+                "${aws_s3_bucket.results_bucket.arn}",
+                "${aws_s3_bucket.results_bucket.arn}/*"
             ],
             "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         },

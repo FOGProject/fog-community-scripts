@@ -10,6 +10,22 @@ resource "aws_instance" "debian11" {
     volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-debian11"
+      Project = var.project
+      OS      = "debian11"
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-debian11"
+    Project = var.project
+    OS      = "debian11"
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   user_data = <<END_OF_USERDATA
@@ -26,12 +42,6 @@ mkdir -p /root/git
 git clone ${var.fog-project-repo} /root/git/fogproject
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-debian11"
-    Project = var.project
-    OS      = "debian11"
-  }
 }
 
 resource "aws_route53_record" "debian11-dns-record" {

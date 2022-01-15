@@ -10,6 +10,22 @@ resource "aws_instance" "centos8" {
     volume_type           = "gp3"
     volume_size           = 10
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-centos8"
+      Project = var.project
+      OS      = "centos8"
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-centos8"
+    Project = var.project
+    OS      = "centos8"
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
 user_data = <<END_OF_USERDATA
@@ -28,12 +44,6 @@ git clone ${var.fog-project-repo} /root/git/fogproject
 dnf -y update
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-centos8"
-    Project = var.project
-    OS      = "centos8"
-  }
 }
 
 resource "aws_route53_record" "centos8-dns-record" {

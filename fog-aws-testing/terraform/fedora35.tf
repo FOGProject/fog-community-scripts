@@ -10,6 +10,22 @@ resource "aws_instance" "fedora35" {
     volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-fedora35"
+      Project = var.project
+      OS      = "fedora35"
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-fedora35"
+    Project = var.project
+    OS      = "fedora35"
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   user_data = <<END_OF_USERDATA
@@ -28,12 +44,6 @@ git clone ${var.fog-project-repo} /root/git/fogproject
 dnf -y update
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-fedora35"
-    Project = var.project
-    OS      = "fedora35"
-  }
 }
 
 resource "aws_route53_record" "fedora35-dns-record" {

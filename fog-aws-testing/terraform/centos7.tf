@@ -10,6 +10,21 @@ resource "aws_instance" "centos7" {
     volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-centos7"
+      Project = var.project
+      OS      = "centos7"
+    }
+  }
+  tags = {
+    Name    = "${var.project}-centos7"
+    Project = var.project
+    OS      = "centos7"
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   user_data = <<END_OF_USERDATA
@@ -28,12 +43,6 @@ git clone ${var.fog-project-repo} /root/git/fogproject
 yum -y update
 (sleep 10 && sudo reboot)&
 END_OF_USERDATA
-
-  tags = {
-    Name    = "${var.project}-centos7"
-    Project = var.project
-    OS      = "centos7"
-  }
 }
 
 resource "aws_route53_record" "centos7-dns-record" {
