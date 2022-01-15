@@ -20,7 +20,7 @@ echo '' | sudo tee --append /etc/ssh/sshd_config
 echo 'PermitRootLogin prohibit-password' | tee --append /etc/ssh/sshd_config
 mkdir -p /root/.ssh
 rm -f /root/.ssh/authorized_keys
-cp /home/ec2-user/.ssh/authorized_keys /root/.ssh/authorized_keys
+cp /home/rocky/.ssh/authorized_keys /root/.ssh/authorized_keys
 # sed -i '/SELINUX=enforcing/d' /etc/selinux/config
 # echo 'SELINUX=permissive' | tee --append /etc/selinux/config
 mkdir -p /root/git
