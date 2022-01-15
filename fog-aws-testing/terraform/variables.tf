@@ -166,25 +166,6 @@ data "aws_ami" "rhel8" {
 }
 
 
-data "aws_ami" "fedora32" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
-  }
-}
-
-
-data "aws_ami" "fedora33" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-33*.x86_64-hvm-us-east-1-gp2-0"]
-  }
-}
-
 data "aws_ami" "fedora35" {
   most_recent = true
   owners      = ["125523088429"]
