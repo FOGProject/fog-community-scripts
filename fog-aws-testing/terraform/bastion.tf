@@ -128,7 +128,6 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.centos8[0].arn}",
                 "${aws_instance.rhel7[0].arn}",
                 "${aws_instance.rhel8[0].arn}",
-                "${aws_instance.fedora35[0].arn}",
                 "${aws_instance.debian10[0].arn}",
                  "${aws_instance.debian11[0].arn}",
                 "${aws_instance.ubuntu18_04[0].arn}",
@@ -206,4 +205,5 @@ resource "aws_security_group" "allow-bastion" {
     Project = var.project
   }
 }
+
 
