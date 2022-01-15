@@ -9,7 +9,7 @@ resource "aws_instance" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.profile[0].name
 
   root_block_device {
-    volume_type           = "standard"
+    volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
   }

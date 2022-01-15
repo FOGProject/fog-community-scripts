@@ -7,7 +7,7 @@ resource "aws_instance" "rockylinux8" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ssh-key.key_name
   root_block_device {
-    volume_type           = "standard"
+    volume_type           = "gp3"
     volume_size           = 10
     delete_on_termination = true
   }
