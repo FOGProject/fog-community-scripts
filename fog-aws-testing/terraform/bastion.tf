@@ -37,7 +37,7 @@ echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config
 mkdir -p /home/admin/.aws
 echo '${data.template_file.aws-config.rendered}' > /home/admin/.aws/config
 chmod 600 /home/admin/.aws/config
-sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim
+sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim82/defaults.vim
 git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts
 
 # Fix all permissions, because user_data is run as root.
