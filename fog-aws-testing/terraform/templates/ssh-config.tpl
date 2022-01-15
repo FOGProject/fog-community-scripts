@@ -26,13 +26,9 @@ Host rhel8
     User root
     HostName rhel8.fogtesting.cloud
     Port 22
-Host fedora32
+Host fedora35
     User root
-    HostName fedora32.fogtesting.cloud
-    Port 22
-Host fedora33
-    User root
-    HostName fedora33.fogtesting.cloud
+    HostName fedora35.fogtesting.cloud
     Port 22
 Host ubuntu16_04
     User root
