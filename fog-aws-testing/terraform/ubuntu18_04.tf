@@ -39,6 +39,7 @@ apt-get -y upgrade >> $${output_log_absolute_path} 2>&1
 
 # This bit here ensures we have python3, pip3, and the aws-cli.
 # This is so the outcome of instance provisioning can be monitored easily via s3.
+apt-get -y install python3-distutils
 curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py >> $${output_log_absolute_path} 2>&1
 pip3 install awscli >> $${output_log_absolute_path} 2>&1
