@@ -2,6 +2,9 @@ resource "aws_s3_bucket" "provisioning" {
   bucket = "provisioning-${data.aws_caller_identity.current.account_id}"
   force_destroy = true
   acl = "private"
+  versioning {
+    enabled = false
+  }
 }
 
 resource "aws_iam_instance_profile" "provisioning" {
