@@ -28,7 +28,7 @@ resource "aws_instance" "rockylinux8" {
       "echo '' | sudo tee --append /etc/ssh/sshd_config",
       "echo 'PermitRootLogin prohibit-password' | sudo tee --append /etc/ssh/sshd_config",
       "sudo mkdir -p /root/.ssh",
-      "sudo cp /home/centos/.ssh/authorized_keys /root/.ssh/authorized_keys",
+      "sudo cp /home/ec2-user/.ssh/authorized_keys /root/.ssh/authorized_keys",
       "# sudo sed -i '/SELINUX=enforcing/d' /etc/selinux/config",
       "# echo 'SELINUX=permissive' | sudo tee --append /etc/selinux/config",
       "sudo mkdir -p /root/git",
