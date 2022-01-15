@@ -31,29 +31,30 @@ resource "aws_instance" "fedora35" {
 
   user_data = <<END_OF_USERDATA
 #!/bin/bash
-output_log="/root/fedora35_provision_output.log"
-dnf -y update >> $${output_log} 2>&1
+output_log_name="fedora35_provision_output.log"
+output_log_absolute_path="/root/$${output_log_name}"
+dnf -y update >> $${output_log_absolute_path} 2>&1
 
 # This bit here ensures we have python3, pip3, and the aws-cli.
 # This is so the outcome of instance provisioning can be monitored easily via s3.
-curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py >> $${output_log} 2>&1
-python3 get-pip.py >> $${output_log} 2>&1
-pip3 install awscli >> $${output_log} 2>&1
-aws s3 rm s3://${aws_s3_bucket.provisioning.id}/$${output_log} >> $${output_log} 2>&1
+curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py >> $${output_log_absolute_path} 2>&1
+python3 get-pip.py >> $${output_log_absolute_path} 2>&1
+pip3 install awscli >> $${output_log_absolute_path} 2>&1
+aws s3 rm s3://${aws_s3_bucket.provisioning.id}/$${output_log_name} >> $${output_log_absolute_path} 2>&1
 
-sudo setenforce 0 >> $${output_log} 2>&1
-sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config >> $${output_log} 2>&1
-echo '' | tee --append /etc/ssh/sshd_config >> $${output_log} 2>&1
-echo 'PermitRootLogin prohibit-password' | tee --append /etc/ssh/sshd_config >> $${output_log} 2>&1
-mkdir -p /root/.ssh >> $${output_log} 2>&1
-cp /home/fedora/.ssh/authorized_keys /root/.ssh/authorized_keys >> $${output_log} 2>&1
-# sed -i '/SELINUX=enforcing/d' /etc/selinux/config >> $${output_log} 2>&1
-# echo 'SELINUX=permissive' | tee --append /etc/selinux/config >> $${output_log} 2>&1
-mkdir -p /root/git >> $${output_log} 2>&1
-dnf -y install git >> $${output_log} 2>&1
-git clone ${var.fog-project-repo} /root/git/fogproject >> $${output_log} 2>&1
-(sleep 15 && sudo reboot)& >> $${output_log} 2>&1
-aws s3 cp $${output_log} s3://${aws_s3_bucket.provisioning.id}/$${output_log}
+sudo setenforce 0 >> $${output_log_absolute_path} 2>&1
+sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config >> $${output_log_absolute_path} 2>&1
+echo '' | tee --append /etc/ssh/sshd_config >> $${output_log_absolute_path} 2>&1
+echo 'PermitRootLogin prohibit-password' | tee --append /etc/ssh/sshd_config >> $${output_log_absolute_path} 2>&1
+mkdir -p /root/.ssh >> $${output_log_absolute_path} 2>&1
+cp /home/fedora/.ssh/authorized_keys /root/.ssh/authorized_keys >> $${output_log_absolute_path} 2>&1
+# sed -i '/SELINUX=enforcing/d' /etc/selinux/config >> $${output_log_absolute_path} 2>&1
+# echo 'SELINUX=permissive' | tee --append /etc/selinux/config >> $${output_log_absolute_path} 2>&1
+mkdir -p /root/git >> $${output_log_absolute_path} 2>&1
+dnf -y install git >> $${output_log_absolute_path} 2>&1
+git clone ${var.fog-project-repo} /root/git/fogproject >> $${output_log_absolute_path} 2>&1
+(sleep 15 && sudo reboot)& >> $${output_log_absolute_path} 2>&1
+aws s3 cp $${output_log_absolute_path} s3://${aws_s3_bucket.provisioning.id}/$${output_log_name}
 END_OF_USERDATA
 }
 
