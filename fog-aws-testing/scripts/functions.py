@@ -180,9 +180,9 @@ def restore_clean_snapshots():
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/xvda")))
         elif OS == "centos7" or OS == "centos8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "almalinux8":
+        elif OS == "alma8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "rockylinux8":
+        elif OS == "rocky8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))

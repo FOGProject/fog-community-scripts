@@ -1,6 +1,6 @@
-resource "aws_instance" "rockylinux8" {
+resource "aws_instance" "rocky8" {
   count                       = var.make_instances
-  ami                         = data.aws_ami.rockylinux8.id
+  ami                         = data.aws_ami.rocky8.id
   instance_type               = "t3.small"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.allow-bastion[0].id]
@@ -31,18 +31,18 @@ dnf -y update
 END_OF_USERDATA
 
   tags = {
-    Name    = "${var.project}-rockylinux8"
+    Name    = "${var.project}-rocky8"
     Project = var.project
-    OS      = "rockylinux8"
+    OS      = "rocky8"
   }
 }
 
-resource "aws_route53_record" "rockylinux8-dns-record" {
+resource "aws_route53_record" "rocky8-dns-record" {
   count   = var.make_instances
   zone_id = aws_route53_zone.private-zone.zone_id
-  name    = "rockylinux8.fogtesting.cloud"
+  name    = "rocky8.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.rockylinux8[0].private_dns]
+  records = [aws_instance.rocky8[0].private_dns]
 }
 

@@ -36,8 +36,8 @@ variable "project" {
 
 variable "fog-community-scripts-repo" {
   type    = string
-  default = "https://github.com/FOGProject/fog-community-scripts.git"
-#  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
+#  default = "https://github.com/FOGProject/fog-community-scripts.git"
+  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
 }
 
 
@@ -125,7 +125,7 @@ data "aws_ami" "centos8" {
   }
 }
 
-data "aws_ami" "almalinux8" {
+data "aws_ami" "alma8" {
   most_recent = true
   owners      = ["764336703387"]
   filter {
@@ -135,7 +135,7 @@ data "aws_ami" "almalinux8" {
 }
 
 
-data "aws_ami" "rockylinux8" {
+data "aws_ami" "rocky8" {
   most_recent = true
   owners      = ["792107900819"]
   filter {

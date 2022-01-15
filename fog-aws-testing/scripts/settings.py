@@ -1,11 +1,11 @@
 # The list of OSs.
 # TODO: Make a dictionary, containing dictionaries of settings for each OS.
-OSs = ["debian10","debian11","centos7","centos8","fedora35","almalinux8","rockylinux8","rhel7","rhel8","ubuntu18_04","ubuntu20_04"]
-dnsAddresses = ["debian10.fogtesting.cloud","debian11.fogtesting.cloud","centos7.fogtesting.cloud","centos8.fogtesting.cloud","fedora35.fogtesting.cloud","almalinux8.fogtesting.cloud","rockylinux8.fogtesting.cloud","rhel7.fogtesting.cloud","rhel8.fogtesting.cloud","ubuntu18_04.fogtesting.cloud","ubuntu20_04.fogtesting.cloud"]
+OSs = ["debian10","debian11","centos7","centos8","fedora35","alma8","rocky8","rhel7","rhel8","ubuntu18_04","ubuntu20_04"]
+dnsAddresses = ["debian10.fogtesting.cloud","debian11.fogtesting.cloud","centos7.fogtesting.cloud","centos8.fogtesting.cloud","fedora35.fogtesting.cloud","alma8.fogtesting.cloud","rocky8.fogtesting.cloud","rhel7.fogtesting.cloud","rhel8.fogtesting.cloud","ubuntu18_04.fogtesting.cloud","ubuntu20_04.fogtesting.cloud"]
 
 # The list of branches to process.
-#branches = ["master","dev-branch","working-1.6"]
-branches = ["master","dev-branch"]
+branches = ["master","dev-branch","working-1.6"]
+#branches = ["master","dev-branch"]
 
 # The region we operate in, dictated by terraform.
 theRegion = "us-east-1"

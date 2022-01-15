@@ -18,13 +18,13 @@ Host fedora35
     User root
     HostName fedora35.fogtesting.cloud
     Port 22
-Host almalinux8
+Host alma8
     User root
-    HostName almalinux8.fogtesting.cloud
+    HostName alma8.fogtesting.cloud
     Port 22
-Host rockylinux8
+Host rocky8
     User root
-    HostName rockylinux8.fogtesting.cloud
+    HostName rocky8.fogtesting.cloud
     Port 22
 Host rhel7
     User root
