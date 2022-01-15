@@ -41,7 +41,8 @@ bucket =`
 
 - Fork the project, and work within your fork.
 - Create a terraform `data` component to select the latest available AMI from the official AMI owner and add it [here](./terraform/variables.tf). Use matching, wildcards, and filters to appropriately match accurately every time.
-- Add the new OS to the python settings file [here](./scripts/settings.py) for both the `OSs` list and the `dnsAddresses` list. Follow the existing syntax for adding.  
+- Add the new OS to the python settings file [here](./scripts/settings.py) for both the `OSs` list and the `dnsAddresses` list. Follow the existing syntax for adding. The order of the two lists here must be the same.
+- Options will be need to be added in functions.py, for the function `restore_clean_snapshots()`. This is because the disk mounting can be different between different OSs. This probably should be broken out into settings one day, but it's here for now.
 - Create a new instance resource in it's own file. There are a couple of these already that you can copy/paste and change parameters in. Follow the existing syntax for naming, which is all lowercase, no spaces. For Ubuntu since the minor version is important, seperate it like 18_04 for 18.04. The userdata section should be updated according to the OS's procedures. Generally, allowing root login must be allowed, passwords should be prohibited. The authorized key that is uploaded to the default user's home directory needs put into root's .ssh directory, in `authorized_keys`.  Make a directory called /root/git and clone fogproject into there. Update the OS entirely, and then reboot at the end. Use the existing OSs in the repo as a guide, most major Linux distros have been worked out already.
 - Add permissions for the new instance for the bastion [here](./terraform/bastion.tf), follow existing syntax.
 - Add new OS to the ssh config [here](./terraform/templates/ssh-config.tpl).

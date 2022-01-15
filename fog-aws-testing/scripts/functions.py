@@ -176,9 +176,11 @@ def restore_clean_snapshots():
     for OS in OSs:
         instance = get_instance("Name","fogtesting-" + OS)
         snapshot = get_snapshot("Name",OS + '-clean')
-        if OS == "debian10":
+        if OS == "debian10" or OS == "debian11":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/xvda")))
         elif OS == "centos7" or OS == "centos8":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "almalinux8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))

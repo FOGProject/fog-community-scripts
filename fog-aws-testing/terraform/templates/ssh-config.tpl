@@ -2,6 +2,10 @@ Host debian10
     User root
     HostName debian10.fogtesting.cloud
     Port 22
+Host debian11
+    User root
+    HostName debian11.fogtesting.cloud
+    Port 22
 Host centos7
     User root
     HostName centos7.fogtesting.cloud
@@ -9,6 +13,10 @@ Host centos7
 Host centos8
     User root
     HostName centos8.fogtesting.cloud
+    Port 22
+Host almalinux8
+    User root
+    HostName almalinux8.fogtesting.cloud
     Port 22
 Host rhel7
     User root

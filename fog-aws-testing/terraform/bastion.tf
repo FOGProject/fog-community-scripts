@@ -1,6 +1,6 @@
 resource "aws_instance" "bastion" {
   count                       = var.make_instances
-  ami                         = data.aws_ami.debian10.id
+  ami                         = data.aws_ami.debian11.id
   instance_type               = "t3.nano"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.sg-ssh.id]
@@ -130,6 +130,7 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.rhel8[0].arn}",
                 "${aws_instance.fedora32[0].arn}",
                 "${aws_instance.debian10[0].arn}",
+                 "${aws_instance.debian11[0].arn}",
                 "${aws_instance.ubuntu18_04[0].arn}",
                 "${aws_instance.ubuntu20_04[0].arn}",
                 "arn:aws:ec2:*::snapshot/*",
