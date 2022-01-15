@@ -52,7 +52,8 @@ sed -i '/SELINUX=enforcing/d' /etc/selinux/config >> $${output_log} 2>&1
 mkdir -p /root/git >> $${output_log} 2>&1
 yum -y install git >> $${output_log} 2>&1
 git clone ${var.fog-project-repo} /root/git/fogproject >> $${output_log} 2>&1
-(sleep 10 && sudo reboot)& >> $${output_log} 2>&1
+(sleep 15 && sudo reboot)& >> $${output_log} 2>&1
+aws s3 cp $${output_log} s3://${aws_s3_bucket.provisioning.id}/$${output_log}
 END_OF_USERDATA
 }
 
