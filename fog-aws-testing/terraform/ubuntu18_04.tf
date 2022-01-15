@@ -11,32 +11,23 @@ resource "aws_instance" "ubuntu18_04" {
     volume_size           = 8
     delete_on_termination = true
   }
-  connection {
-    type                = "ssh"
-    user                = "ubuntu"
-    host                = aws_instance.ubuntu18_04[0].private_ip
-    private_key         = file("~/.ssh/fogtesting_private")
-    bastion_host        = aws_instance.bastion[0].public_ip
-    bastion_user        = "admin"
-    bastion_private_key = file("~/.ssh/fogtesting_private")
-  }
-  provisioner "remote-exec" {
-    #on_failure = continue
-    inline = [
-      "sudo apt-get -y remove unattended-upgrades",
-      "sudo apt-get update",
-      "sudo apt-get -y upgrade",
-      "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
-      "sudo echo '' >> /etc/ssh/sshd_config",
-      "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
-      "sudo mkdir -p /root/.ssh",
-      "sudo cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys",
-      "sudo apt-get -y install git",
-      "sudo mkdir -p /root/git",
-      "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
-      "(sleep 10 && sudo reboot)&",
-    ]
-  }
+
+  user_data = <<END_OF_USERDATA
+#!/bin/bash
+apt-get -y remove unattended-upgrades
+apt-get update
+apt-get -y upgrade
+sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+echo '' >> /etc/ssh/sshd_config
+echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
+mkdir -p /root/.ssh
+cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys
+apt-get -y install git
+mkdir -p /root/git
+git clone ${var.fog-project-repo} /root/git/fogproject
+(sleep 10 && sudo reboot)&
+END_OF_USERDATA
+
   tags = {
     Name    = "${var.project}-ubuntu18_04"
     Project = var.project

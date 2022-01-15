@@ -11,31 +11,22 @@ resource "aws_instance" "debian10" {
     volume_size           = 8
     delete_on_termination = true
   }
-  connection {
-    type                = "ssh"
-    user                = "admin"
-    host                = aws_instance.debian10[0].private_ip
-    private_key         = file("~/.ssh/fogtesting_private")
-    bastion_host        = aws_instance.bastion[0].public_ip
-    bastion_user        = "admin"
-    bastion_private_key = file("~/.ssh/fogtesting_private")
-  }
-  provisioner "remote-exec" {
-    #on_failure = continue
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get -y dist-upgrade",
-      "sudo sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config",
-      "sudo echo '' >> /etc/ssh/sshd_config",
-      "sudo echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config",
-      "sudo mkdir -p /root/.ssh",
-      "sudo cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys",
-      "sudo apt-get -y install git",
-      "sudo mkdir -p /root/git",
-      "sudo git clone ${var.fog-project-repo} /root/git/fogproject",
-      "(sleep 10 && sudo reboot)&",
-    ]
-  }
+
+  user_data = <<END_OF_USERDATA
+#!/bin/bash
+apt-get update
+apt-get -y dist-upgrade
+sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+echo '' >> /etc/ssh/sshd_config
+echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
+mkdir -p /root/.ssh
+cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys
+apt-get -y install git
+mkdir -p /root/git
+git clone ${var.fog-project-repo} /root/git/fogproject
+(sleep 10 && sudo reboot)&
+END_OF_USERDATA
+
   tags = {
     Name    = "${var.project}-debian10"
     Project = var.project

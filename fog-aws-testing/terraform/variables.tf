@@ -1,6 +1,6 @@
 variable "make_instances" {
   type = number
-  default = 1
+  default = 0
   description = "Allows destroying & recreating just the instances. Accepts 1 or 0."
 }
 

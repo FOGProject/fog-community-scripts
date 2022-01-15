@@ -26,24 +26,22 @@ resource "aws_instance" "bastion" {
     destination = "/home/admin/.ssh/id_rsa"
   }
 
-  provisioner "remote-exec" {
-    #on_failure = continue
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get -y install awscli groff python3 python3-pip git vim",
-      "sudo pip3 install boto3",
-      "sudo apt-get -y dist-upgrade",
-      "chmod 400 /home/admin/.ssh/id_rsa",
-      "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
-      "mkdir -p ~/.aws",
-      "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
-      "chmod 600 ~/.aws/config",
-      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim",
-      "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
-      "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
-      "(sleep 10 && reboot)&",
-    ]
-  }
+user_data = <<END_OF_USERDATA
+#!/bin/bash
+apt-get update
+apt-get -y install awscli groff python3 python3-pip git vim
+pip3 install boto3
+apt-get -y dist-upgrade
+chmod 400 /home/admin/.ssh/id_rsa
+echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config
+mkdir -p ~/.aws
+echo '${data.template_file.aws-config.rendered}' > ~/.aws/config
+chmod 600 ~/.aws/config
+sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim
+git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts
+(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1
+(sleep 10 && reboot)&
+END_OF_USERDATA
 
   tags = {
     Name    = "${var.project}-bastion"
