@@ -34,11 +34,14 @@ pip3 install boto3
 apt-get -y dist-upgrade
 chmod 400 /home/admin/.ssh/id_rsa
 echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config
-mkdir -p ~/.aws
-echo '${data.template_file.aws-config.rendered}' > ~/.aws/config
-chmod 600 ~/.aws/config
+mkdir -p /home/admin/.aws
+echo '${data.template_file.aws-config.rendered}' > /home/admin/.aws/config
+chmod 600 /home/admin/.aws/config
 sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim
 git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts
+
+# Fix all permissions, because user_data is run as root.
+chown -R admin:admin /home/admin
 
 # Setup cron file to run tests.
 cat > /etc/cron.d/run_tests<<my_awesome_cron_file
