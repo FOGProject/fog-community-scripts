@@ -47,8 +47,8 @@ def append_file(path,content):
         with open(path, 'a') as content_file:
             content_file.write(content)
     except Exception as e:
-        print "Exception appending to '" + str(path) + "'"
-        print "Exception: " + str(e)
+        print("Exception appending to '" + str(path) + "'")
+        print("Exception: " + str(e))
         
 
 def overwrite_file(path,content):
@@ -56,8 +56,8 @@ def overwrite_file(path,content):
         with open(path, 'w') as content_file:
             content_file.write(content)
     except Exception as e:
-        print "Exception overwriting '" + str(path) + "'"
-        print "Exception: " + str(e)
+        print("Exception overwriting '" + str(path) + "'")
+        print("Exception: " + str(e))
 
 
 def delete_dir(directory):
@@ -182,6 +182,8 @@ def restore_clean_snapshots():
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "almalinux8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "rockylinux8":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "fedora35":
@@ -190,7 +192,7 @@ def restore_clean_snapshots():
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         else:
             # Here, just exit because it's better to know something is wrong early than to dig to figure it out why later.
-            print "Don't know how to handle OS: '" + str(OS) + "', exiting."
+            print("Don't know how to handle OS: '" + str(OS) + "', exiting.")
             sys.exit(1)
 
     complete_threads(threads)

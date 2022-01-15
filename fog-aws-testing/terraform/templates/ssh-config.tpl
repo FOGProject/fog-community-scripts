@@ -18,6 +18,10 @@ Host almalinux8
     User root
     HostName almalinux8.fogtesting.cloud
     Port 22
+Host rockylinux8
+    User root
+    HostName almalinux8.fogtesting.cloud
+    Port 22
 Host rhel7
     User root
     HostName rhel7.fogtesting.cloud

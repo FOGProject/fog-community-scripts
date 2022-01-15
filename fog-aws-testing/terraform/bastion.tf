@@ -30,8 +30,8 @@ resource "aws_instance" "bastion" {
     #on_failure = continue
     inline = [
       "sudo apt-get update",
-      "sudo apt-get -y install awscli groff python-pip git vim",
-      "sudo pip install boto3",
+      "sudo apt-get -y install awscli groff python3 python3-pip git vim",
+      "sudo pip3 install boto3",
       "sudo apt-get -y dist-upgrade",
       "chmod 400 /home/admin/.ssh/id_rsa",
       "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
@@ -128,8 +128,10 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.centos8[0].arn}",
                 "${aws_instance.rhel7[0].arn}",
                 "${aws_instance.rhel8[0].arn}",
+                "${aws_instance.almalinux8[0].arn}",
+                "${aws_instance.rockylinux8[0].arn}",
                 "${aws_instance.debian10[0].arn}",
-                 "${aws_instance.debian11[0].arn}",
+                "${aws_instance.debian11[0].arn}",
                 "${aws_instance.ubuntu18_04[0].arn}",
                 "${aws_instance.ubuntu20_04[0].arn}",
                 "arn:aws:ec2:*::snapshot/*",
