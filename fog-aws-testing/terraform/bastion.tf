@@ -43,9 +43,9 @@ resource "aws_instance" "bastion" {
 user_data = <<END_OF_USERDATA
 #!/bin/bash
 apt-get update
+apt-get -y dist-upgrade
 apt-get -y install awscli groff python3 python3-pip git vim
 pip3 install boto3
-apt-get -y dist-upgrade
 chmod 400 /home/admin/.ssh/id_rsa
 echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config
 mkdir -p /home/admin/.aws
@@ -173,14 +173,6 @@ resource "aws_iam_role" "role" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    },
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "s3.amazonaws.com"
       },
       "Effect": "Allow",
       "Sid": ""

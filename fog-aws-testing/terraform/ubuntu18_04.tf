@@ -6,6 +6,7 @@ resource "aws_instance" "ubuntu18_04" {
   vpc_security_group_ids      = [aws_security_group.allow-bastion[0].id]
   associate_public_ip_address = true
   key_name                    = aws_key_pair.ssh-key.key_name
+  iam_instance_profile        = aws_iam_instance_profile.provisioning.name
   root_block_device {
     volume_type           = "gp3"
     volume_size           = 8
@@ -30,18 +31,27 @@ resource "aws_instance" "ubuntu18_04" {
 
   user_data = <<END_OF_USERDATA
 #!/bin/bash
-apt-get -y remove unattended-upgrades
-apt-get update
-apt-get -y upgrade
-sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
-echo '' >> /etc/ssh/sshd_config
-echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config
-mkdir -p /root/.ssh
-cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys
-apt-get -y install git
-mkdir -p /root/git
-git clone ${var.fog-project-repo} /root/git/fogproject
-(sleep 10 && sudo reboot)&
+output_log="/root/ubuntu18_04_provision_output.log"
+apt-get -y remove unattended-upgrades >> $${output_log} 2>&1
+apt-get update >> $${output_log} 2>&1
+apt-get -y upgrade >> $${output_log} 2>&1
+
+# This bit here ensures we have python3, pip3, and the aws-cli.
+# This is so the outcome of instance provisioning can be monitored easily via s3.
+curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py >> $${output_log} 2>&1
+pip3 install awscli >> $${output_log} 2>&1
+aws s3 rm s3://${aws_s3_bucket.provisioning.id}/$${output_log} >> $${output_log} 2>&1
+
+sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config >> $${output_log} 2>&1
+echo '' >> /etc/ssh/sshd_config >> $${output_log} 2>&1
+echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config >> $${output_log} 2>&1
+mkdir -p /root/.ssh >> $${output_log} 2>&1
+cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys >> $${output_log} 2>&1
+apt-get -y install git >> $${output_log} 2>&1
+mkdir -p /root/git >> $${output_log} 2>&1
+git clone ${var.fog-project-repo} /root/git/fogproject >> $${output_log} 2>&1
+(sleep 10 && sudo reboot)& >> $${output_log} 2>&1
 END_OF_USERDATA
 }
 

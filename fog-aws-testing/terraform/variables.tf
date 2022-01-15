@@ -5,6 +5,7 @@ variable "make_instances" {
 }
 
 
+data "aws_caller_identity" "current" {}
 
 
 # Backends cannot use interpolation.
