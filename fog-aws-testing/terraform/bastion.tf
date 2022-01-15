@@ -39,7 +39,13 @@ echo '${data.template_file.aws-config.rendered}' > ~/.aws/config
 chmod 600 ~/.aws/config
 sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim
 git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts
-(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1
+
+# Setup cron file to run tests.
+cat > /etc/cron.d/run_tests<<my_awesome_cron_file
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+0 12 * * * admin /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py
+my_awesome_cron_file
+
 (sleep 10 && reboot)&
 END_OF_USERDATA
 
