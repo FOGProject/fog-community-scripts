@@ -1,6 +1,6 @@
-resource "aws_instance" "ubuntu18_04" {
+resource "aws_instance" "debian11" {
   count                       = var.make_instances
-  ami                         = data.aws_ami.ubuntu18.id
+  ami                         = data.aws_ami.debian11.id
   instance_type               = "t3.small"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.allow-bastion[0].id]
@@ -12,16 +12,16 @@ resource "aws_instance" "ubuntu18_04" {
     volume_size           = 8
     delete_on_termination = true
     tags = {
-      Name    = "${var.project}-ubuntu18_04"
+      Name    = "${var.project}-debian11"
       Project = var.project
-      OS      = "ubuntu18_04"
+      OS      = "debian11"
     }
   }
 
   tags = {
-    Name    = "${var.project}-ubuntu18_04"
+    Name    = "${var.project}-debian11"
     Project = var.project
-    OS      = "ubuntu18_04"
+    OS      = "debian11"
   }
   lifecycle {
     ignore_changes = [
@@ -31,16 +31,14 @@ resource "aws_instance" "ubuntu18_04" {
 
   user_data = <<END_OF_USERDATA
 #!/bin/bash
-output_log_name="ubuntu18_04_provision_output.log"
+output_log_name="debian11_provision_output.log"
 output_log_absolute_path="/root/$${output_log_name}"
-apt-get -y remove unattended-upgrades >> $${output_log_absolute_path} 2>&1
 apt-get update >> $${output_log_absolute_path} 2>&1
-apt-get -y upgrade >> $${output_log_absolute_path} 2>&1
+apt-get -y dist-upgrade >> $${output_log_absolute_path} 2>&1
 
 # This bit here ensures we have python3, pip3, and the aws-cli.
 # This is so the outcome of instance provisioning can be monitored easily via s3.
-apt-get -y install python3-distutils
-curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py >> $${output_log_absolute_path} 2>&1
 python3 get-pip.py >> $${output_log_absolute_path} 2>&1
 pip3 install awscli >> $${output_log_absolute_path} 2>&1
 aws s3 rm s3://${aws_s3_bucket.provisioning.id}/$${output_log_name} >> $${output_log_absolute_path} 2>&1
@@ -49,7 +47,7 @@ sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config >> $${output_log_absolute_path}
 echo '' >> /etc/ssh/sshd_config >> $${output_log_absolute_path} 2>&1
 echo 'PermitRootLogin prohibit-password' >> /etc/ssh/sshd_config >> $${output_log_absolute_path} 2>&1
 mkdir -p /root/.ssh >> $${output_log_absolute_path} 2>&1
-cp /home/ubuntu/.ssh/authorized_keys /root/.ssh/authorized_keys >> $${output_log_absolute_path} 2>&1
+cp /home/admin/.ssh/authorized_keys /root/.ssh/authorized_keys >> $${output_log_absolute_path} 2>&1
 apt-get -y install git >> $${output_log_absolute_path} 2>&1
 mkdir -p /root/git >> $${output_log_absolute_path} 2>&1
 git clone ${var.fog-project-repo} /root/git/fogproject >> $${output_log_absolute_path} 2>&1
@@ -58,12 +56,12 @@ aws s3 cp $${output_log_absolute_path} s3://${aws_s3_bucket.provisioning.id}/$${
 END_OF_USERDATA
 }
 
-resource "aws_route53_record" "ubuntu18_04-dns-record" {
+resource "aws_route53_record" "debian11-dns-record" {
   count   = var.make_instances
   zone_id = aws_route53_zone.private-zone.zone_id
-  name    = "ubuntu18_04.fogtesting.cloud"
+  name    = "debian11.fogtesting.cloud"
   type    = "CNAME"
   ttl     = "300"
-  records = [aws_instance.ubuntu18_04[0].private_dns]
+  records = [aws_instance.debian11[0].private_dns]
 }
 

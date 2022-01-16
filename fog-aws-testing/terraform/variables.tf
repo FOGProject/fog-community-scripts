@@ -5,6 +5,7 @@ variable "make_instances" {
 }
 
 
+data "aws_caller_identity" "current" {}
 
 
 # Backends cannot use interpolation.
@@ -67,8 +68,12 @@ variable "zone_name" {
 # rhel https://access.redhat.com/articles/3135121
 # fedora https://alt.fedoraproject.org/cloud/
 # ubuntu https://cloud-images.ubuntu.com/locator/ec2/
+# RockyLinux https://rockylinux.org/cloud-images/
+# AlmaLinux https://wiki.almalinux.org/cloud/AWS.html#aws-marketplace
 
-# Usernames: https://alestic.com/2014/01/ec2-ssh-username/
+# Usernames:
+# https://alestic.com/2014/01/ec2-ssh-username/
+# https://asvignesh.in/default-user-name-for-the-linux-ami-in-amazon-aws/
 
 
 data "aws_ami" "debian9" {
@@ -91,6 +96,17 @@ data "aws_ami" "debian10" {
 }
 
 
+data "aws_ami" "debian11" {
+  most_recent = true
+  owners      = ["136693071363"]
+  filter {
+    name   = "name"
+    values = ["debian-11-amd64*"]
+  }
+}
+
+
+
 data "aws_ami" "centos7" {
   most_recent = true
   owners      = ["679593333241"]
@@ -109,6 +125,26 @@ data "aws_ami" "centos8" {
     values = ["CentOS 8.* x86_64"]
   }
 }
+
+data "aws_ami" "alma8" {
+  most_recent = true
+  owners      = ["764336703387"]
+  filter {
+    name   = "name"
+    values = ["AlmaLinux OS 8.* x86_64"]
+  }
+}
+
+
+data "aws_ami" "rocky8" {
+  most_recent = true
+  owners      = ["792107900819"]
+  filter {
+    name   = "name"
+    values = ["Rocky-8-ec2*x86_64"]
+  }
+}
+
 
 
 data "aws_ami" "rhel7" {
@@ -131,22 +167,12 @@ data "aws_ami" "rhel8" {
 }
 
 
-data "aws_ami" "fedora32" {
+data "aws_ami" "fedora35" {
   most_recent = true
   owners      = ["125523088429"]
   filter {
     name   = "name"
-    values = ["Fedora-Cloud-Base-32-*.x86_64-hvm-us-east-1-standard-*"]
-  }
-}
-
-
-data "aws_ami" "fedora33" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["Fedora-Cloud-Base-33-1.2.x86_64-hvm-us-east-1-gp2-0"]
+    values = ["Fedora-Cloud-Base-35*.x86_64-hvm-us-east-1-gp2-0"]
   }
 }
 

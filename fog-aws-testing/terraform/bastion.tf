@@ -1,6 +1,6 @@
 resource "aws_instance" "bastion" {
   count                       = var.make_instances
-  ami                         = data.aws_ami.debian10.id
+  ami                         = data.aws_ami.debian11.id
   instance_type               = "t3.nano"
   subnet_id                   = aws_subnet.public-subnet.id
   vpc_security_group_ids      = [aws_security_group.sg-ssh.id]
@@ -9,9 +9,23 @@ resource "aws_instance" "bastion" {
   iam_instance_profile        = aws_iam_instance_profile.profile[0].name
 
   root_block_device {
-    volume_type           = "standard"
+    volume_type           = "gp3"
     volume_size           = 8
     delete_on_termination = true
+    tags = {
+      Name    = "${var.project}-bastion"
+      Project = var.project
+    }
+  }
+
+  tags = {
+    Name    = "${var.project}-bastion"
+    Project = var.project
+  }
+  lifecycle {
+    ignore_changes = [
+      associate_public_ip_address, ami, root_block_device[0].volume_type,
+    ]
   }
 
   connection {
@@ -26,29 +40,31 @@ resource "aws_instance" "bastion" {
     destination = "/home/admin/.ssh/id_rsa"
   }
 
-  provisioner "remote-exec" {
-    #on_failure = continue
-    inline = [
-      "sudo apt-get update",
-      "sudo apt-get -y install awscli groff python-pip git vim",
-      "sudo pip install boto3",
-      "sudo apt-get -y dist-upgrade",
-      "chmod 400 /home/admin/.ssh/id_rsa",
-      "echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config",
-      "mkdir -p ~/.aws",
-      "echo '${data.template_file.aws-config.rendered}' > ~/.aws/config",
-      "chmod 600 ~/.aws/config",
-      "sudo sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim81/defaults.vim",
-      "git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts",
-      "(crontab -l; echo '0 12 * * * /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py') | crontab - >/dev/null 2>&1",
-      "(sleep 10 && reboot)&",
-    ]
-  }
+user_data = <<END_OF_USERDATA
+#!/bin/bash
+apt-get update
+apt-get -y dist-upgrade
+apt-get -y install awscli groff python3 python3-pip git vim
+pip3 install boto3
+chmod 400 /home/admin/.ssh/id_rsa
+echo '${data.template_file.ssh-config.rendered}' > /home/admin/.ssh/config
+mkdir -p /home/admin/.aws
+echo '${data.template_file.aws-config.rendered}' > /home/admin/.aws/config
+chmod 600 /home/admin/.aws/config
+sed -i.bak 's/set mouse=a/\"set mouse=a/' /usr/share/vim/vim82/defaults.vim
+git clone ${var.fog-community-scripts-repo} /home/admin/fog-community-scripts
 
-  tags = {
-    Name    = "${var.project}-bastion"
-    Project = var.project
-  }
+# Fix all permissions, because user_data is run as root.
+chown -R admin:admin /home/admin
+
+# Setup cron file to run tests.
+cat > /etc/cron.d/run_tests<<my_awesome_cron_file
+PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+0 12 * * * admin /home/admin/fog-community-scripts/fog-aws-testing/scripts/test_all.py
+my_awesome_cron_file
+
+(sleep 10 && reboot)&
+END_OF_USERDATA
 }
 
 resource "aws_iam_instance_profile" "profile" {
@@ -75,8 +91,8 @@ resource "aws_iam_role_policy" "policy" {
                 "s3:PutObjectAcl"
             ],
             "Resource": [
-                "${aws_s3_bucket.fogtesting.arn}",
-                "${aws_s3_bucket.fogtesting.arn}/*"
+                "${aws_s3_bucket.results_bucket.arn}",
+                "${aws_s3_bucket.results_bucket.arn}/*"
             ],
             "Condition": {"IpAddress": {"aws:SourceIp": "${aws_instance.bastion[0].public_ip}/32"}}
         },
@@ -128,8 +144,11 @@ resource "aws_iam_role_policy" "policy" {
                 "${aws_instance.centos8[0].arn}",
                 "${aws_instance.rhel7[0].arn}",
                 "${aws_instance.rhel8[0].arn}",
-                "${aws_instance.fedora32[0].arn}",
+                "${aws_instance.fedora35[0].arn}",
+                "${aws_instance.alma8[0].arn}",
+                "${aws_instance.rocky8[0].arn}",
                 "${aws_instance.debian10[0].arn}",
+                "${aws_instance.debian11[0].arn}",
                 "${aws_instance.ubuntu18_04[0].arn}",
                 "${aws_instance.ubuntu20_04[0].arn}",
                 "arn:aws:ec2:*::snapshot/*",
@@ -154,14 +173,6 @@ resource "aws_iam_role" "role" {
       "Action": "sts:AssumeRole",
       "Principal": {
         "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    },
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "s3.amazonaws.com"
       },
       "Effect": "Allow",
       "Sid": ""
@@ -205,4 +216,5 @@ resource "aws_security_group" "allow-bastion" {
     Project = var.project
   }
 }
+
 

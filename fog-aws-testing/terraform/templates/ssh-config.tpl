@@ -2,6 +2,10 @@ Host debian10
     User root
     HostName debian10.fogtesting.cloud
     Port 22
+Host debian11
+    User root
+    HostName debian11.fogtesting.cloud
+    Port 22
 Host centos7
     User root
     HostName centos7.fogtesting.cloud
@@ -10,6 +14,18 @@ Host centos8
     User root
     HostName centos8.fogtesting.cloud
     Port 22
+Host fedora35
+    User root
+    HostName fedora35.fogtesting.cloud
+    Port 22
+Host alma8
+    User root
+    HostName alma8.fogtesting.cloud
+    Port 22
+Host rocky8
+    User root
+    HostName rocky8.fogtesting.cloud
+    Port 22
 Host rhel7
     User root
     HostName rhel7.fogtesting.cloud
@@ -17,14 +33,6 @@ Host rhel7
 Host rhel8
     User root
     HostName rhel8.fogtesting.cloud
-    Port 22
-Host fedora32
-    User root
-    HostName fedora32.fogtesting.cloud
-    Port 22
-Host fedora33
-    User root
-    HostName fedora33.fogtesting.cloud
     Port 22
 Host ubuntu16_04
     User root

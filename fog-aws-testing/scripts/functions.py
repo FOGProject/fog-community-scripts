@@ -47,8 +47,8 @@ def append_file(path,content):
         with open(path, 'a') as content_file:
             content_file.write(content)
     except Exception as e:
-        print "Exception appending to '" + str(path) + "'"
-        print "Exception: " + str(e)
+        print("Exception appending to '" + str(path) + "'")
+        print("Exception: " + str(e))
         
 
 def overwrite_file(path,content):
@@ -56,8 +56,8 @@ def overwrite_file(path,content):
         with open(path, 'w') as content_file:
             content_file.write(content)
     except Exception as e:
-        print "Exception overwriting '" + str(path) + "'"
-        print "Exception: " + str(e)
+        print("Exception overwriting '" + str(path) + "'")
+        print("Exception: " + str(e))
 
 
 def delete_dir(directory):
@@ -176,19 +176,23 @@ def restore_clean_snapshots():
     for OS in OSs:
         instance = get_instance("Name","fogtesting-" + OS)
         snapshot = get_snapshot("Name",OS + '-clean')
-        if OS == "debian10":
+        if OS == "debian10" or OS == "debian11":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/xvda")))
         elif OS == "centos7" or OS == "centos8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "alma8":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
+        elif OS == "rocky8":
+            threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "rhel7" or OS == "rhel8":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
-        elif OS == "fedora32" or OS == "fedora33":
+        elif OS == "fedora35":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         elif OS == "ubuntu18_04" or OS == "ubuntu20_04" or OS == "ubuntu16_04":
             threads.append(Thread(target=restore_snapshot_to_instance,args=(snapshot,instance,"/dev/sda1")))
         else:
             # Here, just exit because it's better to know something is wrong early than to dig to figure it out why later.
-            print "Don't know how to handle OS: '" + str(OS) + "', exiting."
+            print("Don't know how to handle OS: '" + str(OS) + "', exiting.")
             sys.exit(1)
 
     complete_threads(threads)
@@ -217,7 +221,7 @@ def restore_snapshot_to_instance(snapshot,instance,device):
                 time.sleep(wait)
         oldVolume.delete()
 
-    newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone,VolumeType='standard')
+    newVolume = ec2client.create_volume(SnapshotId=snapshot.id,AvailabilityZone=zone,VolumeType='gp3')
     newVolume = ec2resource.Volume(newVolume["VolumeId"])
     newVolume.create_tags(Tags=instance.tags)
     while True:
