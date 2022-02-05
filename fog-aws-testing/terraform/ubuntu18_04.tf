@@ -39,9 +39,12 @@ apt-get -y upgrade >> $${output_log_absolute_path} 2>&1
 
 # This bit here ensures we have python3, pip3, and the aws-cli.
 # This is so the outcome of instance provisioning can be monitored easily via s3.
-apt-get -y install python3-distutils
+apt-get -y install software-properties-common >> $${output_log_absolute_path} 2>&1
+add-apt-repository ppa:deadsnakes/ppa -y >> $${output_log_absolute_path} 2>&1
+apt-get update >> $${output_log_absolute_path} 2>&1
+apt-get -y install python3.7 >> $${output_log_absolute_path} 2>&1
 curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py >> $${output_log_absolute_path} 2>&1
+python3.7 get-pip.py >> $${output_log_absolute_path} 2>&1
 pip3 install awscli >> $${output_log_absolute_path} 2>&1
 aws s3 rm s3://${aws_s3_bucket.provisioning.id}/$${output_log_name} >> $${output_log_absolute_path} 2>&1
 
