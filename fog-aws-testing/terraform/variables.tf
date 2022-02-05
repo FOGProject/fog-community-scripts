@@ -106,13 +106,12 @@ data "aws_ami" "debian11" {
 }
 
 
-
 data "aws_ami" "centos7" {
   most_recent = true
-  owners      = ["679593333241"]
+  owners      = ["136693071363"]
   filter {
     name   = "name"
-    values = ["CentOS Linux 7 x86_64 HVM EBS 1801_01-*-ami-*"]
+    values = ["debian-11-amd64*"]
   }
 }
 
@@ -123,7 +122,6 @@ data "aws_ami" "alma8" {
   filter {
     name   = "name"
     values = ["AlmaLinux OS 8.* x86_64"]
-  }
 }
 
 
@@ -135,7 +133,6 @@ data "aws_ami" "rocky8" {
     values = ["Rocky-8-ec2*x86_64"]
   }
 }
-
 
 
 data "aws_ami" "rhel8" {
