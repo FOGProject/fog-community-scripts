@@ -137,7 +137,8 @@ resource "aws_iam_role_policy" "policy" {
                 "ec2:StartInstances",
                 "ec2:CreateTags",
                 "ec2:RunInstances",
-                "ec2:StopInstances"
+                "ec2:StopInstances",
+                "ec2:RebootInstances"
             ],
             "Resource": [
                 "${aws_instance.centos7[0].arn}",
