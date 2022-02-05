@@ -121,6 +121,7 @@ data "aws_ami" "alma8" {
   filter {
     name   = "name"
     values = ["AlmaLinux OS 8.* x86_64"]
+  }
 }
 
 
