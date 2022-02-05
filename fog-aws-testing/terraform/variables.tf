@@ -108,13 +108,12 @@ data "aws_ami" "debian11" {
 
 data "aws_ami" "centos7" {
   most_recent = true
-  owners      = ["136693071363"]
+  owners      = ["679593333241"]
   filter {
     name   = "name"
-    values = ["debian-11-amd64*"]
+    values = ["CentOS Linux 7 x86_64 HVM EBS 1801_01-*-ami-*"]
   }
 }
-
 
 data "aws_ami" "alma8" {
   most_recent = true
