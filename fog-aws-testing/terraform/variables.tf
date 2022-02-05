@@ -37,8 +37,8 @@ variable "project" {
 
 variable "fog-community-scripts-repo" {
   type    = string
-  default = "https://github.com/FOGProject/fog-community-scripts.git"
-#  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
+#  default = "https://github.com/FOGProject/fog-community-scripts.git"
+  default = "https://github.com/wayneworkman/fog-community-scripts.git" # For wayne's development branch.
 }
 
 
@@ -117,15 +117,6 @@ data "aws_ami" "centos7" {
 }
 
 
-data "aws_ami" "centos8" {
-  most_recent = true
-  owners      = ["125523088429"]
-  filter {
-    name   = "name"
-    values = ["CentOS 8.* x86_64"]
-  }
-}
-
 data "aws_ami" "alma8" {
   most_recent = true
   owners      = ["764336703387"]
@@ -145,16 +136,6 @@ data "aws_ami" "rocky8" {
   }
 }
 
-
-
-data "aws_ami" "rhel7" {
-  most_recent = true
-  owners      = ["309956199498"]
-  filter {
-    name   = "name"
-    values = ["RHEL-7.*_HVM_GA-*-x86_64-2-Hourly2-GP2"]
-  }
-}
 
 
 data "aws_ami" "rhel8" {

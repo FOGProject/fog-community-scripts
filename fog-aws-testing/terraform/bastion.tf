@@ -141,7 +141,6 @@ resource "aws_iam_role_policy" "policy" {
             ],
             "Resource": [
                 "${aws_instance.centos7[0].arn}",
-                "${aws_instance.rhel7[0].arn}",
                 "${aws_instance.rhel8[0].arn}",
                 "${aws_instance.fedora35[0].arn}",
                 "${aws_instance.alma8[0].arn}",
