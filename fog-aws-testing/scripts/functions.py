@@ -244,6 +244,17 @@ def restore_snapshot_to_instance(snapshot,instance,device):
     wait_until_running(instance)
 
 
+def start_instances():
+    for os in OSs:
+        instance = get_instance("Name","fogtesting-" + os)
+        instance.start()
+        wait_until_running(instance)
+
+def stop_instances():
+    for os in OSs:
+        instance = get_instance("Name","fogtesting-" + os)
+        instance.stop()
+
 def update_os(branch,OS,now,instance):
     # Make required directory.
     make_dir(os.path.join(webdir,OS))
