@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from app.functions import *
 
 
@@ -10,7 +9,6 @@ def post_records():
 
     Example JSON body:
 
-```
 {
   "fog_version": "1.5.9.139",
   "os_name": "Debian",
@@ -22,7 +20,6 @@ def post_records():
     "another_test_kernel 4.19.145 (sebastian@Tollana) #1 SMP Sun Sep 13 05:43:10 CDT 2020"
   ]
 }
-```
 
     """
     if not request.is_json:
@@ -33,7 +30,7 @@ def post_records():
     os_name = db.escape_string(record.get("os_name", "")).decode("utf-8")
     os_version = db.escape_string(record.get("os_version", "")).decode("utf-8")
     fog_version = db.escape_string(record.get("fog_version", "")).decode("utf-8")
-    kernel_versions_info = db.escape_string(record.get("kernel_versions_info", "")).decode("utf-8")
+    kernel_versions_info = record.get("kernel_versions_info", "")
 
     sql = "INSERT INTO versions_out_there (os_name,os_version,fog_version) VALUES ('" + os_name + "','" + os_version + "','" + fog_version + "');"
 
@@ -49,10 +46,10 @@ def post_records():
     sql = "INSERT INTO kernels_out_there (kernel_version) VALUES "
     for kernel_version in kernel_versions_info:
         # Check for blank and null.
-        if kernel_version == "" or kernel_version is NULL:
+        if kernel_version == "" or kernel_version is None:
             continue
-        # Trim to be less than 255 characters.
-        new_kernel_version = kernel_version[:254]
+        # Trim to be less than 255 characters, escape, and decode.
+        new_kernel_version = db.escape_string(kernel_version[:254]).decode("utf-8") 
         if sql[-1] == ")":
             sql = sql + ",('" + str(new_kernel_version) + "')"
         else:
