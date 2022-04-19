@@ -9,3 +9,18 @@ If you are wanting to run this yourself, you will find some outputs are needed f
 Second step is to run the terraform. This should provision a small instance and an s3 bucket, some security groups, some IAM profiles & policies. The Terraform will initiate the software installation via UserData. A certificate is obtained from Let's Encrypt automatically via userdata.
 
 To run without the Terraform, you'll find an installer within the application that works with Debian 10.
+
+
+## DB Restore Procedures
+
+Using terminal on the reporting API instance (ssh or session manager), copy the latest DB backup from s3:
+
+`aws s3 cp s3://fog-external-reporting-results.theworkmans.us/db.tar.gz .`
+
+Unpack the tar file:
+`tar -xf db.tar.gz`
+
+Load into MariaDB:
+`mysql -D external_reporting < db.sql`
+
+
