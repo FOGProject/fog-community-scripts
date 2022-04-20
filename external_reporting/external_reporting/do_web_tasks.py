@@ -189,7 +189,7 @@ ax = pyplot.gca()
 ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
 fig.set_size_inches(15, 10)
-fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100, bbox_inches='tight')
+fig.savefig('/tmp/' + key_name + '.png', dpi=100, bbox_inches='tight')
 s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], "archive/" + formatted_time + "/" + key_name + ".png", ExtraArgs={'ContentType': "image/png"})
 s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], key_name + ".png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
