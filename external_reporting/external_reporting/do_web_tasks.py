@@ -155,7 +155,7 @@ y_pos = np.arange(len(keys))
 pyplot.barh(y_pos, values)
 pyplot.yticks(y_pos, keys)
 pyplot.xlabel('Count')
-pyplot.title('Top OSs in use')
+pyplot.title('All OSs in use')
 ax = pyplot.gca()
 ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
