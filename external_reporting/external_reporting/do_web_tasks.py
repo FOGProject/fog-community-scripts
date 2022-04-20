@@ -82,81 +82,119 @@ data["number_of_fog_systems"] = number_of_fog_systems
 
 
 
-# fog versions & counts from the last 7 days.
-sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit 20;"
+# fog versions & counts from the last N days.
+distinct_number_to_report = "30" # must be a string.
+key_name = "fog_versions_and_counts" # must be a string.
+sql = "select distinct fog_version, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) GROUP BY fog_version ORDER BY count DESC limit " + distinct_number_to_report + ";"
 results = query(theSql=sql,json=True)
 keys = [i["fog_version"] for i in results]
 values = [i["count"] for i in results]
-data["fog_versions_and_counts"] = {}
+data[key_name] = {}
 for key,value in zip(keys,values):
-    data["fog_versions_and_counts"][key] = value
+    data[key_name][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
 pyplot.barh(y_pos, values)
 pyplot.yticks(y_pos, keys)
 pyplot.xlabel('Count')
-pyplot.title('Top 20 FOG Versions in use')
+pyplot.title('Top ' + distinct_number_to_report + ' FOG Versions in use')
 ax = pyplot.gca()
 ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
 fig.set_size_inches(15, 10)
-fig.savefig('/tmp/fog_versions_and_counts.png', dpi=100, bbox_inches='tight')
-s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
-s3_client.upload_file("/tmp/fog_versions_and_counts.png", settings["s3_bucket_name"], "fog_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+fig.savefig('/tmp/' + key_name + '.png', dpi=100, bbox_inches='tight')
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], "archive/" + formatted_time + "/" + key_name + ".png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"],  key_name + ".png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
 
 
-# OS Names, Versions, and Counts in last 7 days.
-sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit 20;"
+
+
+# OS Names, Versions, and Counts in last N days.
+distinct_number_to_report = "30" # must be a string.
+key_name = "os_names_versions_and_counts" # must be a string.
+sql = "SELECT DISTINCT os_name, os_version, count(*) as count FROM versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by os_name, os_version ORDER BY count DESC limit " + distinct_number_to_report + ";"
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] + " " + i["os_version"] for i in results]
 values = [i["count"] for i in results]
-data["os_names_versions_and_counts"] = {}
+data[key_name] = {}
 for key,value in zip(keys,values):
-    data["os_names_versions_and_counts"][key] = value
+    data[key_name][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
 pyplot.barh(y_pos, values)
 pyplot.yticks(y_pos, keys)
 pyplot.xlabel('Count')
-pyplot.title('Top 20 OS Versions in use')
+pyplot.title('Top ' + distinct_number_to_report + ' OS Versions in use')
 ax = pyplot.gca()
 ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
 fig.set_size_inches(15, 10)
-fig.savefig('/tmp/os_names_versions_and_counts.png', dpi=100, bbox_inches='tight')
-s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
-s3_client.upload_file("/tmp/os_names_versions_and_counts.png", settings["s3_bucket_name"], "os_names_versions_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+fig.savefig('/tmp/' + key_name + '.png', dpi=100, bbox_inches='tight')
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], "archive/" + formatted_time + "/" + key_name + ".png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], key_name + ".png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
 
 
 
 
-# OS names & counts from last 7 days.
+# OS names & counts from last N days.
+key_name = "os_names_and_counts" # must be a string.
 sql = "select distinct os_name, count(*) as count from versions_out_there where id in (select id from versions_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by os_name ORDER BY count DESC;"
 results = query(theSql=sql,json=True)
 keys = [i["os_name"] for i in results]
 values = [i["count"] for i in results]
-data["os_names_and_counts"] = {}
+data[key_name] = {}
 for key,value in zip(keys,values):
-    data["os_names_and_counts"][key] = value
+    data[key_name][key] = value
 keys.reverse()
 values.reverse()
 y_pos = np.arange(len(keys))
 pyplot.barh(y_pos, values)
 pyplot.yticks(y_pos, keys)
 pyplot.xlabel('Count')
-pyplot.title('Top OSs in use')
+pyplot.title('All OSs in use')
 ax = pyplot.gca()
 ax.xaxis.grid() # vertical lines
 fig = pyplot.gcf()
 fig.set_size_inches(15, 10)
-fig.savefig('/tmp/os_names_and_counts.png', dpi=100, bbox_inches='tight')
-s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "archive/" + formatted_time + "/os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
-s3_client.upload_file("/tmp/os_names_and_counts.png", settings["s3_bucket_name"], "os_names_and_counts.png", ExtraArgs={'ContentType': "image/png"})
+fig.savefig('/tmp/' + key_name + '.png', dpi=100, bbox_inches='tight')
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], "archive/" + formatted_time + "/" + key_name + ".png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], key_name + ".png", ExtraArgs={'ContentType': "image/png"})
 pyplot.clf()
+
+
+
+
+# Kernel names and counts for last N days.
+distinct_number_to_report = "30" # must be a string.
+key_name = "kernels_out_there" # must be a string.
+sql = "SELECT DISTINCT kernel_version, count(*) as count FROM kernels_out_there where id in (select id from kernels_out_there where creation_time >= NOW() - INTERVAL 7 DAY) group by kernel_version ORDER BY count DESC limit " + distinct_number_to_report + ";"
+results = query(theSql=sql,json=True)
+keys = [i["kernel_version"] for i in results]
+values = [i["count"] for i in results]
+data[key_name] = {}
+for key,value in zip(keys,values):
+    data[key_name][key] = value
+keys.reverse()
+values.reverse()
+y_pos = np.arange(len(keys))
+pyplot.barh(y_pos, values)
+pyplot.yticks(y_pos, keys)
+pyplot.xlabel('Count')
+pyplot.title('Top ' + distinct_number_to_report + ' Kernel Versions in use')
+ax = pyplot.gca()
+ax.xaxis.grid() # vertical lines
+fig = pyplot.gcf()
+fig.set_size_inches(15, 10)
+fig.savefig('/tmp/' + key_name + '.png', dpi=100, bbox_inches='tight')
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], "archive/" + formatted_time + "/" + key_name + ".png", ExtraArgs={'ContentType': "image/png"})
+s3_client.upload_file("/tmp/" + key_name + ".png", settings["s3_bucket_name"], key_name + ".png", ExtraArgs={'ContentType': "image/png"})
+pyplot.clf()
+
+
 
 
 # Write JSON data to file and upload to S3
