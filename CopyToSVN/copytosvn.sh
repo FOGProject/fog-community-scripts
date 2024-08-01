@@ -44,7 +44,7 @@ trunkUpdate() {
     local testvar=$1
     local cwd=$(pwd)
     [[ $testvar == 'full' || -z $testvar ]] && testvar=""
-    cd /root/fogproject
+    cd $HOME/fogproject
     dots "Updating GIT Directory"
     /usr/bin/git checkout $testvar >/dev/null 2>&1
     /usr/bin/git pull >/dev/null 2>&1
@@ -67,43 +67,54 @@ versionUpdate() {
     case $branchon in
         dev)
             verbegin="$(git describe --tags ${gitcom})."
-            channel="Beta"
+            channel="Patches"
             ;;
         working)
-            verbegin="${branchend}.0-alpha."
-            channel="Alpha"
+            verbegin="${branchend}.0-beta."
+            channel="Beta"
             ;;
         master)
             [[ -z $trunkver ]] && trunkver="$(git describe --tags ${gitcom})"
-            channel="Stable"
+            channel="Release"
+            ;;
+        rc)
+            verbegin="rc-${branchend}."
+            channel="Release Candidate"
             ;;
     esac
     [[ -z $trunkver ]] && trunkversion="${verbegin}${gitcount}" || trunkversion=${trunkver}
-    sed -i "s/define('FOG_VERSION'.*);/define('FOG_VERSION', '$trunkversion');/g" /var/www/fog/lib/fog/system.class.php >/dev/null 2>&1
+    sed -i "s/define('FOG_VERSION'.*);/define('FOG_VERSION', '$trunkversion');/g" $HOME/fogproject/packages/web/lib/fog/system.class.php >/dev/null 2>&1
     [[ -z $channel ]] && channel="Alpha"
-    sed -i "s/define('FOG_CHANNEL'.*);/define('FOG_CHANNEL', '$channel');/g" /var/www/fog/lib/fog/system.class.php >/dev/null 2>&1
+    sed -i "s/define('FOG_CHANNEL'.*);/define('FOG_CHANNEL', '$channel');/g" $HOME/fogproject/packages/web/lib/fog/system.class.php >/dev/null 2>&1
     errorStat $?
 }
 
 copyFilesToTrunk() {
     local testvar=$1
-    local path='/root/fogproject/packages/web/'
+    local path='$HOME/fogproject/packages/web/'
     dots "Removing any ~ files."
     find /var/www/fog/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
     errorStat $?
     dots "Copying files to git"
-    rsync -a --no-links -heP --exclude maintenance --delete /var/www/fog/ $path >/dev/null 2>&1
+    rsync -a --no-links -heP --exclude maintenance --delete /var/www/fog/ $HOME/fogproject/packages/web >/dev/null 2>&1
     errorStat $?
     dots "Cleaning up"
-    rm -rf /root/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
-    rm -rf /root/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
-    rm -rf /root/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
-    rm -rf /root/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
-    find /root/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
+    rm -rf $HOME/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
+    rm -rf $HOME/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
+    rm -rf $HOME/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
+    rm -rf $HOME/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
+    find $HOME/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
     [[ $testvar == 'full' ]] && \
-        sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' /root/fogproject/bin/installfog.sh || \
-        sed -i 's/^fullrelease=.*$/fullrelease="0"/g' /root/fogproject/bin/installfog.sh
+        sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' $HOME/fogproject/bin/installfog.sh || \
+        sed -i 's/^fullrelease=.*$/fullrelease="0"/g' $HOME/fogproject/bin/installfog.sh
     errorStat $?
+}
+
+updateLanguage() {
+    xgettext --language=PHP --from-code=UTF-8 --output="$HOME/fogproject/packages/web/management/languages/messages.pot" --omit-header --no-location $(find $HOME/fogproject/packages/web/ -name "*.php")
+    for PO_FILE in $(find $HOME/fogproject/packages/web/management/languages/ -type f -name *.po); do
+        msgmerge --update --backup=none $PO_FILE $HOME/fogproject/packages/web/management/languages/messages.pot 2>/dev/null >/dev/null
+    done
 }
 
 [[ -n $psrfix ]] && psrfix "/var/www/fog"
@@ -112,5 +123,6 @@ trunkUpdate $*
 #dots "Update language po/pot files"
 #foglanguage.sh >/dev/null 2>&1
 #errorStat $?
-versionUpdate $*
 copyFilesToTrunk $*
+updateLanguage $*
+versionUpdate $*
