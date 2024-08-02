@@ -112,8 +112,10 @@ copyFilesToTrunk() {
 
 updateLanguage() {
     xgettext --language=PHP --from-code=UTF-8 --output="$HOME/fogproject/packages/web/management/languages/messages.pot" --omit-header --no-location $(find $HOME/fogproject/packages/web/ -name "*.php")
+    msgcat --sort-output -o "$HOME/fogproject/packages/web/management/languages/messages.pot" "$HOME/fogproject/packages/web/management/languages/messages.pot"
     for PO_FILE in $(find $HOME/fogproject/packages/web/management/languages/ -type f -name *.po); do
         msgmerge --update --backup=none $PO_FILE $HOME/fogproject/packages/web/management/languages/messages.pot 2>/dev/null >/dev/null
+        msgcat --sort-output -o $PO_FILE $PO_FILE
     done
 }
 
