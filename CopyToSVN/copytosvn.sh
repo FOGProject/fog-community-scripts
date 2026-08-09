@@ -1,5 +1,38 @@
 #!/bin/bash
-# Script perform copying of data.
+#
+# copytosvn.sh - pull edits made on a live FOG server back into a git checkout.
+#
+# Direction: WEB -> GIT. Use this only after editing files directly under the
+# webroot. The reverse direction is CopyBackTrunk; running that one afterwards
+# will overwrite the webroot from git, so do not chain them.
+#
+# Usage:
+#   copytosvn.sh [repo-path] [webroot]
+#
+# Both optional, and both also settable as environment variables:
+#
+#   path     the git checkout   (default: $HOME/fogproject)
+#   webroot  the live web tree  (default: /var/www/fog)
+#
+# WHAT THIS SCRIPT DELIBERATELY NO LONGER DOES
+#
+# It used to also run php-cs-fixer, regenerate the gettext .pot/.po files, and
+# rewrite FOG_VERSION/FOG_CHANNEL. All three now belong to fogproject's
+# .githooks/pre-commit, which runs on every commit and does them better:
+#
+#   * PSR2 fixing there is scoped to the files staged for that one commit, and
+#     skips partially-staged files. Doing it here meant running the fixer across
+#     the entire live webroot and rsyncing the rewrite into git, which swept
+#     unrelated working-tree changes into whatever commit came next.
+#   * The version formula lives in .githooks/lib/fog-version.sh and is shared
+#     with CI, so a local commit and CI's sweep cannot compute different answers.
+#     The copy that used to live here had drifted: it knew 'master' but not
+#     'stable' or 'feature-*', and those branches fell through its case and were
+#     stamped FOG_CHANNEL='Alpha'.
+#
+# Keeping them in two places is how they diverge. The hook is the one place.
+#
+set -u
 
 # Prints dots to a defined set.
 # Arguments:
@@ -23,108 +56,84 @@ errorStat() {
     echo "OK"
 }
 
-# Performs psr fixing of the files.
-# Arguments:
-#  $1 The path check.
-psrfix() {
-    local path="$1"
-    [[ -z $path || ! -e $path ]] && errorStat 1
-    dots "Updating php-cs-fixer"
-    /usr/local/bin/php-cs-fixer self-update >/dev/null 2>&1
-    errorStat "$?"
-    dots "Fixing PSR Structures in php"
-    /usr/local/bin/php-cs-fixer fix ${path} --rules=@PSR2 >/dev/null 2>&1
-    echo "OK"
+path=${1:-${path:-}}
+webroot=${2:-${webroot:-/var/www/fog}}
+
+[[ -z "$path" || ( ! -e "$path" && ! -e "$HOME/$path" ) ]] && path="$HOME/fogproject"
+[[ -e "$HOME/$path" && ! -e "$path" ]] && path="$HOME/$path"
+
+[[ -d "$webroot" ]] || {
+    echo "No webroot at ${webroot}."
+    exit 1
+}
+[[ -d "$path/packages/web" ]] || {
+    echo "No FOG checkout at ${path} (expected ${path}/packages/web)."
+    exit 1
 }
 
-# Update the trunk files.
-# Arguments:
-#  $1 Test variable for full or branch.
-trunkUpdate() {
-    local testvar=$1
-    local cwd=$(pwd)
-    [[ $testvar == 'full' || -z $testvar ]] && testvar=""
-    cd $HOME/fogproject
-    dots "Updating GIT Directory"
-    /usr/bin/git checkout $testvar >/dev/null 2>&1
-    /usr/bin/git pull >/dev/null 2>&1
-    errorStat "$?"
-}
+# Installer-owned paths that exist ONLY in the deployed tree. Copying them back
+# puts installer state and downloaded binaries into the source tree, where they
+# do not belong. .gitignore catches most of them, but two are not ignored and
+# would show up as untracked files that a `git add -A` sweeps straight into a
+# commit:
+#
+#   service/secureboot/          the published enrolment kit -- MOK.der, the
+#                                PK/KEK/db .auth blobs, MokManager.efi. Binary,
+#                                and specific to the server it was built on.
+#   kea-dhcp4.conf.fog-sample    written by the installer.
+#
+# The rest are listed anyway rather than relying on .gitignore, so this script
+# is correct on its own terms and does not silently depend on a rule in another
+# repository staying put. This mirrors CopyBackTrunk's exclude list in reverse.
+#
+# Patterns are relative to the rsync SOURCE ROOT and quoted so the shell does
+# not glob them before rsync sees them.
+excludes=(
+    # Runtime logs, 0200 and owned by the web user.
+    --exclude='fog_*.log'
+    # Published Secure Boot enrolment kit.
+    --exclude='service/secureboot/'
+    # Server certificate issued at install time.
+    --exclude='management/other/ssl/'
+    # Generated at deploy time; holds the database credentials.
+    --exclude='lib/fog/config.class.php'
+    # Written by the installer (GH-850); defines FOG_BASE_DIR.
+    --exclude='commons/fogpaths.php'
+    # Installer-written sample config.
+    --exclude='kea-dhcp4.conf.fog-sample'
+    # Compiled translations. The .po sources are tracked; the .mo files are
+    # build output and are regenerated on the server.
+    --exclude='*.mo'
+    # Downloaded FOS binaries, not source -- and the deployed copies are signed
+    # for Secure Boot, so copying them into the tree would commit signed
+    # artifacts as though they were sources.
+    --exclude='service/ipxe/bzImage*'
+    --exclude='service/ipxe/init*.xz'
+    --exclude='service/ipxe/arm_Image*'
+    --exclude='service/ipxe/arm_init.cpio.gz'
+    --exclude='service/ipxe/*.sha256'
+    --exclude='*.unsigned'
+    # The installer's holding page; not part of the application.
+    --exclude='maintenance'
+    # Editor leftovers.
+    --exclude='*~'
+)
 
-# Updates the version numbers.
-# Arguments:
-#  $1 The second is branch or typed as full.
-versionUpdate() {
-    local testvar=$1
-    [[ $testvar == full ]] && channel="Stable"
-    dots "Updating Version in File"
-    local gitbranch=$(git branch | awk '/*/ {print $2}')
-    local gitcom=$(git rev-list --tags --no-walk --max-count=1)
-    local gitcount=$(git rev-list ${gitcom}..HEAD --count)
-    local branchon=$(echo ${gitbranch} | awk -F'-' '{print $1}')
-    local branchend=$(echo ${gitbranch} | awk -F'-' '{print $2}')
-    local verbegin=""
-    case $branchon in
-        dev)
-            verbegin="$(git describe --tags ${gitcom})."
-            channel="Patches"
-            ;;
-        working)
-            verbegin="${branchend}.0-beta."
-            channel="Beta"
-            ;;
-        master)
-            [[ -z $trunkver ]] && trunkver="$(git describe --tags ${gitcom})"
-            channel="Release"
-            ;;
-        rc)
-            verbegin="rc-${branchend}."
-            channel="Release Candidate"
-            ;;
-    esac
-    [[ -z $trunkver ]] && trunkversion="${verbegin}${gitcount}" || trunkversion=${trunkver}
-    sed -i "s/define('FOG_VERSION'.*);/define('FOG_VERSION', '$trunkversion');/g" $HOME/fogproject/packages/web/lib/fog/system.class.php >/dev/null 2>&1
-    [[ -z $channel ]] && channel="Alpha"
-    sed -i "s/define('FOG_CHANNEL'.*);/define('FOG_CHANNEL', '$channel');/g" $HOME/fogproject/packages/web/lib/fog/system.class.php >/dev/null 2>&1
-    errorStat $?
-}
+dots "Copying files to git"
+rsync -a --no-links -heP --delete "${excludes[@]}" \
+    "${webroot}/" "$path/packages/web" >/dev/null 2>&1
+errorStat $?
 
-copyFilesToTrunk() {
-    local testvar=$1
-    local path='$HOME/fogproject/packages/web/'
-    dots "Removing any ~ files."
-    find /var/www/fog/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
-    errorStat $?
-    dots "Copying files to git"
-    rsync -a --no-links -heP --exclude maintenance --delete /var/www/fog/ $HOME/fogproject/packages/web >/dev/null 2>&1
-    errorStat $?
-    dots "Cleaning up"
-    rm -rf $HOME/fogproject/packages/web/lib/fog/config.class.php >/dev/null 2>&1
-    rm -rf $HOME/fogproject/packages/web/management/other/cache/* >/dev/null 2>&1
-    rm -rf $HOME/fogproject/packages/web/management/other/ssl >/dev/null 2>&1
-    rm -rf $HOME/fogproject/packages/web/status/injectHosts.php >/dev/null 2>&1
-    find $HOME/fogproject/ -type f -name "*~" -exec rm -rf {} \; >/dev/null 2>&1
-    [[ $testvar == 'full' ]] && \
-        sed -i 's/^fullrelease=.*$/fullrelease="'${trunkver}'"/g' $HOME/fogproject/bin/installfog.sh || \
-        sed -i 's/^fullrelease=.*$/fullrelease="0"/g' $HOME/fogproject/bin/installfog.sh
-    errorStat $?
-}
+dots "Cleaning up"
+# Belt and braces: --delete plus the excludes above should mean none of these
+# arrive, but an older tree may still be carrying them from a previous run.
+rm -f "$path/packages/web/lib/fog/config.class.php" >/dev/null 2>&1
+rm -rf "$path/packages/web/management/other/cache"/* >/dev/null 2>&1
+rm -rf "$path/packages/web/management/other/ssl" >/dev/null 2>&1
+find "$path/packages/web/" -type f -name "*~" -delete >/dev/null 2>&1
+echo "OK"
 
-updateLanguage() {
-    xgettext --language=PHP --from-code=UTF-8 --output="$HOME/fogproject/packages/web/management/languages/messages.pot" --omit-header --no-location $(find $HOME/fogproject/packages/web/ -name "*.php")
-    msgcat --sort-output -o "$HOME/fogproject/packages/web/management/languages/messages.pot" "$HOME/fogproject/packages/web/management/languages/messages.pot"
-    for PO_FILE in $(find $HOME/fogproject/packages/web/management/languages/ -type f -name *.po); do
-        msgmerge --update --backup=none $PO_FILE $HOME/fogproject/packages/web/management/languages/messages.pot 2>/dev/null >/dev/null
-        msgcat --sort-output -o $PO_FILE $PO_FILE
-    done
-}
-
-[[ -n $psrfix ]] && psrfix "/var/www/fog"
-trunkUpdate $*
-[[ $3 == update ]] && exit 0
-#dots "Update language po/pot files"
-#foglanguage.sh >/dev/null 2>&1
-#errorStat $?
-copyFilesToTrunk $*
-updateLanguage $*
-versionUpdate $*
+echo
+echo " * Done. Review with 'git -C ${path} status' before committing."
+echo " * The commit hook handles PSR2, the .pot/.po files and the version bump."
+exit 0
