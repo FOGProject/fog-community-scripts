@@ -95,6 +95,11 @@ excludes=(
     --exclude='service/secureboot/'
     # Server certificate issued at install time.
     --exclude='management/other/ssl/'
+    # The published CA and its DER form. Gitignored, so they never reach a
+    # commit -- but copying them in at all is what leaves one server's CA
+    # sitting in the checkout, which CopyBackTrunk would then deploy over a
+    # different server's CA while that server keeps its own key.
+    --exclude='management/other/ca.cert.*'
     # Generated at deploy time; holds the database credentials.
     --exclude='lib/fog/config.class.php'
     # Written by the installer (GH-850); defines FOG_BASE_DIR.
@@ -130,6 +135,7 @@ dots "Cleaning up"
 rm -f "$path/packages/web/lib/fog/config.class.php" >/dev/null 2>&1
 rm -rf "$path/packages/web/management/other/cache"/* >/dev/null 2>&1
 rm -rf "$path/packages/web/management/other/ssl" >/dev/null 2>&1
+rm -f "$path/packages/web/management/other/ca.cert."* >/dev/null 2>&1
 find "$path/packages/web/" -type f -name "*~" -delete >/dev/null 2>&1
 echo "OK"
 
