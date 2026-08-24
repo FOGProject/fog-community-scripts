@@ -11,8 +11,9 @@
 #
 # Both optional, and both also settable as environment variables:
 #
-#   path     the git checkout   (default: $HOME/fogproject)
-#   webroot  the live web tree  (default: /var/www/fog)
+#   path        the git checkout   (default: $HOME/fogproject)
+#   webroot     the live web tree  (default: from .fogsettings)
+#   fogsettings installer settings  (default: /opt/fog/.fogsettings)
 #
 # WHAT THIS SCRIPT DELIBERATELY NO LONGER DOES
 #
@@ -57,7 +58,37 @@ errorStat() {
 }
 
 path=${1:-${path:-}}
-webroot=${2:-${webroot:-/var/www/fog}}
+
+# Ask the installer where the web tree actually is, rather than assuming
+# /var/www/fog -- which is only right for a default single-version install.
+#
+# Sourced in a SUBSHELL so nothing .fogsettings defines leaks into this
+# script's own variables; it sets `webroot` itself under the legacy key
+# names, which would otherwise silently overwrite the one being resolved
+# here with a bare URL path ("fog") and send the rsync somewhere absurd.
+#
+# Two generations of key names: GH-1120 renamed all 79 managed keys, so a
+# server installed before it carries `docroot`/`webroot` and one installed
+# after carries `WEB_docroot`/`WEB_root`. The new name wins where both
+# exist, because an upgrade writes it alongside the old one.
+fogsettings=${fogsettings:-/opt/fog/.fogsettings}
+fogDocroot=""
+fogWebroot=""
+if [[ -r $fogsettings ]]; then
+    eval "$(
+        # shellcheck disable=SC1090
+        . "$fogsettings" >/dev/null 2>&1
+        printf 'fogDocroot=%q\n' "${WEB_docroot:-${docroot:-}}"
+        printf 'fogWebroot=%q\n' "${WEB_root:-${webroot:-}}"
+    )"
+fi
+
+webroot=${2:-${webroot:-}}
+if [[ -z $webroot && -n $fogDocroot ]]; then
+    webroot="${fogDocroot%/}/${fogWebroot#/}"
+    webroot="${webroot%/}"
+fi
+webroot=${webroot:-/var/www/fog}
 
 [[ -z "$path" || ( ! -e "$path" && ! -e "$HOME/$path" ) ]] && path="$HOME/fogproject"
 [[ -e "$HOME/$path" && ! -e "$path" ]] && path="$HOME/$path"
