@@ -17,6 +17,21 @@
 #   webuser     owner of the deployed tree       (default: from .fogsettings)
 #   webgroup    group of the deployed tree       (default: same as webuser)
 #   fogsettings the installer's settings file    (default: /opt/fog/.fogsettings)
+#   devmode     1 to keep the tree editable by   (default: unset)
+#               the invoking user
+#   devgroup    group given write access by      (default: invoking user's
+#               devmode                           primary group)
+#
+# DEVMODE exists for the one workflow this script's sibling is built around:
+# editing files directly under the webroot and pulling them back with
+# CopyToSVN. After a normal deploy the tree is owned by the web user with
+# the repository's own modes, so those edits need sudo -- which is correct
+# for a server and useless on a development box.
+#
+# It grants GROUP write to a named group, rather than the `chmod -R 777`
+# that development copies of this script have historically carried. 777
+# means every account on the box can rewrite the code the web server
+# executes; this means one group can.
 #
 # The version suffix exists for servers that keep several trees side by side
 # (/var/www/html/fog-1.5, fog-1.6, ...) and symlink the live one. Leave it unset
@@ -242,6 +257,20 @@ sudo chown -R fogproject:"${webgroup}" "${webroot}/service/ipxe"
 # Logs are write-only for the web user; the rsync above restores repo modes on
 # anything it did copy, so reassert it here.
 sudo chmod 0200 "${webroot}"/fog_*.log 2>/dev/null
+
+# Development boxes only, and opt-in. See DEVMODE in the header.
+#
+# Ordered after the chowns deliberately: those set the web user as OWNER,
+# and this only widens the GROUP, so the web server's own access is
+# untouched either way. The logs above keep their 0200 -- they are excluded
+# here because making a write-only log group-writable is not what anyone
+# means by "let me edit the code".
+if [[ ${devmode:-} == 1 ]]; then
+    devgroup=${devgroup:-$(id -gn)}
+    echo "  devmode: granting ${devgroup} write access to ${webroot}"
+    sudo chgrp -R "$devgroup" "$webroot"
+    sudo find "$webroot" -name 'fog_*.log' -prune -o -exec chmod g+w {} +
+fi
 
 # Multi-version layout only: point /var/www/html/fog at this tree, and give the
 # tree a self-referential "fog" link so a URL of /fog/fog/... still resolves.
