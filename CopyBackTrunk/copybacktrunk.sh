@@ -13,9 +13,10 @@
 #   path        the git checkout                 (default: $HOME/fogproject)
 #   configpath  config.class.php to install      (default: /opt/fog/config.class.php)
 #   ver         webroot version suffix, or empty (default: empty)
-#   webroot     destination document root        (default: /var/www/fog)
-#   webuser     owner of the deployed tree       (default: apache, or nginx if present)
+#   webroot     destination document root        (default: from .fogsettings)
+#   webuser     owner of the deployed tree       (default: from .fogsettings)
 #   webgroup    group of the deployed tree       (default: same as webuser)
+#   fogsettings the installer's settings file    (default: /opt/fog/.fogsettings)
 #
 # The version suffix exists for servers that keep several trees side by side
 # (/var/www/html/fog-1.5, fog-1.6, ...) and symlink the live one. Leave it unset
@@ -30,14 +31,71 @@ ver=${3:-${ver:-}}
 [[ -z "$path" || ( ! -e "$path" && ! -e "$HOME/$path" ) ]] && path="$HOME/fogproject"
 [[ -e "$HOME/$path" && ! -e "$path" ]] && path="$HOME/$path"
 
-# Pick the web user the way the installer does: whichever service is actually
-# installed. Overridable because a custom build may use neither name.
+# Ask the installer what this server actually runs, rather than guessing.
+#
+# .fogsettings is the record of the install, and it is SOURCED here the same
+# way installfog.sh sources it -- in a subshell, so nothing it defines leaks
+# into this script's own variables and overwrites an explicit override.
+#
+# Two generations of key names. GH-1120 renamed all 79 managed keys to
+# CATEGORY_lower_snake_case, so a server installed before that carries
+# `webserver`/`docroot`/`webroot` and one installed after carries
+# `WEB_server_engine`/`WEB_docroot`/`WEB_root`. An upgrade migrates the old
+# to the new, but "has been upgraded since" is not something a deploy script
+# can assume, so both are read and the new name wins.
+fogsettings=${fogsettings:-/opt/fog/.fogsettings}
+fogEngine=""
+fogDocroot=""
+fogWebroot=""
+if [[ -r $fogsettings ]]; then
+    eval "$(
+        # shellcheck disable=SC1090
+        . "$fogsettings" >/dev/null 2>&1
+        printf 'fogEngine=%q\n' "${WEB_server_engine:-${webserver:-}}"
+        printf 'fogDocroot=%q\n' "${WEB_docroot:-${docroot:-}}"
+        printf 'fogWebroot=%q\n' "${WEB_root:-${webroot:-}}"
+    )"
+fi
+
+# The web user is NOT stored in .fogsettings -- the installer derives it per
+# distro from the engine, so this has to derive it the same way. The old
+# guess here was "nginx if that user exists, else apache", which is wrong on
+# every Debian/Ubuntu box running Apache (www-data) and every Arch box
+# running Apache (http): the deploy then chowned the whole webroot to a user
+# the web server is not, and every page 403s until somebody chowns it back.
+#
+# Resolved by taking the first candidate that actually EXISTS on this
+# machine, so an unusual build lands somewhere real rather than on a name
+# nobody has. Mirrors lib/{redhat,ubuntu,arch,alpine}/config.sh.
 if [[ -z ${webuser:-} ]]; then
-    if id -u nginx >/dev/null 2>&1; then
-        webuser=nginx
-    else
-        webuser=apache
-    fi
+    case ${fogEngine,,} in
+        apache|httpd|apache2)
+            candidates=(apache www-data http)
+            ;;
+        nginx)
+            candidates=(nginx http www-data)
+            ;;
+        *)
+            # No engine recorded (a very old install, or an unreadable
+            # .fogsettings). Fall back to what is running rather than to a
+            # hardcoded name.
+            if systemctl is-active --quiet nginx 2>/dev/null; then
+                candidates=(nginx http www-data)
+            else
+                candidates=(apache www-data http nginx)
+            fi
+            ;;
+    esac
+    for candidate in "${candidates[@]}"; do
+        if id -u "$candidate" >/dev/null 2>&1; then
+            webuser=$candidate
+            break
+        fi
+    done
+fi
+if [[ -z ${webuser:-} ]]; then
+    echo "Could not work out the web user. Set webuser= and re-run." >&2
+    exit 1
 fi
 webgroup=${webgroup:-$webuser}
 
@@ -47,6 +105,14 @@ if [[ -n $ver ]]; then
     webroot=${webroot:-/var/www/html/fog-${ver}}
     weblink=${weblink:-/var/www/html/fog}
 else
+    # $fogDocroot is the document root the installer wrote (e.g.
+    # /var/www/html/) and $fogWebroot the URL path under it (e.g. fog), so
+    # the deployed tree is the two joined. Falling back to /var/www/fog
+    # keeps the old behaviour for a server with no readable .fogsettings.
+    if [[ -z ${webroot:-} && -n $fogDocroot ]]; then
+        webroot="${fogDocroot%/}/${fogWebroot#/}"
+        webroot="${webroot%/}"
+    fi
     webroot=${webroot:-/var/www/fog}
     weblink=""
 fi
@@ -116,6 +182,53 @@ excludes=(
     --exclude='*.unsigned'
 )
 
+# Point a symlink at the versioned tree, whatever is sitting there now.
+#
+# This used to be `rm -f` followed by `ln -sf`, which breaks in one specific
+# way and then keeps breaking:
+#
+#   `rm` without -r CANNOT remove a directory (-f only suppresses the
+#   error). `ln -sf` with a DIRECTORY as its link name does not replace it
+#   either -- it creates the link INSIDE it, as fog/fog-1.6. Both commands
+#   "succeed", the deploy prints nothing unusual, and the web server then
+#   404s every page because <docroot>/fog/management/index.php no longer
+#   exists.
+#
+#   It is self-perpetuating: once the directory exists every later deploy
+#   repeats the same two no-ops, and PHP running under the broken root
+#   recreates management/logs/ underneath it, so it never becomes empty.
+#
+# -n on `ln` is not enough on its own: it stops ln descending into a link
+# that POINTS at a directory, not into a real one. So the stale path is
+# dealt with explicitly first.
+#
+# A real directory is MOVED ASIDE rather than deleted. It should only ever
+# hold stray logs, but "should only ever" is not a good enough reason to
+# rm -rf something under a web root while nobody is watching.
+linkVersioned() {
+    local target="$1"
+    local link="$2"
+
+    if [[ -L $link ]]; then
+        sudo rm -f "$link"
+    elif [[ -d $link ]]; then
+        local aside="${link}.stale-$(date +%Y%m%d%H%M%S)"
+        echo "  ! ${link} is a directory, not a symlink -- moving it to ${aside}"
+        sudo mv "$link" "$aside"
+    elif [[ -e $link ]]; then
+        sudo rm -f "$link"
+    fi
+
+    sudo ln -sfn "$target" "$link"
+
+    # Verified rather than assumed. The whole point is that the failure this
+    # replaces was silent.
+    if [[ "$(readlink "$link")" != "$target" ]]; then
+        echo "  !! failed to link ${link} -> ${target}" >&2
+        return 1
+    fi
+}
+
 sudo rsync -a --no-links -heP --delete "${excludes[@]}" \
     "$path/packages/web/" "$webroot"
 
@@ -133,10 +246,8 @@ sudo chmod 0200 "${webroot}"/fog_*.log 2>/dev/null
 # Multi-version layout only: point /var/www/html/fog at this tree, and give the
 # tree a self-referential "fog" link so a URL of /fog/fog/... still resolves.
 if [[ -n $weblink ]]; then
-    sudo rm -f "$weblink"
-    sudo ln -sf "$webroot" "$weblink"
-    sudo rm -f "${webroot}/fog"
-    sudo ln -sf "$webroot" "${webroot}/fog"
+    linkVersioned "$webroot" "$weblink"
+    linkVersioned "$webroot" "${webroot}/fog"
 fi
 
 # Reload so opcache does not keep serving the previous copy of changed files.
