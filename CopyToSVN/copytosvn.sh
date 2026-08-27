@@ -131,8 +131,15 @@ excludes=(
     # sitting in the checkout, which CopyBackTrunk would then deploy over a
     # different server's CA while that server keeps its own key.
     --exclude='management/other/ca.cert.*'
-    # Generated at deploy time; holds the database credentials.
+    # Generated at deploy time; holds the database credentials, both FTP
+    # passwords and the schema token. Both spellings, because one script pulls
+    # from 1.5 and 1.6 servers alike and the file moved: 1.6 generates it into
+    # commons/, beside fogpaths.php, after lib/fog/ was retired -- that
+    # directory held nothing else once core became PSR-4 under src/.
+    # (FOGProject/fogproject#1429.) Excluding a path a webroot does not have
+    # costs nothing, so both are listed rather than branched on.
     --exclude='lib/fog/config.class.php'
+    --exclude='commons/config.class.php'
     # Written by the installer (GH-850); defines FOG_BASE_DIR.
     --exclude='commons/fogpaths.php'
     # Installer-written sample config.
@@ -164,6 +171,7 @@ dots "Cleaning up"
 # Belt and braces: --delete plus the excludes above should mean none of these
 # arrive, but an older tree may still be carrying them from a previous run.
 rm -f "$path/packages/web/lib/fog/config.class.php" >/dev/null 2>&1
+rm -f "$path/packages/web/commons/config.class.php" >/dev/null 2>&1
 rm -rf "$path/packages/web/management/other/cache"/* >/dev/null 2>&1
 rm -rf "$path/packages/web/management/other/ssl" >/dev/null 2>&1
 rm -f "$path/packages/web/management/other/ca.cert."* >/dev/null 2>&1
