@@ -264,16 +264,43 @@ sudo rm -rf "${webroot}/maintenance"
 # config somewhere nothing reads. packages/web/src/ exists only on the PSR-4
 # branches, which are exactly the ones that generate into commons/.
 #
-# Wrong destination is not a visible failure. The rsync --delete has already
-# removed whatever was at the other path, so FOG boots to
-# `Class "Config" not found` -- a fatal before any output, i.e. a blank page.
+# Wrong destination is not a visible failure either way. If nothing is left at
+# the path the tree actually reads, FOG boots to `Class "Config" not found` --
+# a fatal before any output, i.e. a blank page with nothing in the browser to
+# say why.
 if [[ -d $path/packages/web/src ]]; then
     configdest="commons/config.class.php"
+    configstale="lib/fog/config.class.php"
 else
     configdest="lib/fog/config.class.php"
+    configstale="commons/config.class.php"
 fi
 sudo install -d "$(dirname "${webroot}/${configdest}")"
 sudo cp "$configpath" "${webroot}/${configdest}"
+
+# Retire the copy at the other path, if a previous deploy left one.
+#
+# The excludes above protect BOTH spellings, and an rsync exclude is protected
+# from --delete as well as from transfer -- so a webroot first deployed when
+# the config lived at the other path keeps that file forever, even though the
+# source tree no longer has the directory at all. Verified: with lib/fog/
+# absent from the source, --delete removes an unexcluded sibling and leaves
+# the excluded config standing.
+#
+# Two files then declare class Config inside a scanned root. Initiator's
+# collision rule picks one by scan order and error_log()s the other, so this
+# is not a fatal -- it is worse than a fatal. FOG boots either way, off
+# whichever copy the scan happened to reach first, and the losing file is a
+# generated credential store (the DB password, both FTP passwords, the schema
+# token) sitting in the webroot at a path nothing maintains.
+#
+# Guarded on the destination existing, so a failed cp above cannot leave the
+# tree with no config at all.
+if [[ -e ${webroot}/${configstale} && -s ${webroot}/${configdest} ]]; then
+    echo "Removing superseded ${configstale} (config now lives at ${configdest})"
+    sudo rm -f "${webroot}/${configstale}"
+    sudo rmdir --ignore-fail-on-non-empty "$(dirname "${webroot}/${configstale}")" 2>/dev/null
+fi
 sudo chown -R "${webuser}":"${webgroup}" "$webroot"
 sudo chown -R fogproject:"${webgroup}" "${webroot}/service/ipxe"
 
