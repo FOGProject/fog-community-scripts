@@ -156,6 +156,18 @@ excludes=(
     --exclude='service/ipxe/arm_init.cpio.gz'
     --exclude='service/ipxe/*.sha256'
     --exclude='*.unsigned'
+    # rEFInd, same reason, and unlike the kernels above these ARE tracked --
+    # so pulling them in is a real content change to committed files rather
+    # than an ignored one. installfog.sh countersigns the deployed copies with
+    # the server's own Secure Boot key, so a pulled refind_x64.efi carries two
+    # signatures (Roderick W. Smith upstream, plus "FOG Project Secure Boot
+    # Signing" from whichever box it came off). Committing that publishes one
+    # server's locally-signed binary as the upstream source.
+    --exclude='service/ipxe/refind*.efi'
+    # ESP archives downloaded by the installer. Gitignored (*.zip), so they
+    # would never be committed -- but pulling ~20MB of them into the checkout
+    # on every run is pure noise.
+    --exclude='service/localboot/'
     # The installer's holding page; not part of the application.
     --exclude='maintenance'
     # Editor leftovers.

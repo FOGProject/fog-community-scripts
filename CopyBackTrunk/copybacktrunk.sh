@@ -201,6 +201,17 @@ excludes=(
     --exclude='service/ipxe/arm_init.cpio.gz'
     # _resignKernels' pre-signature snapshots of the above.
     --exclude='*.unsigned'
+    # rEFInd, and this is the direction that BREAKS BOOTING. Unlike the
+    # kernels above these ARE tracked, so the checkout genuinely has a copy to
+    # deploy -- carrying only the upstream signature. installfog.sh
+    # countersigns the deployed ones with the server's own Secure Boot key, so
+    # syncing the repo copy over a signed one strips that countersignature and
+    # Secure Boot clients stop booting with nothing on the server to explain
+    # why. Re-run installfog.sh to update and re-sign these.
+    --exclude='service/ipxe/refind*.efi'
+    # Installer-downloaded ESP archives; gitignored, so the checkout has
+    # nothing to deploy and syncing would only delete the server's.
+    --exclude='service/localboot/'
 )
 
 # Point a symlink at the versioned tree, whatever is sitting there now.
