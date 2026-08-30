@@ -345,4 +345,62 @@ for svc in nginx httpd apache2 php-fpm; do
     systemctl is-active --quiet "$svc" 2>/dev/null && sudo systemctl restart "$svc"
 done
 
+# Restart the FOG daemons for the same reason the web services are restarted
+# above: they are running the code this script just replaced.
+#
+# This did not used to matter. The daemons' entry points live in
+# /opt/fog/service, which this script does not deploy, and until the PSR-4 move
+# each one carried its own copy of the service loop -- so a webroot deploy
+# genuinely did not change what a running daemon executed. It does now: the
+# entry points are three-line stubs and the loop itself is
+# packages/web/src/Service/, which is inside the tree rsynced above. A running
+# daemon holds the OLD code until it is restarted, so a deploy that changes
+# daemon behavior looks like a deploy that did nothing at all.
+#
+# There is no per-daemon subset worth working out. All ten boot the same core
+# through commons/base.inc.php -- src/Base, src/Db, src/Router -- so almost any
+# PHP file in the tree can change what any of them does, which is exactly why
+# the web services above are restarted unconditionally rather than diffed.
+#
+# WHAT THIS COSTS: an in-flight replication transfer or multicast session is
+# killed and picked up again on the daemon's next pass. installfog.sh has
+# always restarted these unconditionally, so this is not new behavior for a
+# server -- it is new for this script, which people run far more often.
+restartFogServices() {
+    local units=()
+    # Enumerated from systemd rather than hardcoded, so a daemon added to FOG
+    # later is covered here without anyone remembering to edit a list -- which
+    # is the failure this whole change exists to stop.
+    #
+    # --state=active means a unit an admin has deliberately stopped stays
+    # stopped: this restarts what is running, it does not start what is not.
+    # `|| [[ -n $unit ]]` so a final line with no trailing newline is still
+    # read: without it `read` returns non-zero on that line and the loop drops
+    # the last daemon, which is the one-daemon-never-restarted bug in miniature.
+    # systemctl does terminate its output, but a loop that only works because
+    # its input is well behaved is a loop waiting to be fed by something else.
+    while read -r unit _ || [[ -n ${unit:-} ]]; do
+        [[ -n $unit ]] && units+=("$unit")
+        unit=''
+    done < <(
+        systemctl list-units --type=service --state=active --no-legend 'FOG*' \
+            2>/dev/null
+    )
+
+    if [[ ${#units[@]} -eq 0 ]]; then
+        return 0
+    fi
+
+    echo "  restarting ${#units[@]} FOG service(s) to load the deployed code"
+    # Reported rather than swallowed. A daemon that fails to come back leaves
+    # imaging silently broken, and this script has no `set -e` to catch it.
+    if ! sudo systemctl restart "${units[@]}"; then
+        echo "  !! one or more FOG services failed to restart" >&2
+        return 1
+    fi
+    return 0
+}
+
+restartFogServices
+
 exit 0
