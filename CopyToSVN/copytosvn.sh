@@ -164,6 +164,9 @@ excludes=(
     # Signing" from whichever box it came off). Committing that publishes one
     # server's locally-signed binary as the upstream source.
     --exclude='service/ipxe/refind*.efi'
+    # Memtest86+ (fogproject #321): tracked upstream binaries that installfog.sh
+    # countersigns in place with the kernels, so the same rule as refind*.efi.
+    --exclude='service/ipxe/mt86plus_*'
     # ESP archives downloaded by the installer. Gitignored (*.zip), so they
     # would never be committed -- but pulling ~20MB of them into the checkout
     # on every run is pure noise.

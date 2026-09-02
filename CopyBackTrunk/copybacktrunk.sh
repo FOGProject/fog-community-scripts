@@ -209,6 +209,9 @@ excludes=(
     # Secure Boot clients stop booting with nothing on the server to explain
     # why. Re-run installfog.sh to update and re-sign these.
     --exclude='service/ipxe/refind*.efi'
+    # Memtest86+ (fogproject #321): tracked upstream binaries that installfog.sh
+    # countersigns in place with the kernels, so the same rule as refind*.efi.
+    --exclude='service/ipxe/mt86plus_*'
     # Installer-downloaded ESP archives; gitignored, so the checkout has
     # nothing to deploy and syncing would only delete the server's.
     --exclude='service/localboot/'

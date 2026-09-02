@@ -49,6 +49,8 @@ signed=(
     service/ipxe/bzImage
     service/ipxe/bzImage32
     service/ipxe/init.xz
+    service/ipxe/mt86plus_x86_64
+    service/ipxe/mt86plus_i586
     service/localboot/fog-esp-x86_64.zip
 )
 must_cross=(
