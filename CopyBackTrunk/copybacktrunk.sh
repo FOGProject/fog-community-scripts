@@ -173,6 +173,11 @@ excludes=(
     # the tree, and deploying that tree elsewhere publishes the wrong CA while
     # the target keeps its own key.
     --exclude='management/other/ca.cert.*'
+    # Same story for the agent CA bundle (fogproject feat/agent-enroll): the
+    # installer publishes it next to ca.cert.pem and Agent\Principal verifies
+    # every agent certificate against it. Deleting it turns every poll into a
+    # 401 and the agents throw their certificates away and re-enroll.
+    --exclude='management/other/agent-ca-bundle.pem'
     # Generated at deploy time and re-copied below. Both spellings, because
     # this one script deploys 1.5 and 1.6 and the file moved: 1.6 generates it
     # into commons/, beside fogpaths.php, after lib/fog/ was retired -- that
