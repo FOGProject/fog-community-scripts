@@ -273,6 +273,17 @@ linkVersioned() {
     fi
 }
 
+# On 1.6, lib/plugins is gitignored staging that only bin/fetch-plugins.sh
+# fills, so a fresh worktree has none. --delete then mirrored that absence and
+# removed every plugin from the webroot -- on 2026-10-16, and again on
+# 2026-10-27, when it took the OIDC sign-in down. Keep the deployed plugins
+# instead, and say so. A tree that HAS plugins deploys them as before.
+if [[ -z $(ls -A "$path/packages/web/lib/plugins" 2>/dev/null) ]]; then
+    excludes+=(--exclude='lib/plugins/')
+    echo "  ! ${path} has no lib/plugins -- keeping the deployed plugins."
+    echo "    Run bin/fetch-plugins.sh in that tree to deploy its own."
+fi
+
 sudo rsync -a --no-links -heP --delete "${excludes[@]}" \
     "$path/packages/web/" "$webroot"
 
